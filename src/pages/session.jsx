@@ -21,7 +21,7 @@ export default function Session() {
   return (
     <div className="mt-40">
       <Header />
-      <div className="m-auto w-4/5">
+      <div className="m-auto w-4/5 max-w-screen-xl">
         <div className="grid place-items-center">
           <Tab category={categories} link={links} currentIndex={0} />
         </div>
@@ -37,8 +37,14 @@ export default function Session() {
 
           <p>세션추가</p>
         </div>
-        <div className="grid place-items-center grid-cols-3 gap-8 mt-12">
-          <SessionBlock />
+        <div className="grid place-items-center sm:grid-cols-2 md:grid-cols-3 gap-8 mt-12">
+          <SessionBlock title={"OT"} />
+          <SessionBlock title={"MT"} />
+          <SessionBlock title={"만남의 장"} />
+          <SessionBlock title={"테버랜드"} />
+          <SessionBlock title={"전반기 시상식"} />
+          <SessionBlock title={"테런데이"} />
+          <SessionBlock title={"테런데이"} />
         </div>
       </div>
     </div>
