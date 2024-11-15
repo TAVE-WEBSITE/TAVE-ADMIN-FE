@@ -9,15 +9,17 @@ user_height = 지정 높이,
 export default function Button({
   textSize = "text-base",
   text = "",
-  onClick,
+  onClick = () => {},
   user_width = "16em",
   user_height = "",
+  type,
 }) {
   return (
     <button
       onClick={onClick}
       className={`${textSize} items-center rounded-md py-2 px-5 p-2 font-light-350 bg-[#747474] text-white`}
       style={{ width: user_width, height: user_height }}
+      type={type}
     >
       {text}
     </button>

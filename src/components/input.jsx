@@ -19,8 +19,8 @@ export default function Input({
   type = "text",
   user_width = "16em",
   user_height = "2.125em",
-  onChange,
-  essential = false,
+  onChange = () => {},
+  essential = true,
   essentialText,
 }) {
   const [essential0, setEssential] = useState(essential);
@@ -29,12 +29,12 @@ export default function Input({
     setEssential(essential);
   }, [essential]);
 
-  /*
   const handleFocus = (e) => {
     setEssential(true);
-    handleChange(e); //입력 필드 포커스
+    onChange(e); //입력 필드 포커스
   };
 
+  /*
   const handleChange = (e) => {
     onChange(e);
     if (e.target.value) {
@@ -44,17 +44,21 @@ export default function Input({
     }
   };
   */
+
   return (
     <div>
       <input
         type={type}
-        className={`${textSize} rounded-md py-3 px-5 border border-gray-400 p-2 font-light-350`}
+        className={`${textSize} rounded-md py-3 px-5 border ${
+          essential0 ? "border-gray-400" : "border-red-800"
+        } p-2 font-light-350`}
         placeholder={placeholder}
         style={{ width: user_width, height: user_height }}
         onChange={onChange}
+        onFocus={handleFocus}
       ></input>
       {essential0 == false ? (
-        <div className="text-red-500">{essentialText}</div>
+        <div className="text-red-500 ">{essentialText}</div>
       ) : (
         <></>
       )}
