@@ -27,7 +27,7 @@ export default function DropDown({ valueList, setValue }) {
         <input
           type="button"
           value={selectedValue}
-          className="outline-none cursor-pointer w-full"
+          className="outline-none cursor-pointer w-full text-left"
           readOnly
         />
         <img src={isOpen ? ArrowUp : ArrowDown} alt="Arrow" className="w-6" />
@@ -38,7 +38,7 @@ export default function DropDown({ valueList, setValue }) {
             <li
               key={index}
               onClick={() => handleValueClick(value)}
-              className="cursor-pointer hover:bg-white hover:bg-opacity-[0.1] p-2 rounded-md">
+              className="cursor-pointer hover:bg-white hover:bg-opacity-[0.1] p-2 rounded-md relative z-10">
               {value}
             </li>
           ))}

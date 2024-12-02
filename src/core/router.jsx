@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Header from "../components/header";
+
 import Main from "../pages/main";
 import Session from "../pages/session";
 import History from "../pages/history";
