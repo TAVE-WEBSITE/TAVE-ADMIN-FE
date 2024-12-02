@@ -5,8 +5,7 @@ import Header from "../components/header";
 import SessionBlock from "../components/sessionBlock";
 import DropDown from "../components/dropdown";
 import useDropClose from "../hooks/dropClose";
-import ArrowDown from "../assets/images/arrowDown.png";
-import ArrowUp from "../assets/images/arrowUp.png";
+import Footer from "../components/footer";
 
 export default function Session() {
   const categories = ["정규세션", "동아리 이력", "후기", "문의"];
@@ -19,7 +18,9 @@ export default function Session() {
 
   const [isOpen, setIsOpen] = useDropClose(dropDownRef, false);
   return (
-    <div className="mt-40">
+    <div
+    className="pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]"
+  >
       <Header />
       <div className="m-auto w-4/5 max-w-screen-xl">
         <div className="grid place-items-center">
@@ -37,7 +38,7 @@ export default function Session() {
 
           <p>세션추가</p>
         </div>
-        <div className="grid place-items-center sm:grid-cols-2 md:grid-cols-3 gap-8 mt-12">
+        <div className="grid place-items-center sm:grid-cols-2 md:grid-cols-3 gap-12 mt-12">
           <SessionBlock title={"OT"} />
           <SessionBlock title={"MT"} />
           <SessionBlock title={"만남의 장"} />
@@ -47,6 +48,7 @@ export default function Session() {
           <SessionBlock title={"테런데이"} />
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }
