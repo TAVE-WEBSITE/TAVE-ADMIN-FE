@@ -66,7 +66,7 @@ export default function History() {
     : historyData;
 
   return (
-    <div className="mt-40">
+    <div className="pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
       <Header />
       <div className="m-auto w-4/5 max-w-screen-xl">
         <div className="grid place-items-center">

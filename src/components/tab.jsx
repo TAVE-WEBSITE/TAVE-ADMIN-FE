@@ -24,7 +24,7 @@ export default function Tab({ category, link, currentIndex }) {
         <div
           key={index}
           className={`text-2xl font-bold leading-9 cursor-pointer ${
-            selectedIndex === index ? "text-black" : "text-[#7E7E7E]"
+            selectedIndex === index ? "text-white" : "text-[#A7A7A7]"
           }`}
           onClick={() => handleClick(index)}>
           {name}
