@@ -1,10 +1,10 @@
 import React from "react";
 import { useState, useRef, useEffect } from "react";
-import useDropClose from "../hooks/dropClose";
 import Tab from "../components/tab";
 import Header from "../components/header";
 import SearchBar from "../components/searchBar";
 import HistoryBlock from "../components/historyBlock";
+import Footer from "../components/footer";
 
 export default function History() {
   const categories = ["정규세션", "동아리 이력", "후기", "문의"];
@@ -93,6 +93,7 @@ export default function History() {
           )}
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }

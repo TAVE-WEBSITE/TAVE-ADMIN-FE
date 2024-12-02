@@ -5,6 +5,7 @@ import Header from "../components/header";
 import SessionBlock from "../components/sessionBlock";
 import DropDown from "../components/dropdown";
 import useDropClose from "../hooks/dropClose";
+import Footer from "../components/footer";
 
 export default function Session() {
   const categories = ["정규세션", "동아리 이력", "후기", "문의"];
@@ -47,6 +48,7 @@ export default function Session() {
           <SessionBlock title={"테런데이"} />
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }
