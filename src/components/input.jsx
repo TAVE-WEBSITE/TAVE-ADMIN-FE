@@ -22,6 +22,7 @@ export default function Input({
   onChange = () => {},
   essential = true,
   essentialText,
+  className,
 }) {
   const [essential0, setEssential] = useState(essential);
 
@@ -46,7 +47,7 @@ export default function Input({
   */
 
   return (
-    <div>
+    <div className={`${className}`}>
       <input
         type={type}
         className={`${textSize} rounded-md py-3 px-5 border ${
