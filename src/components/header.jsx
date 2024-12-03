@@ -14,7 +14,7 @@ export default function Header() {
   const isActive = path => location.pathname === path;
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 flex items-center justify-between py-4 px-20 bg-[#121212]`}>
+      className={`fixed top-0 left-0 w-full z-50 flex items-center justify-between py-4 px-20 bg-gradient-to-b from-black from-30% to-transparent`}>
       <div className="items-start cursor-pointer" onClick={handleLogoClick}>
         <img src={TaveLogo} className="w-32 h-auto"></img>
       </div>

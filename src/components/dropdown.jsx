@@ -3,23 +3,25 @@ import { useState } from "react";
 import ArrowUp from "../assets/images/arrowUp.svg";
 import ArrowDown from "../assets/images/arrowDown.svg";
 
-export default function DropDown({ valueList, setValue }) {
+export default function DropDown({ valueList, setValue, isJoin = false }) {
   const [selectedValue, setSelectedValue] = useState(valueList[0]);
   const [isOpen, setIsOpen] = useState(false);
 
   const handleValueClick = value => {
-    // 사용자가 클릭하면 해당 value로 바뀌게
     setSelectedValue(value);
-    // input의 value 값
     setValue(value);
-    setIsOpen(false); // 선택 후 드롭다운 닫기
+    setIsOpen(false);
   };
 
+  // 회원가입 드롭다운 스타일이 달라서 따로 지정함
+  const joinStyle = isJoin
+  ? "bg-[#1212124D] border border-gray-400 p-3 rounded-md w-full text-white shadow-none"
+  : "bg-white bg-opacity-[0.1] p-2 cursor-pointer gap-2.5 w-full text-left";
   return (
     <div className="relative inline-block w-full font-extralight text-white">
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center bg-white bg-opacity-[0.1] p-2 cursor-pointer gap-2.5 w-full ${
+        className={`flex items-center ${joinStyle} bg-white bg-opacity-[0.1] p-2 cursor-pointer gap-2.5 w-full ${
           isOpen
             ? "rounded-t-md shadow-[5px_5px_9px_0px_rgba(0,0,0,0.35)]"
             : "rounded-md"
@@ -33,7 +35,7 @@ export default function DropDown({ valueList, setValue }) {
         <img src={isOpen ? ArrowUp : ArrowDown} alt="Arrow" className="w-6" />
       </div>
       {isOpen && (
-        <ul className="absolute bg-white bg-opacity-[0.1] rounded-b-md shadow-[5px_5px_9px_0px_rgba(0,0,0,0.35)] w-full">
+        <ul className={`absolute ${joinStyle}  rounded-b-md shadow-[5px_5px_9px_0px_rgba(0,0,0,0.35)] w-full`}>
           {valueList.map((value, index) => (
             <li
               key={index}

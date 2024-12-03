@@ -18,7 +18,7 @@ export default function Input({
   placeholder = "",
   type = "text",
   user_width = "16em",
-  user_height = "2.125em",
+  user_height = "3.5rem",
   onChange = () => {},
   essential = true,
   essentialText,
@@ -50,7 +50,7 @@ export default function Input({
     <div className={`${className}`}>
       <input
         type={type}
-        className={`${textSize} rounded-md py-3 px-5 border ${
+        className={`${textSize} rounded-md py-3 px-5 rounded-lg border-[0.5px] bg-[#FFFFFF1A] text-white ${
           essential0 ? "border-gray-400" : "border-red-800"
         } p-2 font-light-350`}
         placeholder={placeholder}

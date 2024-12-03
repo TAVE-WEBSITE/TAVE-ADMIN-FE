@@ -5,15 +5,26 @@ import Header from "../components/header";
 import SearchBar from "../components/searchBar";
 import DropDown from "../components/dropdown";
 import File from "../components/file";
+import PlusFile from "../components/plusFile";
 import Footer from "../components/footer";
 
 export default function Project() {
   const [batch, setBatch] = useState("ALL");
-  const batchList = ["ALL", "14기", "13기", "12기", "11기", "10기", "9기", "8기", "7기"];
+  const batchList = [
+    "ALL",
+    "14기",
+    "13기",
+    "12기",
+    "11기",
+    "10기",
+    "9기",
+    "8기",
+    "7기",
+  ];
   const [field, setField] = useState("ALL");
   const fieldList = ["ALL", "연합 프로젝트", "심화 프로젝트"];
-    const [searchTerm, setSearchTerm] = useState("");
-    
+  const [searchTerm, setSearchTerm] = useState("");
+
   const baseURL = "http://3.35.207.95:8080";
 
   async function getProject() {
@@ -150,25 +161,28 @@ export default function Project() {
 
   const filteredFileSet = fileSet.filter(file => {
     const isFieldMatch = field === "ALL" || file.field === field;
-    const isBatchMatch = batch === "ALL" || file.teamNum === parseInt(batch.replace("기", ""), 10);
-    const isSearchMatch = 
-    !searchTerm || 
-    file.title.includes(searchTerm) || 
-    file.teamName.includes(searchTerm);
+    const isBatchMatch =
+      batch === "ALL" || file.teamNum === parseInt(batch.replace("기", ""), 10);
+    const isSearchMatch =
+      !searchTerm ||
+      file.title.includes(searchTerm) ||
+      file.teamName.includes(searchTerm);
 
-  return isFieldMatch && isBatchMatch && isSearchMatch;
+    return isFieldMatch && isBatchMatch && isSearchMatch;
   });
 
-    
   const handleFieldChange = value => {
     if (value === "ALL") setField("ALL");
     else if (value === "연합 프로젝트") setField("연합");
     else if (value === "심화 프로젝트") setField("심화");
-    };
-    
-    const handleSearch = term => {
-        setSearchTerm(term);
-      };
+  };
+
+  const handleSearch = term => {
+    setSearchTerm(term);
+  };
+  const backgroundColor =
+    "linear-gradient(180deg, rgba(76, 76, 76, 1), rgba(27, 27, 27, 1))";
+  const boxShadow = "0px 4.61px 9.22px 0px rgba(0, 0, 0, 0.1)";
 
   return (
     <div className="pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
@@ -193,6 +207,7 @@ export default function Project() {
         </div>
 
         <div className="grid grid-cols-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-6 pt-[48px] mt-12 justify-items-center">
+          <PlusFile/>
           {filteredFileSet.map((data, index) => {
             return (
               <File

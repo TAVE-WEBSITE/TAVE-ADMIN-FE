@@ -16,8 +16,8 @@ export default function MemberJoin({
   type,
 }) {
   return (
-    <div className="flex gap-2 w-full">
-      <div className="flex-1 text-left w-1/4 font-normal">
+    <div className="flex gap-2 w-full items-center">
+      <div className="flex-1 text-right w-1/4 font-normal text-white">
         {text} <span className="text-red-500">*</span>
       </div>
       <Input

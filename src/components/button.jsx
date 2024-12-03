@@ -17,7 +17,7 @@ export default function Button({
   return (
     <button
       onClick={onClick}
-      className={`${textSize} items-center rounded-md py-2 px-5 p-2 font-light-350 bg-[#747474] text-white`}
+      className={`${textSize} items-center rounded-md py-2 px-5 p-2 font-light-350 bg-white bg-opacity-[0.1] text-white`}
       style={{ width: user_width, height: user_height }}
       type={type}
     >

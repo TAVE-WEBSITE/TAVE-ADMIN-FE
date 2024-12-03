@@ -5,6 +5,7 @@ import Header from "../components/header";
 import SearchBar from "../components/searchBar";
 import DropDown from "../components/dropdown";
 import File from "../components/file";
+import PlusFile from "../components/plusFile";
 import Footer from "../components/footer";
 
 export default function Study() {
@@ -12,8 +13,8 @@ export default function Study() {
   const batchList = ["ALL", "14기", "13기", "12기"];
   const [field, setField] = useState("ALL");
   const fieldList = ["ALL", "Web/App", "Back", "DeepLearning", "DataAnalysis"];
-    const [searchTerm, setSearchTerm] = useState("");
-    
+  const [searchTerm, setSearchTerm] = useState("");
+
   const baseURL = "http://3.35.207.95:8080";
 
   async function getStudy() {
@@ -47,14 +48,14 @@ export default function Study() {
       teamNum: 13,
       teamName: "아기고양이",
       field: "Web/App",
-      },
-      {
-        type: "study",
-        title: "스터디 이름 웹/앱 아기고양이",
-        teamNum: 12,
-        teamName: "아기고양이",
-        field: "Web/App",
-      },
+    },
+    {
+      type: "study",
+      title: "스터디 이름 웹/앱 아기고양이",
+      teamNum: 12,
+      teamName: "아기고양이",
+      field: "Web/App",
+    },
     {
       type: "study",
       title: "스터디 이름 백 아기갱얼쥐",
@@ -128,18 +129,18 @@ export default function Study() {
     },
   ];
 
-
   const filteredFileSet = fileSet.filter(file => {
     const isFieldMatch = field === "ALL" || file.field === field;
-    const isBatchMatch = batch === "ALL" || file.teamNum === parseInt(batch.replace("기", ""), 10);
-    const isSearchMatch = 
-    !searchTerm || 
-    file.title.includes(searchTerm) || 
-    file.teamName.includes(searchTerm);
+    const isBatchMatch =
+      batch === "ALL" || file.teamNum === parseInt(batch.replace("기", ""), 10);
+    const isSearchMatch =
+      !searchTerm ||
+      file.title.includes(searchTerm) ||
+      file.teamName.includes(searchTerm);
 
-  return isFieldMatch && isBatchMatch && isSearchMatch;
+    return isFieldMatch && isBatchMatch && isSearchMatch;
   });
-  
+
   const handleSearch = term => {
     setSearchTerm(term);
   };
@@ -163,10 +164,11 @@ export default function Study() {
             </div>
           </div>
 
-          <SearchBar onSearch={handleSearch}/>
+          <SearchBar onSearch={handleSearch} />
         </div>
 
         <div className="grid grid-cols-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-6 pt-[48px] mt-12 justify-items-center">
+          <PlusFile />
           {filteredFileSet.map((data, index) => {
             return (
               <File
