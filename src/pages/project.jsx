@@ -197,7 +197,7 @@ export default function Project() {
 
 
   return (
-    <div className="flex flex-col pt-40 min-h-screen bg-[#121212]">
+    <div className="flex flex-col pt-32 min-h-screen bg-[#121212]">
       <Header />
 
       <div className="m-auto w-5/6 max-w-screen-xl flex-grow pb-40">

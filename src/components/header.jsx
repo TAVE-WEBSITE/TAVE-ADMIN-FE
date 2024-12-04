@@ -7,8 +7,8 @@ export default function Header() {
   const location = useLocation();
 
   const navigate = useNavigate();
-    const handleLogoClick = () => {
-      navigate("/")
+  const handleLogoClick = () => {
+    navigate("/");
   };
 
   const isActive = path => location.pathname === path;
@@ -24,7 +24,11 @@ export default function Header() {
             <a
               href="regularsession"
               className={`cursor-pointer ${
-                isActive("/regularsession") ? "text-[#195bff]" : ""
+                ["/regularsession", "/history", "/review", "/inquiry"].some(
+                  path => isActive(path)
+                )
+                  ? "text-[#195bff]"
+                  : ""
               }`}>
               ACTIVITY
             </a>

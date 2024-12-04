@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 export default function ForgotPassword() {
   const [authCode, setAuthCode] = useState(false);
   const [newPw, setNewPw] = useState(false);
-  const [btnText, setBtnText] = useState("비밀번호 찾기");
+  const [btnText, setBtnText] = useState("다음");
 
   const navigate = useNavigate();
 
@@ -42,17 +42,16 @@ export default function ForgotPassword() {
           )}
           <Button
             text={`${btnText}`}
-            onClick={authCode == false ? authBefore : authAfter}></Button>
+            onClick={authCode == false ? authBefore : authAfter} user_width="25rem"></Button>
         </div>
       ) : (
         <div className="flex flex-col w-[38rem] h-[40rem] justify-center items-center gap-5 bg-[#1212123D] p-10 border border-[#FFFFFF1A] rounded-2xl backdrop-blur-md relative z-10">
-          {" "}
           <div className="text-4xl text-white font-medium">비밀번호 재설정</div>
           <MemberInput text="새 비밀번호"></MemberInput>
           <MemberInput text="비밀번호 확인"></MemberInput>
           <Button
             text="비밀번호 재설정"
-            onClick={() => navigate("/Login")}></Button>
+            onClick={() => navigate("/Login")} user_width="25rem"></Button>
         </div>
       )}
       <img
