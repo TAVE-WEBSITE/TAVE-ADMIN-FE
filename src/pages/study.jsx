@@ -149,7 +149,7 @@ export default function Study() {
     <div className="pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
       <Header />
 
-      <div className="m-auto w-4/5 max-w-screen-xl">
+      <div className="m-auto w-4/5 max-w-screen-xl pb-40">
         <h1 className="mr-auto text-white text-4xl">STUDY 관리</h1>
         <h3 className="mr-auto text-white font-medium text-xl mt-8">
           역대 기수들의 스터디 조회 및 수정을 하는 페이지입니다.

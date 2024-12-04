@@ -66,9 +66,9 @@ export default function History() {
     : historyData;
 
   return (
-    <div className="pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
+    <div className="flex flex-col pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
       <Header />
-      <div className="m-auto w-4/5 max-w-screen-xl">
+      <div className="m-auto w-4/5 max-w-screen-xl flex-grow pb-40">
         <div className="grid place-items-center">
           <Tab category={categories} link={links} currentIndex={1} />
         </div>
