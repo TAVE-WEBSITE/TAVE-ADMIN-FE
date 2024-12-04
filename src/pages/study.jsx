@@ -6,6 +6,7 @@ import SearchBar from "../components/searchBar";
 import DropDown from "../components/dropdown";
 import File from "../components/file";
 import PlusFile from "../components/plusFile";
+import Pagination from "../components/pagination";
 import Footer from "../components/footer";
 
 export default function Study() {
@@ -14,6 +15,7 @@ export default function Study() {
   const [field, setField] = useState("ALL");
   const fieldList = ["ALL", "Web/App", "Back", "DeepLearning", "DataAnalysis"];
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const baseURL = "http://3.35.207.95:8080";
 
@@ -141,17 +143,24 @@ export default function Study() {
     return isFieldMatch && isBatchMatch && isSearchMatch;
   });
 
-  const handleSearch = term => {
-    setSearchTerm(term);
-  };
+  const itemsPerPage = 7;
+
+  const totalPages = Math.ceil(filteredFileSet.length / itemsPerPage);
+  const paginatedData = filteredFileSet.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleSearch = term => setSearchTerm(term);
+  const handlePageChange = pageNum => setCurrentPage(pageNum);
 
   return (
-    <div className="pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
+    <div className="flex flex-col pt-32 min-h-screen bg-[#121212]">
       <Header />
 
-      <div className="m-auto w-4/5 max-w-screen-xl pb-40">
+      <div className="m-auto w-5/6 max-w-screen-xl flex-grow pb-40">
         <h1 className="mr-auto text-white text-4xl">STUDY 관리</h1>
-        <h3 className="mr-auto text-white font-medium text-xl mt-8">
+        <h3 className="mr-auto text-white font-medium text-xl mt-5">
           역대 기수들의 스터디 조회 및 수정을 하는 페이지입니다.
         </h3>
         <div className="flex mt-16 justify-between">
@@ -167,20 +176,23 @@ export default function Study() {
           <SearchBar onSearch={handleSearch} />
         </div>
 
-        <div className="grid grid-cols-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-6 pt-[48px] mt-12 justify-items-center">
+        <div className="grid grid-cols-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-6 mt-12 justify-items-center">
           <PlusFile />
-          {filteredFileSet.map((data, index) => {
-            return (
-              <File
-                key={index}
-                type={data.type}
-                title={data.title}
-                teamNum={data.teamNum}
-                teamName={data.teamName}
-              />
-            );
-          })}
+          {paginatedData.map((data, index) => (
+            <File
+              key={index}
+              type={data.type}
+              title={data.title}
+              teamNum={data.teamNum}
+              teamName={data.teamName}
+            />
+          ))}
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
       <Footer />
     </div>
