@@ -166,7 +166,7 @@ export default function Study() {
         <div className="flex mt-16 justify-between">
           <div className="flex gap-6">
             <div className="w-20">
-              <DropDown valueList={batchList} setValue={setBatch} />
+              <DropDown valueList={batchList} setValue={setBatch} user_width="5rem"/>
             </div>
             <div className="w-36">
               <DropDown valueList={fieldList} setValue={setField} />

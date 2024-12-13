@@ -10,7 +10,7 @@ export default function Button({
   textSize = "text-base",
   text = "",
   onClick = () => {},
-  user_width = "16em",
+  user_width = "30rem",
   user_height = "",
   type,
 }) {

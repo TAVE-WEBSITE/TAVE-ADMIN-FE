@@ -53,7 +53,8 @@ export default function Project() {
       teamNum: 14,
       teamName: "아기하마",
       field: "연합",
-    },{
+    },
+    {
       type: "prooject",
       title: "프로젝트 이름 심화 아기하마",
       teamNum: 14,
@@ -195,7 +196,6 @@ export default function Project() {
   const handleSearch = term => setSearchTerm(term);
   const handlePageChange = pageNum => setCurrentPage(pageNum);
 
-
   return (
     <div className="flex flex-col pt-32 min-h-screen bg-[#121212]">
       <Header />
@@ -208,7 +208,11 @@ export default function Project() {
         <div className="flex mt-16 justify-between">
           <div className="flex gap-6">
             <div className="w-20">
-              <DropDown valueList={batchList} setValue={setBatch} />
+              <DropDown
+                valueList={batchList}
+                setValue={setBatch}
+                user_width="5rem"
+              />
             </div>
             <div className="w-36">
               <DropDown valueList={fieldList} setValue={handleFieldChange} />
@@ -219,7 +223,7 @@ export default function Project() {
         </div>
 
         <div className="grid grid-cols-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-6 mt-12 justify-items-center">
-          <PlusFile/>
+          <PlusFile />
           {paginatedData.map((data, index) => {
             return (
               <File

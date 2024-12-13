@@ -1,6 +1,6 @@
 import React from "react";
-import RightArrow from "../assets/images/PageRightArrow.svg"
-import LeftArrow from "../assets/images/PageLeftArrow.svg"
+import RightArrow from "../assets/images/PageRightArrow.svg";
+import LeftArrow from "../assets/images/PageLeftArrow.svg";
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
   const handleClick = pageNum => {
@@ -14,8 +14,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         className="px-3 py-1 mx-1 text-white bg-transparent rounded"
         onClick={() => handleClick(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
+        disabled={currentPage === 1}>
         <img src={LeftArrow} alt="LeftArrow"></img>
       </button>
       {Array.from({ length: totalPages }, (_, idx) => (
@@ -26,16 +25,14 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
               ? "bg-white bg-opacity-[0.1] text-white"
               : "bg-transparent text-white hover:bg-white hover:bg-opacity-[0.1]"
           }`}
-          onClick={() => handleClick(idx + 1)}
-        >
+          onClick={() => handleClick(idx + 1)}>
           {idx + 1}
         </button>
       ))}
       <button
         className="px-3 py-1 mx-1 text-white bg-transparent rounded"
         onClick={() => handleClick(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
+        disabled={currentPage === totalPages}>
         <img src={RightArrow} alt="RightArrow"></img>
       </button>
     </div>

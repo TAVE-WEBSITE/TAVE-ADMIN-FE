@@ -148,7 +148,7 @@ export default function History() {
         </div>
         <div className="flex justify-between mt-16">
           <SearchBar onSearch={input => setSearchInput(input)} />
-          <button className="text-white w-25 bg-[#1A5BFF] items-center rounded-md py-2 px-5 p-2">이력 추가</button>
+          <button className="text-white w-25 bg-btn-blue items-center rounded-md py-2 px-5 p-2">이력 추가</button>
         </div>
         <div className="mt-12 flex flex-col gap-8">
           {searchedData.length === 0 ? (

@@ -11,6 +11,7 @@ export default function Login() {
   const [essentialUser, setEssentialUser] = useState(true);
   const [essentialPw, setEssentialPw] = useState(true);
 
+
   const navigate = useNavigate();
 
   const handleLogin = () => {
@@ -60,7 +61,7 @@ export default function Login() {
           onChange={userChange}
           essential={essentialUser}
           essentialText="아이디를 입력해주세요"
-          user_width="25rem"
+          user_width="30rem"
         />
         <Input
           type="password"
@@ -69,15 +70,15 @@ export default function Login() {
           value={password}
           essential={essentialPw}
           onChange={pwChange}
-          user_width="25rem"
+          user_width="30rem"
         />
         <Button
           text="로그인"
-          user_width="25rem"
+          user_width="30rem"
           onClick={handleLogin}
           type="submit"
         />
-        <div className="flex flex-row w-[25rem] justify-between gap-16 text-gray-500 border-gray-500 text-white font-light">
+        <div className="flex flex-row w-[30rem] justify-between gap-16 text-gray-500 border-gray-500 text-white font-light">
           <div
             className="cursor-pointer"
             onClick={() => navigate("/memberJoin")}>

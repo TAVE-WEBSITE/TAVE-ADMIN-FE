@@ -7,6 +7,9 @@ module.exports = {
       fontWeight: {
         "light-350": 350,
       },
+      colors: {
+        "btn-blue": "#1A5BFF",
+      },
     },
   },
   plugins: [],

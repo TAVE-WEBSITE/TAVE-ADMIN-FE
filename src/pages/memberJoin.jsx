@@ -4,57 +4,29 @@ import Input from "../components/input";
 import Button from "../components/button";
 import MemberInput from "../components/memberInput";
 import DropDown from "../components/dropdown";
+import SimpleModal from "../components/simpleModal";
+import InfoInput from "../components/infoInput";
 import Wave from "../assets/images/LoginWave.svg";
 import { useNavigate } from "react-router-dom";
 
-export default function MemberJoin({
-  textSize = "text-base",
-  text = "",
-  onClick,
-  user_width = "16em",
-  user_height = "",
-  type,
-}) {
+export default function MemberJoin() {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
-  const handleNextStep = () => {
-    setStep(step + 1);
-  };
   const [department, setDepartment] = useState("부서");
   const [position, setPosition] = useState("직책");
   const departmentList = ["부서", "경영처", "기술처"];
   const positionList = ["직책", "회장", "처장", "처원"];
-  /*
-    <div className="flex flex-col flex-1 items-center gap-5">
-        <div className="font-light-350 text-2xl">회원가입</div>
-        <Input></Input>
-      </div>
+  const handleNextStep = () => {
+    setStep(step + 1);
+  };
+  const handleInputChange = e => {
+    setInputValue(e.target.value);
+    console.log(inputValue);
+  };
 
-    */
-
-  /*
-      
-      <div class="flex-1 flex flex-col items-center gap-4 px-5">
-        <div className="font-light-350 text-2xl text-center">회원가입</div>
-
-        <div className="flex flex-row gap-2">
-          <div>아이디</div>
-          <Input user_width="12em"></Input>
-          <Button user_width="5em"></Button>
-        </div>
-        <div className="flex flex-row gap-2">
-          <div className=" w-full ">비밀번호</div>
-          <Input className=" w-full "></Input>
-        </div>
-        <MemberInput text="비밀번호 확인"></MemberInput>
-        <MemberInput text="이메일" hint="이메일을 입력해주세요"></MemberInput>
-        <MemberInput text="본인기수"></MemberInput>
-        <MemberInput text="아지트 아이디"></MemberInput>
-        <Button text="가입 신청" />
-      </div>
-      
-      */
   return (
     <div className="flex flex-row h-screen w-screen px-24 py-24 justify-center items-center gap-36 bg-gradient-to-r from-[#121212] to-[#1445BC] relative">
       <div className="flex flex-col items-center z-10">
@@ -68,8 +40,8 @@ export default function MemberJoin({
         {/* 1 단계 : 본인기수, 아지트 아이디  */}
         {step === 1 && (
           <div className="flex flex-col gap-6">
-            <MemberInput text="본인기수" />
-            <MemberInput text="아지트 아이디" />
+            <MemberInput text="본인기수" hint="ex. 12" />
+            <MemberInput text="아지트 아이디" hint="ex. tave1234" />
             <div className="flex gap-2">
               <div className="flex w-24 font-normal text-white justify-end items-center">
                 현재 직책
@@ -77,21 +49,18 @@ export default function MemberJoin({
               </div>
 
               <div className="flex gap-4 items-center">
-                <div className="w-36">
-                  <DropDown
-                    valueList={departmentList}
-                    setValue={setDepartment}
-                    isJoin={true}
-                  />
-                </div>
-
-                <div className="w-36">
-                  <DropDown
-                    valueList={positionList}
-                    setValue={setPosition}
-                    isJoin={true}
-                  />
-                </div>
+                <DropDown
+                  valueList={departmentList}
+                  setValue={setDepartment}
+                  isJoin={true}
+                  user_width="11.5rem"
+                />
+                <DropDown
+                  valueList={positionList}
+                  setValue={setPosition}
+                  isJoin={true}
+                  user_width="11.5rem"
+                />
               </div>
             </div>
           </div>
@@ -99,35 +68,49 @@ export default function MemberJoin({
 
         {/* 2단계 : 아이디, 비밀번호, 비밀번호 확인, 이메일 */}
         {step === 2 && (
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-row gap-4 w-full items-center">
-              <div className="flex-1 w-1/4 font-normal text-right">아이디</div>
-              <div className="flex flex-row w-3/4 gap-3 items-center">
-                <Input user_width="11.5rem" className="flex-3" />
-                <button className="w-25 h-11 text-base items-center rounded-md py-1 px-5 font-light-350 bg-transparent border border-white text-white">
-              중복 확인
-            </button>
-              </div>
+          <div className="flex flex-col gap-6  items-end pr-5">
+            <div className="flex gap-5 items-center">
+              <MemberInput
+                text="아이디"
+                onChange={handleInputChange}
+                user_width="16em"
+                hint="아이디를 입력해주세요"></MemberInput>
+              <button
+                onClick={() => setModalOpen(true)}
+                className="w-25 h-11 text-base items-center rounded-md py-1 px-5 font-light-350 bg-transparent border border-white whitespace-nowrap">
+                중복 확인
+              </button>
+              {isModalOpen && (
+                <SimpleModal
+                  text={inputValue}
+                  buttonType="confirm"
+                  isAvailable={false}
+                  showCancel={false}
+                  onClose={() => setModalOpen(false)}
+                />
+              )}
             </div>
-            <div className="flex gap-2 w-full items-center text-right">
-              <div className="flex-1 w-1/4 font-normal">비밀번호</div>
-              <Input className="flex-2 w-3/4" user_width="19em"></Input>
-            </div>
-            <MemberInput text="비밀번호 확인"></MemberInput>
+            <InfoInput
+              text="비밀번호"
+              hint="비밀번호를 입력해주세요"
+              hover_text={["8자 이상", "대소문자 모두 포함", "특수문자(!@#$%^&*) 포함"]}
+              list_style="list-disc"
+            />
+            <MemberInput
+              text="비밀번호 확인"
+              hint="비밀번호를 다시 입력해주세요"></MemberInput>
             <MemberInput
               text="이메일"
               hint="이메일을 입력해주세요"></MemberInput>
           </div>
         )}
 
-
-          <Button
-            text={step === 1 ? "다음" : "가입하기"}
-            user_width="25rem"
-            user_height="4rem"
-            onClick={step === 1 ? handleNextStep : () => navigate("/Login")}
-          />
-     
+        <Button
+          text={step === 1 ? "다음" : "가입하기"}
+          user_width="30rem"
+          user_height="4rem"
+          onClick={step === 1 ? handleNextStep : () => navigate("/Login")}
+        />
       </div>
 
       <img
