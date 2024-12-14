@@ -14,6 +14,9 @@ export default function MemberInput({
   user_width = "24em",
   user_height = "",
   type,
+  onChange,
+  essentialText="",
+  onValidChange = () => {},
 }) {
   return (
     <div className="flex gap-2 w-full items-center">
@@ -23,7 +26,10 @@ export default function MemberInput({
       <Input
         placeholder={hint}
         className="flex-2"
+        onChange={onChange}
         user_width={user_width}
+        essentialText={essentialText}
+        onValidChange={onValidChange}
       ></Input>
     </div>
   );

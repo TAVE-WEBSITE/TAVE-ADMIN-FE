@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ArrowUp from "../assets/images/arrowUp.svg";
 import ArrowDown from "../assets/images/arrowDown.svg";
 
@@ -8,9 +8,18 @@ export default function DropDown({
   setValue,
   isJoin = false,
   user_width = "10rem",
+  onValidChange = () => {},
 }) {
   const [selectedValue, setSelectedValue] = useState(valueList[0]);
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (selectedValue !== valueList[0]) {
+      onValidChange(true); // 유효 
+    } else {
+      onValidChange(false); // 무효 
+    }
+  }, [selectedValue]);
 
   const handleValueClick = value => {
     setSelectedValue(value);

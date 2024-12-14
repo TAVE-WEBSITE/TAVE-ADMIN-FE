@@ -13,14 +13,17 @@ export default function Button({
   user_width = "30rem",
   user_height = "",
   type,
+  disabled = false,
 }) {
   return (
     <button
       onClick={onClick}
-      className={`${textSize} items-center rounded-md py-2 px-5 p-2 font-light-350 bg-white bg-opacity-[0.1] text-white`}
+      className={`${textSize} ${
+        disabled ? "bg-white bg-opacity-[0.1]" : "bg-btn-blue"
+      } items-center rounded-md py-2 px-5 p-2 font-light-350 text-white`}
       style={{ width: user_width, height: user_height }}
       type={type}
-    >
+      disabled={disabled}>
       {text}
     </button>
   );

@@ -8,7 +8,10 @@ export default function InfoInput({
   hover_text = [],
   hint = "",
   user_width = "24em",
-  list_style
+  onChange,
+  list_style,
+  essentialText="",
+  onValidChange = () => {},
 }) {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -29,7 +32,10 @@ export default function InfoInput({
       <Input
         placeholder={hint}
         className="flex-2"
-        user_width={user_width}></Input>
+        onChange={onChange}
+        user_width={user_width}
+        essentialText={essentialText}
+        onValidChange={onValidChange}></Input>
     </div>
   );
 }
