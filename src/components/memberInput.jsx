@@ -7,23 +7,29 @@ user_width = 지정 너비,
 user_height = 지정 높이,
   */
 
-export default function MemberJoin({
+export default function MemberInput({
   text = "",
   hint = "",
   onClick,
-  user_width = "16em",
+  user_width = "24em",
   user_height = "",
   type,
+  onChange,
+  essentialText="",
+  onValidChange = () => {},
 }) {
   return (
-    <div className="flex gap-2 w-full">
-      <div className="flex-1 text-left w-1/4 font-normal">
+    <div className="flex gap-2 w-full items-center">
+      <div className="flex-1 text-right font-normal text-white whitespace-nowrap">
         {text} <span className="text-red-500">*</span>
       </div>
       <Input
         placeholder={hint}
-        className="flex-2 w-3/4"
-        user_width="19rem"
+        className="flex-2"
+        onChange={onChange}
+        user_width={user_width}
+        essentialText={essentialText}
+        onValidChange={onValidChange}
       ></Input>
     </div>
   );

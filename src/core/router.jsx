@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Header from "../components/header";
+
 import Main from "../pages/main";
 import Session from "../pages/session";
 import History from "../pages/history";
@@ -8,7 +8,8 @@ import Inquiry from "../pages/inquiry";
 import Login from "../pages/login";
 import MemberJoin from "../pages/memberJoin";
 import ForgotPassword from "../pages/forgotPassword";
-
+import Study from "../pages/study";
+import Project from "../pages/project";
 function AppRouter() {
   return (
     <>
@@ -21,6 +22,8 @@ function AppRouter() {
         <Route path="/login" element={<Login />} />
         <Route path="/memberjoin" element={<MemberJoin />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/study" element={<Study />} />
+        <Route path="/project" element={<Project />} />
       </Routes>
     </>
   );

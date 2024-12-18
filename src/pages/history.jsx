@@ -4,6 +4,7 @@ import Tab from "../components/tab";
 import Header from "../components/header";
 import SearchBar from "../components/searchBar";
 import HistoryBlock from "../components/historyBlock";
+import Button from "../components/button";
 import Footer from "../components/footer";
 
 export default function History() {
@@ -53,6 +54,79 @@ export default function History() {
         "ECCV 2022 - Poster Session",
       ],
     },
+    {
+      number: 8,
+      description: [
+        "2021 빅콘테스트 챔피언리그 수산 Biz 분야 우수상",
+        "ICT 멘토링 프로보노 공모전 대상",
+        "제33회 한글 및 한국어 정보처리 학술대회에 논문 게재: HCLT Publishing “An Empirical Study of Topic Classification for Korean Newspaper Headlines”, HCLT 2021, (2021)",
+        "Advance to the 19th Embedded Software Competition: Embedded Sw.System Industry Association President Award",
+        "NVIDIA GTC 21 Teaching Assistant: Building Transformer-Based Natural Language Processing Applications - DLIW1390",
+        "글로벌창업사관학교 기술교육 (Building Transformer Based Natural Language Processing) 멘토",
+        "DSTC10 (Dialog System Technology Challenge) Track 5",
+        "2021 삼성 주니어 소프트웨어 창작대회 최종 결선",
+        "Autonomous Driving Software Challenge(ADSC) 장려상",
+        "IPG Automotive 시뮬레이션 툴을 사용한 자율주행 소프트웨어 챌린지",
+      ],
+    },
+    {
+      number: 7,
+      description: [
+        "연세대학교 의과대학 논문 참여",
+        "숙명여자대학교 스노우 소프트웨어 랩 1기 / 채식 다이어리 어플리케이션 ‘베지메이트' 개발 중",
+        "2021 NVIDIA DLI Certificated Instructor Program(CIP)",
+        "스노우 소프트웨어 랩 창업 프로그램 선발",
+        "제 19회 임베디드 소프트웨어 경진 대회 휴머노이드 부문 수상",
+        "2021 금융보안원 대학생 금융안캠프 아이디어 경진대회 최우수상",
+        "2021한국통신학회 - 사용자의 선호도를 고려한 콘텐츠 캐싱을 위해 콘텐츠 캐싱과 추천시스템을 결합한 연속적인 공간에서의 심층강화학습 모델",
+      ],
+    },
+    {
+      number: 6,
+      description: [
+        "서울과학기술대학교 캡스톤 경진대회 2등",
+        "위성 정보 활용 SPACE HACKATHON 장려상",
+        "청각장애인 편의증진 ICT 공모전 최우수상",
+        "2020 KB 국민은행 소프트웨어 경진대회 수상",
+        "한글 및 한국어정보처리 학술대회 논문 게재",
+        "2020 ETRI 자율성장 인공지능 경진대회 가작상 수상",
+      ],
+    },
+    {
+      number: 5,
+      description: [
+        "연세대학교 의과대학 논문 참여",
+        "DACON 공모전 프로젝트 다수 참여",
+        "빅콘테스트 혁신 아이디어 분야 2차 진출",
+        "국립국어원 국어 정보 처리 시스템 경진대회 참여",
+      ],
+    },
+    {
+      number: 4,
+      description: [
+        "서울시립대 통계 프로그래밍 대회 1등",
+        "네이버 확장 앱 공모전 3등",
+        "뉴스 빅데이터 활용 분석 경진대회 우수상",
+        "IT 기업 (주)노매드커넥션과 후원 체결",
+        "스펙업 선정 대한민국 대표 동아리 30에 선정",
+      ],
+    },
+    {
+      number: 3,
+      description: [
+        "유비콤테크놀로지 후원사 연계 프로젝트",
+        "강원도 스마트시티 해커톤 입선",
+        "면세점 데이터 분석",
+      ],
+    },
+    {
+      number: "1-2",
+      description: [
+        "TAVE 창립",
+        "TAVE 1기 회원 모집",
+        "EXEM, (주)유비콤테크놀로지 후원사 선정",
+      ],
+    },
   ];
 
   const [searchInput, setSearchInput] = useState("");
@@ -66,15 +140,15 @@ export default function History() {
     : historyData;
 
   return (
-    <div className="pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
+    <div className="flex flex-col pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
       <Header />
-      <div className="m-auto w-4/5 max-w-screen-xl">
+      <div className="m-auto w-4/5 max-w-screen-xl flex-grow pb-40">
         <div className="grid place-items-center">
           <Tab category={categories} link={links} currentIndex={1} />
         </div>
         <div className="flex justify-between mt-16">
           <SearchBar onSearch={input => setSearchInput(input)} />
-          <p>이력추가</p>
+          <button className="text-white w-25 bg-btn-blue items-center rounded-md py-2 px-5 p-2">이력 추가</button>
         </div>
         <div className="mt-12 flex flex-col gap-8">
           {searchedData.length === 0 ? (
@@ -93,7 +167,7 @@ export default function History() {
           )}
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

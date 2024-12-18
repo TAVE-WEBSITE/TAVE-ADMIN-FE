@@ -10,9 +10,7 @@ export default function SearchBar({onSearch}) {
   };
 
   const handleSearch = () => {
-    if (inputValue.trim()) {
-      onSearch(inputValue);
-    }
+    onSearch(inputValue.trim())
   };
   const handleEnterKey = e => {
     if (e.key === "Enter") {

@@ -18,51 +18,59 @@ export default function Input({
   placeholder = "",
   type = "text",
   user_width = "16em",
-  user_height = "2.125em",
+  user_height = "3.5rem",
   onChange = () => {},
   essential = true,
-  essentialText,
+  essentialText = "",
   className,
+  onValidChange = () => {},
 }) {
+  const [inputValue, setInputValue] = useState("");
   const [essential0, setEssential] = useState(essential);
 
   useEffect(() => {
     setEssential(essential);
   }, [essential]);
 
-  const handleFocus = (e) => {
+  const handleFocus = e => {
     setEssential(true);
     onChange(e); //입력 필드 포커스
   };
 
-  /*
-  const handleChange = (e) => {
+  const handleChange = e => {
+    const value = e.target.value;
+    setInputValue(value);
+    const valid = value.trim() !== "";
+    setEssential(valid); // 유효성 상태 업데으트
+    onValidChange(valid); // 부모 컴포넌트로 유효성 전달 (다음 버튼 활성화)
+
+    // if (inputValue) {
+    //   setEssential(true); // 입력값 존재 -> essential을 true로 설정
+    // } else {
+    //   setEssential(false); // 입력값 존재 X -> essential을 false로 설정
+    // }
     onChange(e);
-    if (e.target.value) {
-      setEssential(true); // 입력값 존재 -> essential을 true로 설정
-    } else {
-      setEssential(false); // 입력값 존재 X -> essential을 false로 설정
-    }
   };
-  */
 
   return (
     <div className={`${className}`}>
       <input
         type={type}
-        className={`${textSize} rounded-md py-3 px-5 border ${
+        className={`${textSize} rounded-md py-3 px-5 rounded-lg border-[0.5px] bg-[#FFFFFF1A] text-white outline-none ${
           essential0 ? "border-gray-400" : "border-red-800"
         } p-2 font-light-350`}
         placeholder={placeholder}
         style={{ width: user_width, height: user_height }}
-        onChange={onChange}
-        onFocus={handleFocus}
-      ></input>
-      {essential0 == false ? (
-        <div className="text-red-500 ">{essentialText}</div>
-      ) : (
-        <></>
-      )}
+        value={inputValue}
+        onChange={handleChange}
+        onFocus={handleFocus}></input>
+
+      <div
+        className={`text-red-500 mt-1 h-0.5 leading-4 text-xs ${
+          essential0 ? "invisible" : "visible"
+        }`}>
+        {!essential0 && essentialText}
+      </div>
     </div>
   );
 }
