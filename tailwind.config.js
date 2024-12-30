@@ -9,6 +9,7 @@ module.exports = {
       },
       colors: {
         "btn-blue": "#1A5BFF",
+        "review-gray": "rgba(18, 18, 18, 0.30)",
       },
     },
   },
