@@ -6,7 +6,7 @@ user_width = 지정 너비,
 user_height = 지정 높이,
   */
 
-export default function Button({
+export default function DeleteButton({
   textSize = "text-base",
   text = "",
   onClick = () => {},
@@ -18,9 +18,7 @@ export default function Button({
   return (
     <button
       onClick={onClick}
-      className={`${textSize} ${
-        disabled ? "bg-white bg-opacity-[0.1]" : "bg-btn-blue"
-      } items-center rounded-md py-2 px-5 p-2 font-light-350 text-white text-center`}
+      className={`${textSize} bg-white bg-opacity-[0.4] items-center rounded-md py-2 px-5 p-2 font-light-350 `}
       style={{ width: user_width, height: user_height }}
       type={type}
       disabled={disabled}
