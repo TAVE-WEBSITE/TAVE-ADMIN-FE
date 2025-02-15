@@ -12,9 +12,9 @@ export default function Review() {
   const [isOpen, setIsopen] = useState(false);
   const [generation, setGeneration] = useState("14기");
   const generationList = ["14기", "13기", "12기"];
-  const categories = ["정규세션", "동아리 이력", "후기", "문의"];
-  const links = ["/regularsession", "/history", "/review", "/inquiry"];
-
+  const categories = ["정규세션", "동아리 이력", "후기"];
+  const links = ["/regularsession", "/history", "/review"];
+  
   const reviewInput = [
     {
       nickname: "테이부",

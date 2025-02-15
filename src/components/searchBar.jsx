@@ -19,7 +19,7 @@ export default function SearchBar({onSearch}) {
   };
 
   return (
-    <div className="flex w-72 h-12 rounded-full font-extralight pl-6 bg-transparent border border-[#FFFFFF] border-[0.5px]">
+    <div className="flex justify-between items-center w-72 h-12 rounded-full font-extralight px-6 bg-transparent border border-[#FFFFFF] border-[0.5px]">
       <input
         placeholder="검색어를 입력해주세요."
         onChange={handleInputChange}
