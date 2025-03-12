@@ -18,7 +18,7 @@ export default function Input({
   placeholder = "",
   type = "text",
   user_width = "16em",
-  user_height = "3.5rem",
+  user_height = "3.3rem",
   onChange = () => {},
   essential = true,
   essentialText = "",
@@ -32,12 +32,12 @@ export default function Input({
     setEssential(essential);
   }, [essential]);
 
-  const handleFocus = e => {
+  const handleFocus = (e) => {
     setEssential(true);
     onChange(e); //입력 필드 포커스
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
     const valid = value.trim() !== "";
@@ -56,20 +56,23 @@ export default function Input({
     <div className={`${className}`}>
       <input
         type={type}
-        className={`${textSize} rounded-md py-3 px-5 rounded-lg border-[0.5px] bg-[#FFFFFF1A] text-white outline-none ${
-          essential0 ? "border-gray-400" : "border-red-800"
-        } p-2 font-light-350`}
+        className={`${textSize} flex w-full px-4 py-[14px] items-center gap-2 
+              rounded-md border-[0.5px] bg-[#FFFFFF1A] text-white
+              font-[Pretendard] text-[18px] font-medium leading-[30px] tracking-[-0.54px] 
+              outline-none ${essential0 ? "border-none" : "border-red-800"}`}
         placeholder={placeholder}
-        style={{ width: user_width, height: user_height }}
+        style={{ height: user_height }}
         value={inputValue}
         onChange={handleChange}
-        onFocus={handleFocus}></input>
+        onFocus={handleFocus}
+      />
 
       <div
         className={`text-red-500 mt-1 h-0.5 leading-4 text-xs ${
           essential0 ? "invisible" : "visible"
-        }`}>
-        {!essential0 && essentialText}
+        }`}
+      >
+        {!essential0 && `* ${essentialText}`}
       </div>
     </div>
   );
