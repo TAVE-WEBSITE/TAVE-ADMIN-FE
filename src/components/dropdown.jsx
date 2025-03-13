@@ -15,13 +15,13 @@ export default function DropDown({
 
   useEffect(() => {
     if (selectedValue !== valueList[0]) {
-      onValidChange(true); // 유효 
+      onValidChange(true); // 유효
     } else {
-      onValidChange(false); // 무효 
+      onValidChange(false); // 무효
     }
   }, [selectedValue]);
 
-  const handleValueClick = value => {
+  const handleValueClick = (value) => {
     setSelectedValue(value);
     setValue(value);
     setIsOpen(false);
@@ -32,16 +32,15 @@ export default function DropDown({
     ? "bg-[#1212124D] border border-gray-400 p-3 rounded-md w-full text-white shadow-none"
     : "bg-white bg-opacity-[0.1] p-2 cursor-pointer gap-2.5 w-full text-left";
   return (
-    <div
-      className="relative inline-block w-full font-extralight text-white"
-      style={{ width: user_width }}>
+    <div className="relative inline-block w-full font-extralight text-white">
       <div
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center ${joinStyle} bg-white bg-opacity-[0.1] p-2 cursor-pointer gap-2.5 w-full ${
           isOpen
             ? "rounded-t-md shadow-[5px_5px_9px_0px_rgba(0,0,0,0.35)]"
             : "rounded-md"
-        }`}>
+        }`}
+      >
         <input
           type="button"
           value={selectedValue}
@@ -52,12 +51,14 @@ export default function DropDown({
       </div>
       {isOpen && (
         <ul
-          className={`absolute ${joinStyle}  rounded-b-md shadow-[5px_5px_9px_0px_rgba(0,0,0,0.35)] w-full`}>
+          className={`absolute ${joinStyle}  rounded-b-md shadow-[5px_5px_9px_0px_rgba(0,0,0,0.35)] w-full`}
+        >
           {valueList.map((value, index) => (
             <li
               key={index}
               onClick={() => handleValueClick(value)}
-              className="cursor-pointer hover:bg-white hover:bg-opacity-[0.1] p-2 rounded-md relative z-10">
+              className="cursor-pointer hover:bg-white hover:bg-opacity-[0.1] p-2 rounded-md relative z-10"
+            >
               {value}
             </li>
           ))}

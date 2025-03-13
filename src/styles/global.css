@@ -15,6 +15,14 @@ body {
 
 @font-face {
   font-family: "Pretendard";
+  src: url("/src/assets/fonts/PretendardVariable.ttf") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/*
+@font-face {
+  font-family: "Pretendard";
   font-weight: 200;
   font-style: normal;
   src: url("https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-ExtraLight.eot");
@@ -28,3 +36,4 @@ body {
       format("truetype");
   font-display: swap;
 }
+*/
