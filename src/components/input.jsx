@@ -1,24 +1,8 @@
 import { useState, React, useEffect } from "react";
 
-/*
- textSize = 텍스트 크기,
-  placeholder = 입력 전 힌트 값,
-  type = 입력 할 텍스트 type,
-  user_width = 지정 너비,
-  user_height = 지정 높이,
-  onChange = input 값 변경에 따른 onChange
-  
-  + 로그인 관련 로직
-  essential= = 필수 값 입력 유무 ,
-  essentialText = 필수 값 요구 텍스트
-  ++ 추후 타이머 기능 등 추가 가능성 O (로그인 관련 로직 -> 고려 사항 X)
-   */
 export default function Input({
-  textSize = "text-base",
   placeholder = "",
-  type = "text",
-  user_width = "16em",
-  user_height = "3.3rem",
+  type, //type 을 MODAL | MEMBER 로 구분지어서 스타일 적용하기
   onChange = () => {},
   essential = true,
   essentialText = "",
@@ -44,24 +28,21 @@ export default function Input({
     setEssential(valid); // 유효성 상태 업데으트
     onValidChange(valid); // 부모 컴포넌트로 유효성 전달 (다음 버튼 활성화)
 
-    // if (inputValue) {
-    //   setEssential(true); // 입력값 존재 -> essential을 true로 설정
-    // } else {
-    //   setEssential(false); // 입력값 존재 X -> essential을 false로 설정
-    // }
     onChange(e);
   };
 
   return (
     <div className={`${className}`}>
       <input
-        type={type}
-        className={`${textSize} flex w-full px-4 py-[14px] items-center gap-2 
-              rounded-md border-[0.5px] bg-[#FFFFFF1A] text-white
-              font-[Pretendard] text-[18px] font-medium leading-[30px] tracking-[-0.54px] 
+        className={`${
+          type === "MODAL"
+            ? "bg-white text-[#272D3A] text-[16px]  leading-[135%] tracking-[-0.56px]"
+            : "bg-[#FFFFFF1A] text-white text-[18px] leading-[30px] tracking-[-0.54px]"
+        } flex w-full px-4 py-[14px] items-center gap-2 
+              rounded-md border-[1.4px] 
+              font-medium 
               outline-none ${essential0 ? "border-none" : "border-red-800"}`}
         placeholder={placeholder}
-        style={{ height: user_height }}
         value={inputValue}
         onChange={handleChange}
         onFocus={handleFocus}
