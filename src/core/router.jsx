@@ -9,6 +9,8 @@ import MemberJoin from "../pages/memberJoin";
 import ForgotPassword from "../pages/forgotPassword";
 import Study from "../pages/study";
 import Project from "../pages/project";
+import MemberList from "../pages/memberList";
+import WaitingList from "../pages/waitingList";
 function AppRouter() {
   return (
     <>
@@ -22,6 +24,8 @@ function AppRouter() {
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/study" element={<Study />} />
         <Route path="/project" element={<Project />} />
+        <Route path="/memberList" element={<MemberList />} />
+        <Route path="/waitingList" element={<WaitingList />} />
       </Routes>
     </>
   );
