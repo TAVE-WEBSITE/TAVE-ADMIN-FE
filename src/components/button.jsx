@@ -7,22 +7,18 @@ user_height = 지정 높이,
   */
 
 export default function Button({
-  textSize = "text-base",
   text = "",
   onClick = () => {},
-  user_width = "",
-  user_height = "",
-  type,
   disabled = false,
+  className = "text-[20px] font-semibold leading-[24px] tracking-[-0.4px] py-[19px] px-5",
 }) {
   return (
     <button
       onClick={onClick}
-      className={`${textSize} ${
-        disabled ? "bg-white bg-opacity-[0.1]" : "bg-btn-blue"
-      } items-center rounded-md py-2 px-5 p-2 font-light-350 text-white text-center w-full`}
-      style={{ height: user_height }}
-      type={type}
+      className={`${className} ${
+        disabled ? "bg-white bg-opacity-[0.1] text-[#81818A]" : "bg-btn-blue"
+      } items-center rounded-md text-white text-center w-full disabled:cursor-not-allowed`}
+      type="button"
       disabled={disabled}
     >
       {text}
