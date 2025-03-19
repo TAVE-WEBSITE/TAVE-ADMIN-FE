@@ -9,13 +9,17 @@ export default function PlusFile() {
   return (
     <div className="relative w-72 h-60 bg-no-repeat cursor-pointer">
       <div
-        className="absolute w-72 h-52 z-5 mt-10"
+        className="absolute w-[194px] h-[140px] md:w-[270px] md:h-[185px] mt-7 md:mt-[44px] z-5 "
         style={{
           background: backgroundColor,
           borderRadius: "20px",
           boxShadow: boxShadow,
-        }}></div>
-      <img className="w-72" src={FileBack}></img>
+        }}
+      ></div>
+      <img
+        className="w-[194px] h-[164px] md:w-[269px] md:h-[230px]"
+        src={FileBack}
+      ></img>
       <img
         src={PlusIcon}
         alt="Plus Icon"
@@ -23,4 +27,4 @@ export default function PlusFile() {
       />
     </div>
   );
-};
+}
