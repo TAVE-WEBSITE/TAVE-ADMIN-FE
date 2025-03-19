@@ -15,6 +15,7 @@ export default function MemberInput({
   type = "",
   onChange,
   essentialText = "",
+  confirmText="",
   onValidChange = () => {},
 }) {
   return (
@@ -37,6 +38,7 @@ export default function MemberInput({
           className="w-full"
           onChange={onChange}
           essentialText={essentialText}
+          confirmText={confirmText}
           onValidChange={onValidChange}
         ></Input>
         {btnText !== "" && (

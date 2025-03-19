@@ -17,6 +17,11 @@ export default function MemberJoin() {
   const [position, setPosition] = useState("직책");
   const departmentList = ["부서", "경영처", "기술처"];
   const positionList = ["직책", "회장", "처장", "처원"];
+
+  const [authCode, setAuthCode] = useState(""); // 실제 인증번호
+const [inputAuthCode, setInputAuthCode] = useState(""); // 사용자가 입력한 인증번호
+const [authStatus, setAuthStatus] = useState(null); 
+
   // step별로 유효성 관리
   const [step1Valid, setStep1Valid] = useState([false, false, false, false]);
   const [step2Valid, setStep2Valid] = useState([false, false, false, false]);
@@ -48,7 +53,34 @@ export default function MemberJoin() {
     [step]
   );
 
-  //step별로 유유효성 검사사
+  // 인증 요청 버튼 클릭 시 인증번호 생성 (나중에 서버에서 실제 인증값 받아서 대치)
+const handleRequestAuth = () => {
+  const generatedCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6자리 랜덤 숫자
+  console.log(generatedCode);
+  setAuthCode(generatedCode);
+  setModalOpen(true);
+  
+};
+
+// 인증번호 확인
+const handleVerifyAuth = () => {
+  if (inputAuthCode === authCode) {
+    setAuthStatus("success"); // 인증 성공
+  } else {
+    setAuthStatus("fail"); // 인증 실패
+  }
+    console.log(authStatus);
+};
+
+useEffect(() => {
+  if (authStatus === "success") {
+    handleValidChange(1, true);  // 인증 성공 시 유효성 true
+  } else if (authStatus === "fail") {
+    handleValidChange(1, false); // 인증 실패 시 유효성 false
+  }
+}, [authStatus]);
+
+  //step별로 유효성 검사사
   const step1AllValid = step1Valid.every(value => value); 
   const step2AllValid = step2Valid.every(value => value); 
 
@@ -103,32 +135,62 @@ export default function MemberJoin() {
           </div>
         )}
 
-        {/* 2단계 : 아이디, 비밀번호, 비밀번호 확인, 이메일 */}
+        {/* 2단계 : 이메일, 이메일 인증 */}
         {step === 2 && (
           <div className="flex flex-col gap-6 items-end pr-5">
             <div className="flex gap-5 items-center">
               <MemberInput
-                text="아이디"
+                text="이메일"
                 onChange={handleInputChange}
                 user_width="16em"
-                hint="아이디를 입력해주세요"
-                essentialText="아이디를 입력해주세요."
+                hint="이메일을 입력해주세요"
+                essentialText="이메일을 입력해주세요."
                 onValidChange={(isValid) => handleValidChange(0, isValid)}></MemberInput>
-              <button
-                onClick={() => setModalOpen(true)}
-                className="w-25 h-11 text-base items-center rounded-md py-1 px-5 font-light-350 bg-transparent border border-white whitespace-nowrap">
-                중복 확인
-              </button>
+                <button
+               onClick={() => {
+                handleRequestAuth();
+                
+              }}
+                className="w-25 h-11 mt-7 text-base text-white items-center rounded-md py-1 px-5 font-light-350 bg-[#195BFF] whitespace-nowrap">
+                 인증요청
+                 </button>
+
               {isModalOpen && (
                 <SimpleModal
-                  text={inputValue}
-                  buttonType="confirm"
-                  isAvailable={true}
-                  showCancel={false}
-                  onClose={() => setModalOpen(false)}
-                />
+                text={"입력하신 이메일로"}
+                additionalText={"인증번호를 발송했습니다."}
+                buttonType="confirm"
+                isAvailable={true}
+                showCancel={false}
+                onClose={() => setModalOpen(false)}
+              />
               )}
             </div>
+            <div className="flex gap-5 items-center">
+            <MemberInput
+        text="인증번호"
+        onChange={(e) => setInputAuthCode(e.target.value)} // 인증번호 입력값 업데이트
+        user_width="16em"
+        hint="인증번호를 입력해주세요"
+        essentialText={authStatus === "fail" ? "인증번호가 틀렸습니다." : ""}
+        confirmText={authStatus === "success" ? "인증번호가 확인되었습니다." : ""}
+        onValidChange={(isValid) => handleValidChange(1, isValid)}
+      />
+                <button
+                onClick={handleVerifyAuth} // 인증 확인 버튼 클릭 시 인증 검증
+                
+                className="w-25 h-11 mt-7 text-base text-white items-center rounded-md py-1 px-5 font-light-350 bg-[#195BFF] whitespace-nowrap">
+                인증확인
+                 </button>
+
+              
+            </div>
+            
+          </div>
+        )}
+{/* 3단계: 비밀번호  */}
+{step === 3 && (
+          <div className="flex flex-col gap-6">
             <InfoInput
               text="비밀번호"
               hint="비밀번호를 입력해주세요"
@@ -146,16 +208,10 @@ export default function MemberJoin() {
               hint="비밀번호를 다시 입력해주세요"
               essentialText="비밀번호가 일치하지 않습니다."
               onValidChange={(isValid) => handleValidChange(2, isValid)}></MemberInput>
-            <MemberInput
-              text="이메일"
-              hint="이메일을 입력해주세요"
-              essentialText="이메일을 입력해주세요."
-              onValidChange={(isValid) => handleValidChange(3, isValid)}></MemberInput>
           </div>
         )}
-
         <Button
-          text={step === 1 ? "다음" : "가입하기"}
+          text={step === 1 ? "다음으로" : "가입하기"}
           user_width="30rem"
           user_height="4rem"
           onClick={step === 1 ? handleNextStep : () => navigate("/Login")}
