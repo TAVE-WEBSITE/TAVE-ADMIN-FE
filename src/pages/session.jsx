@@ -7,9 +7,9 @@ import DropDown from "../components/dropdown";
 import Footer from "../components/footer";
 
 export default function Session() {
-  const categories = ["정규세션", "동아리 이력", "후기", "문의"];
-  const links = ["/regularsession", "/history", "/review", "/inquiry"];
-
+  const categories = ["정규세션", "동아리 이력", "후기"];
+  const links = ["/regularsession", "/history", "/review"];
+  
   const [batch, setBatch] = useState("ALL");
   const batchList = ["ALL", "14기", "13기", "12기"];
 

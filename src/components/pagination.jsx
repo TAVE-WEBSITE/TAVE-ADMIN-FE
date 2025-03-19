@@ -22,8 +22,8 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
           key={idx + 1}
           className={`px-2 py-1 mx-1 rounded ${
             currentPage === idx + 1
-              ? "bg-white bg-opacity-[0.1] text-white"
-              : "bg-transparent text-white hover:bg-white hover:bg-opacity-[0.1]"
+              ? "bg-transparent underline text-white"
+              : "bg-transparent text-white/50"
           }`}
           onClick={() => handleClick(idx + 1)}>
           {idx + 1}
