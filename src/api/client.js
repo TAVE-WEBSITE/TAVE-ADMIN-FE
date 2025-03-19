@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios from 'axios';
 
 const serverUrl = process.env.REACT_APP_BASE_URL;
 
 const client = axios.create({
-  baseURL: serverUrl,
+    baseURL: serverUrl,
 });
 
 export default client;
