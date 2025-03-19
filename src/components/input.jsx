@@ -56,7 +56,7 @@ export default function Input({
         className={`${
           type === "MODAL"
             ? "bg-white text-[#272D3A] text-[16px]  leading-[135%] tracking-[-0.56px]"
-            : "bg-[#FFFFFF1A] text-white text-[18px] leading-[30px] tracking-[-0.54px]"
+            : "bg-[#313338] text-white text-[18px] leading-[30px] tracking-[-0.54px]"
         } flex w-full px-4 py-[14px] items-center gap-2 
               rounded-md border-[1.4px] 
               font-medium 

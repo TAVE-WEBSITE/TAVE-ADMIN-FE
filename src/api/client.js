@@ -4,6 +4,7 @@ const serverUrl = process.env.REACT_APP_BASE_URL;
 
 const client = axios.create({
   baseURL: serverUrl,
+  withCredentials: true,
 });
 
 export default client;

@@ -12,9 +12,7 @@ export default function MemberInput({
   text = "",
   hint = "",
   onClick,
-  user_width = "w-full",
-  user_height = "",
-  type,
+  type = "",
   onChange,
   essentialText = "",
   confirmText="",
@@ -23,10 +21,15 @@ export default function MemberInput({
   return (
     <div className="flex gap-2 w-full items-center flex-col ">
       <div
-        className="text-left font-[Pretendard] text-[#D2D2DF] text-[16px] font-medium 
+        className="text-left text-[#D2D2DF] text-md font-medium 
                 leading-[30px] tracking-[-0.48px] w-full"
       >
         {text}
+
+        <span className="text-[#81818A] text-sm pl-2">
+          {type === "PASSWORD" &&
+            "8자 이상, 대소문자 모두 포함, 특수문자(!@#$%^&*) 포함"}
+        </span>
       </div>
 
       <div className="flex gap-2 items-center w-full justify-center">
@@ -34,16 +37,15 @@ export default function MemberInput({
           placeholder={hint}
           className="w-full"
           onChange={onChange}
-          user_width={user_width}
           essentialText={essentialText}
           confirmText={confirmText}
           onValidChange={onValidChange}
         ></Input>
         {btnText !== "" && (
           <button
-            onClick={() => {}}
-            className="h-11 text-base flex items-center justify-center gap-2 
-             rounded-[10px] bg-[#195BFF] p-[14px] w-[120px]"
+            onClick={onClick}
+            className={`h-11 text-base flex items-center justify-center gap-2 
+             rounded-[10px] bg-[#195BFF] p-[14px] w-[120px] `}
           >
             {btnText}
           </button>
