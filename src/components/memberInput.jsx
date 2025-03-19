@@ -17,6 +17,7 @@ export default function MemberInput({
   type,
   onChange,
   essentialText = "",
+  confirmText="",
   onValidChange = () => {},
 }) {
   return (
@@ -35,6 +36,7 @@ export default function MemberInput({
           onChange={onChange}
           user_width={user_width}
           essentialText={essentialText}
+          confirmText={confirmText}
           onValidChange={onValidChange}
         ></Input>
         {btnText !== "" && (
