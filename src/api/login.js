@@ -1,6 +1,6 @@
 import client from './client';
 
-// 시영 수정
+// 수정 <- 수정완료 되면 삭제해주세요 !
 
 export async function postRefreshToken(email) {
     try {
