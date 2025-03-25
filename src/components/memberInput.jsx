@@ -1,51 +1,49 @@
 import Input from '../components/input';
-/*
-textSize = 텍스트 사이즈,
-text = 버튼 텍스트 내용,
-onClick = 버튼 클릭 함수,
-user_width = 지정 너비,
-user_height = 지정 높이,
-  */
+import Button from './button';
+
+// 특정 type - password
 
 export default function MemberInput({
-    btnText = '',
-    text = '',
-    hint = '',
-    onClick,
-    user_width = 'w-full',
-    user_height = '',
     type,
+    btnText,
+    onClick,
+    text,
+    placeholder,
     onChange,
+    disapproveText = '',
     essentialText = '',
+    approveText = '',
     onValidChange = () => {},
+    isValidateTrigger = false,
+    isConfirmed = false,
 }) {
     return (
-        <div className="flex gap-2 w-full items-center flex-col ">
-            <div
-                className="text-left font-[Pretendard] text-[#D2D2DF] text-[16px] font-medium 
-                leading-[30px] tracking-[-0.48px] w-full"
-            >
-                {text}
+        <div className="flex flex-col gap-2 w-full">
+            <div className="flex gap-2 font-medium items-center">
+                <span className="text-[#d2d2df] text-base">{text}</span>
+                {type === 'password' && (
+                    <span className="text-[#81818A] text-sm">
+                        8자 이상, 대소문자 모두 포함, 특수문자(!@#$%^&*) 포함
+                    </span>
+                )}
             </div>
-
-            <div className="flex gap-2 items-center w-full justify-center">
+            <div className=" w-full flex gap-4 items-center justify-center">
                 <Input
-                    placeholder={hint}
-                    className="w-full"
+                    isValidateTrigger={isValidateTrigger}
+                    isConfirmed={isConfirmed}
+                    placeholder={placeholder}
                     onChange={onChange}
-                    user_width={user_width}
                     essentialText={essentialText}
+                    approveText={approveText}
+                    disapproveText={disapproveText}
                     onValidChange={onValidChange}
-                    type={type}
-                ></Input>
-                {btnText !== '' && (
-                    <button
-                        onClick={() => {}}
-                        className="h-11 text-base flex items-center justify-center gap-2 
-             rounded-[10px] bg-[#195BFF] p-[14px] w-[120px]"
-                    >
-                        {btnText}
-                    </button>
+                />
+                {btnText && (
+                    <Button
+                        onClick={onClick}
+                        text={btnText}
+                        className={`mb-[20px] p-3.5 rounded-[10px] text-white text-base font-semibold bg-[#195BFF]`}
+                    />
                 )}
             </div>
         </div>

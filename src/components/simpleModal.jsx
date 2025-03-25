@@ -1,50 +1,34 @@
-import React from "react";
-
 export default function SimpleModal({
-  text,
-  buttonType,
-  onClose,
-  isAvailable, // 아이디 중복 확인용
-  isAuth, // 이메일 인증용
-  showCancel = true,
+    title,
+    description,
+    grayBtnText,
+    blueBtnText,
+    onClickGray,
+    onClickBlue,
+    onClose,
 }) {
-  let additionalText = "";
-
-  if (isAvailable !== undefined) {
-    additionalText = isAvailable
-      ? " 사용 가능합니다."
-      : "는 이미 존재하는 아이디입니다.";
-  } else if (isAuth !== undefined) {
-    additionalText = isAuth
-      ? " 인증번호를 발송했습니다"
-      : " 존재하지 않는 이메일입니다.";
-  }
-  return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg p-6 w-80">
-        <div className="text-lg font-medium mb-4 text-center text-black">
-          {text}
-          {additionalText}
+    return (
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50" onClick={onClose}>
+            <div className="bg-white rounded-[18px] p-6 w-[348px]" onClick={(e) => e.stopPropagation()}>
+                <div className="text-xl font-semibold text-black mb-0.5">{title}</div>
+                <div className="text-lg font-medium mb-6 text-black/60">{description}</div>
+                <div className="flex justify-end gap-3">
+                    {grayBtnText && (
+                        <button
+                            className="py-4 px-5 bg-gray-200 text-[#394150] rounded-[10px] font-semibold text-base"
+                            onClick={onClickGray}
+                        >
+                            {grayBtnText}
+                        </button>
+                    )}
+                    <button
+                        className="py-4 px-5 bg-[#195bff] text-white rounded-[10px] font-semibold text-base"
+                        onClick={onClickBlue}
+                    >
+                        {blueBtnText}
+                    </button>
+                </div>
+            </div>
         </div>
-        <div className="flex justify-end gap-4">
-          {showCancel && (
-            <button
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-              onClick={onClose}>
-              취소
-            </button>
-          )}
-          <button
-            className={`px-4 py-2 rounded text-white ${
-              buttonType === "confirm"
-                ? "bg-btn-blue hover:bg-blue-600"
-                : "bg-red-500 hover:bg-red-600"
-            }`}
-            onClick={onClose}>
-            {buttonType === "confirm" ? "확인" : "삭제"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }

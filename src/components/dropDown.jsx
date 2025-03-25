@@ -2,9 +2,20 @@ import { useState, useEffect } from 'react';
 import DialogArrow from '../assets/images/dialogArrow.svg';
 import Arrow from '../assets/images/dropArrow.svg';
 
-export default function DropDown({ valueList, setValue, type, onValidChange = () => {} }) {
+// type - default, join, dialog
+
+export default function DropDown({
+    valueList,
+    setValue,
+    type,
+    essential = true,
+    essentialText,
+    onValidChange = () => {},
+    isValidateTrigger = false, // form 제출했을 때 validation 확인
+}) {
     const [selectedValue, setSelectedValue] = useState(valueList[0]);
     const [isOpen, setIsOpen] = useState(false);
+    const [isInvalid, setIsInvalid] = useState(false);
 
     useEffect(() => {
         if (selectedValue !== valueList[0]) {
@@ -14,14 +25,26 @@ export default function DropDown({ valueList, setValue, type, onValidChange = ()
         }
     }, [selectedValue]);
 
+    useEffect(() => {
+        if (isValidateTrigger && essential && selectedValue === valueList[0]) {
+            setIsInvalid(true);
+            onValidChange(false);
+        }
+    }, [isValidateTrigger, selectedValue]);
+
     const handleValueClick = (value) => {
         setSelectedValue(value);
         setValue(value);
         setIsOpen(false);
+        if (value === valueList[0]) {
+            setIsInvalid(true);
+        } else {
+            setIsInvalid(false);
+        }
     };
 
     return (
-        <div className="relative w-full">
+        <div className="w-full relative">
             <div
                 onClick={() => setIsOpen(!isOpen)}
                 className={`flex items-center justify-between w-full py-3.5 px-4 rounded-[10px] font-medium ${
@@ -29,8 +52,9 @@ export default function DropDown({ valueList, setValue, type, onValidChange = ()
                         ? `bg-[#313338] ${selectedValue !== valueList[0] ? 'text-white' : 'text-[#81818a]'} text-lg`
                         : type === 'default'
                         ? 'bg-[#989ba1]/10 text-white text-lg'
-                        : 'bg-white text-[#394150] border border-[#e5e7eb] text-base'
-                } ${isOpen && type === 'join' ? 'outline outline-[#195bff]/80 ' : ''}`}
+                        : 'bg-white text-[#394150] border-[#e5e7eb] text-base'
+                } ${isOpen && type === 'join' ? 'border-[#195bff]/80' : ''}
+                 ${isInvalid && essential ? 'border-[#ff0072]/80' : ''}`}
             >
                 <input
                     type="button"
@@ -63,6 +87,9 @@ export default function DropDown({ valueList, setValue, type, onValidChange = ()
                         </div>
                     ))}
                 </ul>
+            )}
+            {isInvalid && essentialText && (
+                <p className="text-[#ff0072]/80 text-sm font-medium mt-[6px]">{essentialText}</p>
             )}
         </div>
     );

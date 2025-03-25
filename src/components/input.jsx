@@ -1,55 +1,77 @@
-import { useState, React, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+
+// 특정 type - dialog
 
 export default function Input({
     placeholder = '',
-    type, //type 을 MODAL | MEMBER 로 구분지어서 스타일 적용하기
+    type,
     onChange = () => {},
-    essential = true,
-    essentialText = '',
-    className,
+    essentialText,
+    approveText,
+    disapproveText,
     onValidChange = () => {},
+    isValidateTrigger = false, // form 제출했을 때 validation 확인
+    isConfirmed = false, // 인증 승인 여부
 }) {
     const [inputValue, setInputValue] = useState('');
-    const [essential0, setEssential] = useState(essential);
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
-        setEssential(essential);
-    }, [essential]);
+        if (isValidateTrigger) {
+            const valid = inputValue.trim() !== '';
+            setMessage(valid ? '' : essentialText);
+            onValidChange(valid);
+        }
+    }, [isValidateTrigger, inputValue]);
+
+    useEffect(() => {
+        setMessage(isConfirmed ? approveText : disapproveText);
+    }, [isConfirmed]);
 
     const handleFocus = (e) => {
-        setEssential(true);
-        onChange(e); //입력 필드 포커스
+        onChange(e);
     };
 
     const handleChange = (e) => {
         const value = e.target.value;
         setInputValue(value);
         const valid = value.trim() !== '';
-        setEssential(valid); // 유효성 상태 업데으트
-        onValidChange(valid); // 부모 컴포넌트로 유효성 전달 (다음 버튼 활성화)
-
+        setMessage(valid ? '' : essentialText);
+        onValidChange(valid);
         onChange(e);
     };
 
+    const borderColor = message
+        ? message === approveText
+            ? 'border-[#00aa58]'
+            : 'border-[#ff0072]/80'
+        : type === 'dialog'
+        ? 'border-[#e5e7eb]'
+        : 'border-none';
+
     return (
-        <div className={`${className}`}>
+        <div className="w-full">
             <input
-                className={`${
-                    type === 'MODAL'
-                        ? 'bg-white text-[#272D3A]  text-[16px]  leading-[135%] tracking-[-0.56px]'
-                        : 'bg-[#FFFFFF1A] text-white text-[18px] leading-[30px] tracking-[-0.54px]'
-                } flex w-full px-4 py-[14px] items-center gap-2 
-              rounded-md border-[1.4px] 
-              font-medium 
-              outline-none ${essential0 ? 'border-gray-200' : 'border-red-800'}`}
+                className={`w-full font-medium rounded-[10px] ${
+                    type === 'dialog'
+                        ? 'pl-[14px] py-[18px] bg-white text-[#394150] placeholder-[#39415066] text-base'
+                        : 'pl-4 py-[14px] bg-[#313338] text-white placeholder-[#81818a] text-lg'
+                } ${borderColor} outline-none border-[1.4px]`}
                 placeholder={placeholder}
                 value={inputValue}
                 onChange={handleChange}
                 onFocus={handleFocus}
             />
-
-            <div className={`text-red-500 mt-1 h-0.5 leading-4 text-xs ${essential0 ? 'invisible' : 'visible'}`}>
-                {!essential0 && `* ${essentialText}`}
+            <div className="h-[20px]">
+                {message && (
+                    <p
+                        className={`text-sm font-medium ${
+                            message === approveText ? 'text-[#00AA58]' : 'text-[#ff0072]/80'
+                        }`}
+                    >
+                        {message}
+                    </p>
+                )}
             </div>
         </div>
     );

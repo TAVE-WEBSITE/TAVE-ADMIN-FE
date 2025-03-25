@@ -6,7 +6,6 @@ import HeaderArrow from '../assets/images/headerArrow.svg';
 export default function Header({ position = 'staff' }) {
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
-
     const isActive = (path) => location.pathname === path;
     const togglePopOver = () => setIsOpen((prev) => !prev);
 
@@ -24,8 +23,8 @@ export default function Header({ position = 'staff' }) {
 
     return (
         <header
-            className={`fixed top-0 left-0 w-full z-50 flex items-center justify-between py-6 px-[72px]
-                bg-gradient-to-b from-black from-25% to-transparent`}
+            className="fixed top-0 left-0 w-full z-50 flex items-center justify-between py-6 px-[72px]
+                bg-gradient-to-b from-black from-25% to-transparent"
         >
             <img src={TaveLogo} alt="Logo" className="w-25" />
             <ul className="flex items-center gap-x-4 text-white text-xl">

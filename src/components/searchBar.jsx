@@ -1,5 +1,5 @@
-import React from 'react';
 import { useState } from 'react';
+import SearchIcon from '../assets/images/searchIcon.svg';
 
 export default function SearchBar({ onSearch }) {
     const [inputValue, setInputValue] = useState('');
@@ -11,6 +11,7 @@ export default function SearchBar({ onSearch }) {
     const handleSearch = () => {
         onSearch(inputValue.trim());
     };
+
     const handleEnterKey = (e) => {
         if (e.key === 'Enter') {
             handleSearch();
@@ -18,14 +19,14 @@ export default function SearchBar({ onSearch }) {
     };
 
     return (
-        <div className="flex justify-between items-center w-72 h-12 rounded-full font-extralight px-6 bg-transparent border border-[#FFFFFF] border-[0.5px]">
+        <div className="flex gap-10 justify-between items-center rounded-[28px] bg-[#6e7075]/10 py-3 px-5">
             <input
                 placeholder="검색어를 입력해주세요."
                 onChange={handleInputChange}
                 onKeyDown={handleEnterKey}
-                className="outline-none bg-transparent text-white"
+                className="outline-none bg-transparent placeholder-[#81818a] text-lg font-medium text-white"
             ></input>
-            <img alt="searchIcon" onClick={handleSearch} className="cursor-pointer w-6"></img>
+            <img src={SearchIcon} alt="searchIcon" onClick={handleSearch} className="cursor-pointer" />
         </div>
     );
 }

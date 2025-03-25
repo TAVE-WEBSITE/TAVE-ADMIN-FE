@@ -1,4 +1,3 @@
-import React from 'react';
 import Button from './button';
 import { useState } from 'react';
 
@@ -26,7 +25,7 @@ export default function ReviewBlock({ reviewProps }) {
             <div className="p-8">
                 <div className="flex justify-between items-center mb-6">
                     <div className="text-xl font-bold">{reviewProps.nickname}</div>
-                    <div className="text-xl font-bold text-review-gray pl-2">
+                    <div className="text-xl font-bold text-[#4D121212] pl-2">
                         {reviewProps.generation} {reviewProps.field}
                     </div>
                     <div className="flex justify-between gap-2 ml-auto">

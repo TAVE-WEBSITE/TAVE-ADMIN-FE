@@ -1,5 +1,5 @@
 export default function Button({
-    className = 'text-base p-5 text-white',
+    className = 'w-full text-[20px] text-white py-[19px] px-5 rounded-md font-semibold bg-[#195bff] disabled:bg-[#52555e]',
     text = '',
     onClick = () => {},
     disabled = false,
@@ -7,9 +7,7 @@ export default function Button({
     return (
         <button
             onClick={onClick}
-            className={`${className} ${
-                disabled ? 'bg-white bg-opacity-[0.1]' : 'bg-btn-blue'
-            } items-center rounded-md font-semibold text-center w-full`}
+            className={`${className} whitespace-nowrap flex items-center justify-center text-center disabled:cursor-not-allowed`}
             type="button"
             disabled={disabled}
         >
