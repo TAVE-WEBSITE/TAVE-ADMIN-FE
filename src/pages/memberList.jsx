@@ -1,20 +1,44 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Tab from '../components/tab';
 import Header from '../components/header';
 import Pagination from '../components/pagination';
+import SimpleModal from '../components/simpleModal';
 
 export default function MemberList() {
     const [categories, setCategories] = useState(['회원 명단', '가입 대기 명단']);
     const [links, setLinks] = useState(['/memberList', '/waitingList']);
+    // const [memberData, setMemberData] = useState([]); // 회원 리스트
+
     const [currentPage, setCurrentPage] = useState(1);
+
+    const [isModalOpen, setModalOpen] = useState(false); // 탈퇴 버튼 모달
+    const [isConfirmModalOpen, setConfirmModalOpen] = useState(false); // 탈퇴 완료 모달
+    const [modalText, setModalText] = useState('');
+    const [modalAdditionalText, setModalAdditionalText] = useState('');
+    const [selectedMemberId, setSelectedMemberId] = useState(null); // 탈퇴 대상 ID
+
+    //  useEffect(() => {
+    //   fetchMemberList();
+    // }, []);
+
+    // // 운영진 멤버 목록 불러오기
+    // const fetchMemberList = async () => {
+    //   try {
+    //     const data = await getMemberList();
+    //     setMemberData(data || []);
+    //     console.log(data);
+    //   } catch (error) {
+    //     console.error("회원 명단 조회 실패", error);
+    //   }
+    // };
 
     const memberData = [
         {
             name: '테이비',
             team: '회장',
             position: '-',
-            id: 'qwer123',
+            id: 'qwerty1',
             generation: 13,
             agitId: 'agitId',
         },
@@ -22,7 +46,7 @@ export default function MemberList() {
             name: '테이비',
             team: '경영처',
             position: '처원',
-            id: 'qwer123',
+            id: 'qwerty2',
             generation: 13,
             agitId: 'agitId',
         },
@@ -30,7 +54,7 @@ export default function MemberList() {
             name: '테이비',
             team: '경영처',
             position: '처원',
-            id: 'qwer123',
+            id: 'qwerty3',
             generation: 13,
             agitId: 'agitId',
         },
@@ -38,7 +62,7 @@ export default function MemberList() {
             name: '테이비',
             team: '경영처',
             position: '처장',
-            id: 'qwer123',
+            id: 'qwerty4',
             generation: 13,
             agitId: 'agitId',
         },
@@ -46,7 +70,7 @@ export default function MemberList() {
             name: '테이비',
             team: '기술처',
             position: '처원',
-            id: 'qwer123',
+            id: 'qwerty5',
             generation: 13,
             agitId: 'agitId',
         },
@@ -54,7 +78,7 @@ export default function MemberList() {
             name: '테이비',
             team: '기술처',
             position: '처원',
-            id: 'qwer123',
+            id: 'qwerty6',
             generation: 13,
             agitId: 'agitId',
         },
@@ -62,7 +86,7 @@ export default function MemberList() {
             name: '테이비',
             team: '기술처',
             position: '처원',
-            id: 'qwer123',
+            id: 'qwerty7',
             generation: 13,
             agitId: 'agitId',
         },
@@ -70,7 +94,7 @@ export default function MemberList() {
             name: '테이비',
             team: '기술처',
             position: '처원',
-            id: 'qwer123',
+            id: 'qwerty8',
             generation: 13,
             agitId: 'agitId',
         },
@@ -82,6 +106,46 @@ export default function MemberList() {
     const memberDataPaged = memberData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const handlePageChange = (pageNum) => setCurrentPage(pageNum);
+
+    // 탈퇴 버튼 클릭 시 실행 (탈퇴할 멤버의 ID를 설정)
+    const handleOpenModal = (member) => {
+        setSelectedMemberId(member.id);
+        setModalText(`${member.team} ${member.position} ${member.name}님을`);
+        setModalAdditionalText('정말 탈퇴시키겠습니까?');
+        setModalOpen(true);
+    };
+
+    // 모달 닫기
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
+    const handleMemberRemoval = () => {
+        if (!selectedMemberId) {
+            setModalText('오류');
+            setModalAdditionalText('탈퇴할 회원을 찾을 수 없습니다.');
+            setModalOpen(true);
+            return;
+        }
+
+        // 선택된 멤버 찾기
+        const memberToRemove = memberData.find((member) => member.id === selectedMemberId);
+        if (memberToRemove) {
+            // 기존 모달 닫기
+            setModalOpen(false);
+
+            // 탈퇴 완료 모달 열기
+            setTimeout(() => {
+                setModalText(`${memberToRemove.team} ${memberToRemove.position} ${memberToRemove.name}님의`);
+                setModalAdditionalText('탈퇴 처리가 완료되었습니다.');
+                setConfirmModalOpen(true); // "탈퇴 완료" 모달 열기
+            }, 300);
+        } else {
+            setModalText('오류');
+            setModalAdditionalText('탈퇴할 회원을 찾을 수 없습니다.');
+            setModalOpen(true);
+        }
+    };
 
     return (
         <div className="flex flex-col pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
@@ -115,13 +179,33 @@ export default function MemberList() {
                                 <td className="py-4 px-4">{member.generation}</td>
                                 <td className="py-4 px-4">{member.agitId}</td>
                                 <td className="py-4 px-4 w-12 text-center">
-                                    <button className="w-20 rounded-lg bg-white/20 py-2 px-1 font-bold text-base hover:bg-white/30">
+                                    <button
+                                        className="w-20 rounded-lg bg-white/20 py-2 px-1 font-bold text-base hover:bg-white/30"
+                                        onClick={() => handleOpenModal(member)}
+                                    >
                                         탈퇴
                                     </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
+                    {/* 탈퇴 확인 모달 */}
+                    {isModalOpen && (
+                        <SimpleModal
+                            title={modalText}
+                            description={modalAdditionalText}
+                            onClose={handleCloseModal}
+                            onConfirm={handleMemberRemoval} // 확인 버튼 클릭 시 실행
+                        />
+                    )}
+                    {/* 탈퇴 완료 모달 */}
+                    {isConfirmModalOpen && (
+                        <SimpleModal
+                            title={modalText}
+                            description={modalAdditionalText}
+                            onClose={() => setConfirmModalOpen(false)}
+                        />
+                    )}
                 </table>
                 <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
             </div>

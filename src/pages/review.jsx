@@ -9,7 +9,22 @@ import Button from '../components/button';
 export default function Review() {
     const [isOpen, setIsopen] = useState(false);
     const [generation, setGeneration] = useState('14기');
-    const generationList = ['14기', '13기', '12기'];
+    const generationList = [
+        '14기',
+        '13기',
+        '12기',
+        '11기',
+        '10기',
+        '9기',
+        '8기',
+        '7기',
+        '6기',
+        '5기',
+        '4기',
+        '3기',
+        '2기',
+        '1기',
+    ];
     const categories = ['정규세션', '동아리 이력', '후기'];
     const links = ['/regularsession', '/history', '/review'];
 
@@ -51,9 +66,13 @@ export default function Review() {
                 <div className="grid place-items-center mb-20">
                     <Tab category={categories} link={links} currentIndex={2} />
                 </div>
-                <div className="flex justify-between ml-auto">
-                    <DropDown valueList={generationList} setValue={setGeneration} />
-                    <Button text="후기 추가" user_width="7rem" onClick={addBtn} />
+                <div className="flex justify-between w-full">
+                    <DropDown
+                        type="dialog"
+                        valueList={generationList}
+                        setValue={setGeneration}
+                        essentialText="너무 배가 고파용"
+                    />
                 </div>
                 <div className="grid sm:grid-colos-1 md:grid-cols-2 px-18 py-20 gap-4">
                     {reviewInput.map((reviewProps, index) => (

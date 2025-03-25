@@ -5,7 +5,6 @@ import Header from '../components/header';
 import SearchBar from '../components/searchBar';
 import DropDown from '../components/dropDown';
 import File from '../components/file';
-import PlusFile from '../components/plusFile';
 import Pagination from '../components/pagination';
 import DetailDialog from '../components/detailDialog';
 
@@ -220,7 +219,6 @@ export default function Project() {
                 </div>
 
                 <div className="grid grid-cols-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-6 mt-12 justify-items-center">
-                    <PlusFile />
                     {paginatedData.map((data, index) => {
                         return (
                             <File
