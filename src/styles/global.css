@@ -2,38 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 모든 페이지에 적용할 전역 스타일 */
+@font-face {
+    font-family: 'Pretendard';
+    src: url('../assets/fonts/PretendardVariable.ttf') format('woff');
+}
+
 body {
-  @apply bg-[rgb(245,245,245)] text-black;
-  font-family: "Pretendard";
-  font-weight: 700;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  overflow-x: hidden;
+    font-family: 'Pretendard';
 }
-
-@font-face {
-  font-family: "Pretendard";
-  src: url("/src/assets/fonts/PretendardVariable.ttf") format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
-
-/*
-@font-face {
-  font-family: "Pretendard";
-  font-weight: 200;
-  font-style: normal;
-  src: url("https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-ExtraLight.eot");
-  src: url("https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-ExtraLight.eot?#iefix")
-      format("embedded-opentype"),
-    url("https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-ExtraLight.woff2")
-      format("woff2"),
-    url("https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-ExtraLight.woff")
-      format("woff"),
-    url("https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-ExtraLight.ttf")
-      format("truetype");
-  font-display: swap;
-}
-*/
