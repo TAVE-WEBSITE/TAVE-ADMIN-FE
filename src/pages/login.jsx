@@ -75,7 +75,7 @@ export default function Login() {
                 />
                 <Button text="로그인" onClick={loginHandler} type="submit" disabled={isDisabled} />
                 <div className="flex flex-row w-full justify-between opacity-40 text-white text-[16px] leading-[16px] tracking-[-0.56px] font-medium">
-                    <div className="cursor-pointer" onClick={() => navigate('/memberJoin')}>
+                    <div className="cursor-pointer" onClick={() => navigate('/join')}>
                         회원가입
                     </div>
                     <div className="cursor-pointer" onClick={() => navigate('/forgotPassword')}>

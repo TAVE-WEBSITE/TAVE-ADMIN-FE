@@ -8,7 +8,7 @@ import Button from '../components/button';
 
 export default function History() {
     const categories = ['정규세션', '동아리 이력', '후기'];
-    const links = ['/regularsession', '/history', '/review'];
+    const links = ['/session', '/history', '/review'];
 
     // 동아리 이력 데이터
     const historyData = [

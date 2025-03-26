@@ -26,7 +26,7 @@ export default function Review() {
         '1기',
     ];
     const categories = ['정규세션', '동아리 이력', '후기'];
-    const links = ['/regularsession', '/history', '/review'];
+    const links = ['/session', '/history', '/review'];
 
     const reviewInput = [
         {
