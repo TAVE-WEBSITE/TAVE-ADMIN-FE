@@ -64,6 +64,7 @@ export default function Session() {
                         sessions.map((session) => (
                             <SessionBlock
                                 key={session.sessionId}
+                                sessionId={session.sessionId}
                                 title={session.title}
                                 description={session.description}
                                 eventDay={session.eventDay}

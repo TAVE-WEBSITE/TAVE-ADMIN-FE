@@ -37,6 +37,7 @@ export default function Login() {
             sessionStorage.setItem('access_token', response.data.result.accessToken);
             localStorage.setItem('email', response.data.result.email);
             navigate('/');
+            console.log('로그인 성공');
         } else {
             // 모달창 추가하기
             alert('로그인 실패: 아이디 또는 비밀번호가 올바르지 않습니다.');
