@@ -42,6 +42,24 @@ export default function History() {
     fetchData();
   }, []);
 
+  const date = (history) => {
+    let result = 0;
+    history.details.map((item) => {
+      const words = item.lastUpdated.split("T");
+      const word = Number(words[0].replaceAll("-", ""));
+
+      if (word > result) {
+        result = word;
+      }
+    });
+    const numberDate = result.toString().slice(-6); // "250210"
+    const formattedDate = `${numberDate.slice(0, 2)}.${numberDate.slice(
+      2,
+      4
+    )}.${numberDate.slice(4, 6)}`;
+    return formattedDate;
+  };
+
   return (
     <div className="flex flex-col pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
       <Header />
@@ -68,7 +86,7 @@ export default function History() {
               <HistoryBlock
                 key={item.number}
                 generation={item.generation}
-                updatedTime={"24.11.13"}
+                updatedTime={date(item)}
                 history={histories}
               />
             ))
