@@ -2,6 +2,7 @@ import { postHistory, updateHistory } from "../api/history";
 import CloseIcon from "../assets/images/closeIcon.svg";
 import Button from "./button";
 import DialogInput from "./dialogInput";
+import SimpleModal from "./simpleModal";
 import TextArea from "./textArea";
 import { useEffect, useState } from "react";
 
@@ -29,6 +30,7 @@ export default function HistoryDialog({
     description: initialData.additionalDescription,
   });
   const [isValidateTrigger, setIsValidateTrigger] = useState(false);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [errors, setErrors] = useState({
     generation: false,
     history: false,
@@ -68,7 +70,9 @@ export default function HistoryDialog({
     if (newHistory.additionalDescription === "") {
       delete newHistory.additionalDescription;
     }
-    if (type === "register") {
+    if (type === "register" && !isConfirmModal) {
+      setIsConfirmModal(true);
+    } else if (type === "register" && isConfirmModal) {
       postHistory(newHistory)
         .then((res) => window.location.reload())
         .catch((err) => console.error("이력 추가 실패:", err));
@@ -133,10 +137,20 @@ export default function HistoryDialog({
           <Button
             text="등록"
             className="text-white text-base font-semibold px-5 py-3 bg-[#195bff] rounded-[10px]"
-            onClick={handleSubmit}
+            onClick={clickHandler}
           />
         </div>
       </div>
+      {isConfirmModal && (
+        <SimpleModal
+          title="이력 등록 완료"
+          description={`현재 시간 부로, 동아리 홈페이지에 공개됩니다. \n동의 하시겠습니까?`}
+          grayBtnText="취소"
+          blueBtnText="확인"
+          onClickGray={() => setIsConfirmModal(false)}
+          onClickBlue={handleSubmit}
+        />
+      )}
     </div>
   );
 }

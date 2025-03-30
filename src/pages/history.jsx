@@ -12,7 +12,7 @@ export default function History() {
   const categories = ["정규세션", "동아리 이력", "후기"];
   const links = ["/session", "/history", "/review"];
   const [isAddModal, setIsAddModal] = useState(false);
-  const [isConfirmModal, setIsConfirmModal] = useState(false);
+
   const [histories, setHistories] = useState([]);
   const [searchInput, setSearchInput] = useState("");
 
@@ -94,15 +94,6 @@ export default function History() {
         </div>
         {isAddModal && (
           <HistoryDialog type="register" onClose={() => setIsAddModal(false)} />
-        )}
-        {isConfirmModal && (
-          <SimpleModal
-            title="이력 등록 완료"
-            description={`현재 시간 부로, 동아리 홈페이지에 공개됩니다. \n동의 하시겠습니까?`}
-            grayBtnText="취소"
-            blueBtnText="확인"
-            onClickGray={() => setIsConfirmModal(false)}
-          />
         )}
       </div>
     </div>
