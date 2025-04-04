@@ -5,8 +5,8 @@ import { modifySession, deleteSession } from '../api/session';
 
 export default function SessionBlock({ sessionId, title, description, eventDay, imgUrl }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); // 수정 다이얼로그 상태 추가
-    const [selectedSession, setSelectedSession] = useState(null); // 선택된 세션 상태 추가
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); 
+    const [selectedSession, setSelectedSession] = useState(null); 
     const [sessionData, setSessionData] = useState({
         title,
         description,
@@ -15,24 +15,24 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
     });
 
     const handleClickSession = () => {
-        setSelectedSession({ sessionId, title, description });
+        setSelectedSession({ sessionId, title, description, eventDay, imgUrl });
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setIsEditDialogOpen(false); // 모달 닫을 때 수정 다이얼로그 상태 초기화
+        setIsEditDialogOpen(false);
     };
 
     const handleEditSession = () => {
-        setIsEditDialogOpen(true); // 수정 다이얼로그 열기
-        setIsModalOpen(false); // 기존 모달 닫기
+        setIsEditDialogOpen(true); 
+        setIsModalOpen(false); 
     };
 
     const handleDeleteSession = async () => {
         console.log('세션 삭제');
         try {
-            await deleteSession(selectedSession.sessionId); // API 호출
+            await deleteSession(selectedSession.sessionId);
             setIsModalOpen(false);
             console.log('세션 삭제 완료');
         } catch (error) {
@@ -43,9 +43,9 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
     const handleSubmitEdit = async (updatedData) => {
         console.log('세션 수정');
         try {
-            await modifySession(selectedSession.sessionId, updatedData); // 수정된 데이터 API 호출
-            setSessionData(updatedData); // 수정된 데이터를 상태에 반영
-            setIsEditDialogOpen(false); // 수정 다이얼로그 닫기
+            await modifySession(selectedSession.sessionId, updatedData); 
+            setSessionData(updatedData); 
+            setIsEditDialogOpen(false); 
             console.log('세션 수정 완료');
         } catch (error) {
             console.error('세션 수정 실패', error);
@@ -64,7 +64,7 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
                 </div>
             </div>
 
-            {/* 세션 삭제 및 수정 모달 */}
+            {/* 세션 삭제/수정 모달 */}
             {isModalOpen && selectedSession && (
                 <SimpleModal
                     title={selectedSession.title}
@@ -72,8 +72,8 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
                     description={selectedSession.description}
                     grayBtnText="수정"
                     blueBtnText="삭제"
-                    onClickGray={handleEditSession} // 수정 버튼 클릭 시 처리
-                    onClickBlue={handleDeleteSession} // 삭제 버튼 클릭 시 처리
+                    onClickGray={handleEditSession} 
+                    onClickBlue={handleDeleteSession} 
                     onClose={handleCloseModal}
                 />
             )}
@@ -85,8 +85,8 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
                 sessionId={selectedSession.sessionId}   
                     title={sessionData.title}
                     description={sessionData.description}
-                    eventDay={sessionData.eventDay} // eventDay도 수정 가능
-                    onSubmit={handleSubmitEdit} // 수정된 데이터를 전달
+                    eventDay={sessionData.eventDay} 
+                    onSubmit={handleSubmitEdit} 
                     onClose={handleCloseModal}
                 />
             )}
