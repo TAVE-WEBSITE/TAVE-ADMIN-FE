@@ -4,6 +4,7 @@ import Tab from '../components/tab';
 import Header from '../components/header';
 import SessionBlock from '../components/sessionBlock';
 import SessionDialog from '../components/sessionDialog';
+import Pagination from '../components/pagination';
 
 export default function Session() {
     const categories = ['정규세션', '동아리 이력', '후기'];
@@ -11,6 +12,9 @@ export default function Session() {
 
     const [sessions, setSessions] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const sessionsPerPage = 5;
 
     useEffect(() => {
         async function loadSessions() {
@@ -29,20 +33,28 @@ export default function Session() {
         loadSessions();
     }, []);
 
-    // 세션 추가 버튼 모달
+    // 페이지네이션 관련 계산
+    const indexOfLastSession = currentPage * sessionsPerPage;
+    const indexOfFirstSession = indexOfLastSession - sessionsPerPage;
+    const currentSessions = sessions.slice(indexOfFirstSession, indexOfLastSession);
+    const totalPages = Math.ceil(sessions.length / sessionsPerPage);
+
+    const handlePageChange = (pageNum) => {
+        setCurrentPage(pageNum);
+    };
+
     const handleCreateSession = () => {
         setIsModalOpen(true); 
-    }
+    };
 
     const handleCloseModal = () => {
         setIsModalOpen(false); 
-    }
+    };
 
-    // 세션 추가 버튼 모달 액션
     const handleAddSession = () => {
         console.log('새 세션 추가');
         setIsModalOpen(false);
-    }
+    };
 
     return (
         <div className="flex flex-col pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
@@ -60,8 +72,8 @@ export default function Session() {
                 </div>
 
                 <div className="flex flex-col gap-5 justify-between mt-10">
-                    {sessions.length > 0 ? (
-                        sessions.map((session) => (
+                    {currentSessions.length > 0 ? (
+                        currentSessions.map((session) => (
                             <SessionBlock
                                 key={session.sessionId}
                                 sessionId={session.sessionId}
@@ -76,16 +88,21 @@ export default function Session() {
                     )}
                 </div>
 
+                {totalPages > 1 && (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                )}
+
                 {isModalOpen && (
-    <SessionDialog
-        type="register"
-        onClose={handleCloseModal}
-        onSubmit={handleAddSession}
-        
-    />
-)}
-
-
+                    <SessionDialog
+                        type="register"
+                        onClose={handleCloseModal}
+                        onSubmit={handleAddSession}
+                    />
+                )}
             </div>
         </div>
     );

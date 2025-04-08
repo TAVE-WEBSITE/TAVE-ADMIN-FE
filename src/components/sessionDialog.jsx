@@ -45,10 +45,14 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                     description: formData.discription,
                     eventDay: formData.date,
                 };
-                formDataToSend.append('request', JSON.stringify(requestData));
+    
+                formDataToSend.append(
+                    'request',
+                    new Blob([JSON.stringify(requestData)], { type: 'application/json' })
+                );
     
                 if (image) {
-                    const imageFile = document.getElementById('fileInput').files[0];
+                    const imageFile = document.getElementById('fileInput')?.files?.[0];
                     if (imageFile) {
                         formDataToSend.append('file', imageFile);
                     } else {
@@ -56,23 +60,26 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                         return;
                     }
                 }
-
+    
                 let result;
+    
                 if (type === 'modify') {
-                    const result = await modifySession(sessionId, requestData);
+                    result = await modifySession(sessionId, requestData);
                     console.log('수정 결과:', result);
-                    if (result && result.success) {
+    
+                    if (result) {
                         onSubmit(formData);
-                        onClose(); 
+                        onClose();
                     } else {
                         console.error('세션 수정 실패: 서버에서 응답을 받지 못했습니다.');
                     }
                 } else {
-                    const result = await postSession(formDataToSend);
+                    result = await postSession(formDataToSend);
+                    console.log('생성 결과:', result);
     
-                    if (result && result.success) {
+                    if (result) {
                         onSubmit(formData);
-                        onClose(); 
+                        onClose();
                     } else {
                         console.error('세션 생성 실패: 서버에서 응답을 받지 못했습니다.');
                     }
@@ -82,6 +89,7 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
             }
         }
     };
+    
     
     const [image, setImage] = useState(null);
 
