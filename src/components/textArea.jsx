@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+// 수정 필요
 
 export default function TextArea({
     text,

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 
 export default function Input({
     placeholder = '',
+    initialValue = '',
     type,
     onChange = () => {},
     essentialText,
@@ -15,6 +16,12 @@ export default function Input({
 }) {
     const [inputValue, setInputValue] = useState('');
     const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        if (initialValue) {
+            setInputValue(initialValue);
+        }
+    }, [initialValue]);
 
     useEffect(() => {
         if (isValidateTrigger) {

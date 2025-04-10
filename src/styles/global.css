@@ -9,4 +9,9 @@
 
 body {
     font-family: 'Pretendard';
+    background-image: url('../assets/images/wave.svg'),
+        linear-gradient(180deg, #121212 66.46%, #142755 97.53%, #195bff 134.64%);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }

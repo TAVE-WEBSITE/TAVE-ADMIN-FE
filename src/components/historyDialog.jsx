@@ -4,7 +4,7 @@ import DialogInput from './dialogInput';
 import TextArea from './textArea';
 import { useState } from 'react';
 
-// type - register, modify
+// type - register, modify 야호
 
 export default function HistoryDialog({ type, onClose, onSubmit }) {
     const [formData, setFormData] = useState({ generation: '', history: '', description: '' });
