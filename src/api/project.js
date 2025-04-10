@@ -1,8 +1,9 @@
 import client from './client';
 
-export async function getProject() {
+export async function getProject(page = 0, size = 1000) {
     try {
-        const response = await client.post('/normal/project');
+        const response = await client.get(`/normal/project?page=${page}&size=${size}`);
+        console.log(response.data.result);
         return response.data.result;
     } catch (error) {
         console.error('프로젝트 조회 에러', error);

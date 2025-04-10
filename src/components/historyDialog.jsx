@@ -6,7 +6,7 @@ import SimpleModal from "./simpleModal";
 import TextArea from "./textArea";
 import { useEffect, useState } from "react";
 
-// type - register, modify
+// type - register, modify 야호
 
 const extractNumbers = (str) => {
   const match = str.match(/\d+/); // 숫자만 추출
