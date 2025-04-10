@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 // 수정 필요
 
 export default function TextArea({
@@ -8,18 +9,20 @@ export default function TextArea({
     essentialText = '',
     onValidChange = () => {},
     isValidateTrigger = false,
+    isEssentialOption = true,
+    value = '',
 }) {
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState(value);
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        console.log(isValidateTrigger);
-        if (isValidateTrigger) {
+        //console.log(isValidateTrigger);
+        if (isValidateTrigger && isEssentialOption) {
             const valid = inputValue.trim() !== '';
             setMessage(valid ? '' : essentialText);
             onValidChange(valid);
         }
-    }, [isValidateTrigger, inputValue]);
+    }, [isValidateTrigger, inputValue, isEssentialOption]);
 
     const handleFocus = (e) => {
         onChange(e);
@@ -28,19 +31,21 @@ export default function TextArea({
     const handleChange = (e) => {
         const value = e.target.value;
         setInputValue(value);
-        const valid = value.trim() !== '';
-        setMessage(valid ? '' : essentialText);
-        onValidChange(valid);
+        if (isEssentialOption) {
+            const valid = value.trim() !== '';
+            setMessage(valid ? '' : essentialText);
+            onValidChange(valid);
+        }
         onChange(e);
     };
 
-    const borderColor = message === essentialText ? 'border-[#ff0072]/80' : 'border-[#e5e7eb]';
+    const borderColor = isEssentialOption && message === essentialText ? 'border-[#ff0072]/80' : 'border-[#e5e7eb]';
 
     return (
         <div className="flex flex-col gap-2 w-full">
             <div className="text-base font-medium flex gap-0.5">
                 <span className="text-[#394150]">{text}</span>
-                <span className="text-[#ff0072]/80">*</span>
+                {isEssentialOption && <span className="text-[#ff0072]/80">*</span>}
             </div>
             <div className="w-full">
                 <textarea

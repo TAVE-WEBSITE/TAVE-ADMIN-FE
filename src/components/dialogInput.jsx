@@ -1,7 +1,5 @@
 import Input from '../components/input';
 
-//
-
 export default function DialogInput({
     text,
     placeholder,
@@ -21,11 +19,12 @@ export default function DialogInput({
             <Input
                 type="dialog"
                 isValidateTrigger={isValidateTrigger}
-                placeholder={placeholder}
                 initialValue={initialValue}
+                placeholder={placeholder}
                 onChange={onChange}
                 essentialText={essentialText}
                 onValidChange={onValidChange}
+                value={value}
             />
         </div>
     );

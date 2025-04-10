@@ -12,9 +12,9 @@ export default function Input({
     disapproveText,
     onValidChange = () => {},
     isValidateTrigger = false, // form 제출했을 때 validation 확인
-    isConfirmed = false, // 인증 승인 여부
+    isConfirmed = undefined, // 인증 승인 여부
 }) {
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState(value);
     const [message, setMessage] = useState('');
 
     useEffect(() => {
