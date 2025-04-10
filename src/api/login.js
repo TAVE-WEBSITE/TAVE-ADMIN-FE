@@ -1,4 +1,5 @@
 import client from './client';
+import useStore from '../core/userInformation';
 
 // 수정 <- 수정완료 되면 삭제해주세요 !
 
@@ -21,11 +22,28 @@ export async function postLogin(email, password) {
             email: email,
             password: password,
         });
+        // 로그인 성공 후 사용자 정보 zustand store에 저장
+        if (response.status === 200) {
+            const { user } = response.data.result; 
+            console.log('로그인 성공:', response.data.result);
+            useStore.getState().setUser(user); 
+        }
+
         return response;
     } catch (error) {
         if (error.response && error.response.status === 400) {
             return 400;
         }
+        throw error;
+    }
+}
+
+export async function postLogout() {
+    try {
+        const response = await client.post('/auth/signout');
+        return response;
+    } catch (error) {
+        console.error('로그아웃 에러', error);
         throw error;
     }
 }

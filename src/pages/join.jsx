@@ -78,7 +78,7 @@ export default function Join() {
         }
     }, [authStatus]);
 
-    //step별로 유효성 검사사
+    //step별로 유효성 검사
     const step1AllValid = step1Valid.every((value) => value);
     const step2AllValid = step2Valid.every((value) => value);
 

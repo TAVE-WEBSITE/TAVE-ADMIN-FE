@@ -7,7 +7,9 @@ export default function DialogInput({
     essentialText = '',
     onValidChange = () => {},
     essential = true,
+    initialValue = '',
     isValidateTrigger = false,
+    value,
 }) {
     return (
         <div className="flex flex-col gap-2 w-full">
@@ -18,10 +20,12 @@ export default function DialogInput({
             <Input
                 type="dialog"
                 isValidateTrigger={isValidateTrigger}
+                initialValue={initialValue}
                 placeholder={placeholder}
                 onChange={onChange}
                 essentialText={essentialText}
                 onValidChange={onValidChange}
+                value={value}
             />
         </div>
     );

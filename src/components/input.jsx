@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 
 export default function Input({
     placeholder = '',
+    initialValue = '',
     type,
     onChange = () => {},
     essentialText,
@@ -12,9 +13,16 @@ export default function Input({
     onValidChange = () => {},
     isValidateTrigger = false, // form 제출했을 때 validation 확인
     isConfirmed = undefined, // 인증 승인 여부
+    value = "", //초기값
 }) {
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState(value);
     const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        if (initialValue) {
+            setInputValue(initialValue);
+        }
+    }, [initialValue]);
 
     useEffect(() => {
         if (isValidateTrigger) {
