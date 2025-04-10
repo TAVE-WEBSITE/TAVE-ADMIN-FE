@@ -32,6 +32,9 @@ export default function InputDialog({ type, title, onClose, detailData }) {
                     {type} {title === 'register' ? '등록하기' : '수정하기'}
                     <img src={CloseIcon} onClick={onClose} alt="close" />
                 </div>
+                <div className='flex justify-center items-center my-4'>
+                    <img src={ImgUpload}/>
+                </div>
                 <div className="p-6 flex flex-col gap-6">
                     <MemberInput
                         text="기수"

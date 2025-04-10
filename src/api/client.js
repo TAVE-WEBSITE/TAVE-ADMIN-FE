@@ -39,4 +39,15 @@ client.interceptors.response.use(
     }
 );
 
+client.interceptors.request.use(
+    async (config) => {
+        if (typeof window !== undefined) {
+            const token = sessionStorage.getItem('access_token');
+            config.headers.set('Authorization', `Bearer ${token}`);
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
 export default client;
