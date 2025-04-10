@@ -26,7 +26,12 @@ export default function Header({ position = 'staff' }) {
             className="fixed top-0 left-0 w-full z-50 flex items-center justify-between py-6 px-[72px]
                 bg-gradient-to-b from-black from-25% to-transparent"
         >
-            <img src={TaveLogo} alt="Logo" className="w-25" />
+            <img
+                src={TaveLogo}
+                alt="Logo"
+                className="w-25 cursor-pointer"
+                onClick={() => window.location.href = '/session'}
+            />
             <ul className="flex items-center gap-x-4 text-white text-xl">
                 {navItems.map(({ path, label }) => (
                     <li key={label} className="py-2 px-4 font-bold">

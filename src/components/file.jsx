@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react';
 
 const File = ({ type, title, teamNum, teamName, category }) => {
-    const backgroundColor = 'linear-gradient(180deg, rgba(76, 76, 76, 1), rgba(27, 27, 27, 1))';
-    const boxShadow = '0px 4.61px 9.22px 0px rgba(0, 0, 0, 0.1)';
-
     const studyVariants = [];
 
     const studyVariant = useMemo(() => {

@@ -42,15 +42,32 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
 
     const handleSubmitEdit = async (updatedData) => {
         console.log('세션 수정');
+    
+        const formData = new FormData();
+        formData.append('title', updatedData.title);
+        formData.append('description', updatedData.description);
+        formData.append('eventDay', updatedData.eventDay);
+    
+        // 파일이 있을 경우만 추가
+        if (updatedData.imgFile) {
+            formData.append('file', updatedData.imgFile);
+        }
+    
         try {
-            await modifySession(selectedSession.sessionId, updatedData); 
-            setSessionData(updatedData); 
+            await modifySession(selectedSession.sessionId, formData); 
+            setSessionData({
+                title: updatedData.title,
+                description: updatedData.description,
+                eventDay: updatedData.eventDay,
+                imgUrl: updatedData.imgFile ? URL.createObjectURL(updatedData.imgFile) : sessionData.imgUrl,
+            });
             setIsEditDialogOpen(false); 
             console.log('세션 수정 완료');
         } catch (error) {
             console.error('세션 수정 실패', error);
         }
     };
+    
 
     return (
         <div className="w-full items-center gap-12 relative" onClick={handleClickSession}>
