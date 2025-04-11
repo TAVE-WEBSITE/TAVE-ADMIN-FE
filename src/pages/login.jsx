@@ -34,6 +34,7 @@ export default function Login() {
     setEssentialPw(e.target.value.trim() !== "");
   };
 
+
   const loginHandler = async () => {
     if (isDisabled) return; //입력값이 비어 있으면 실행되지 않도록 보호
     const response = await postLogin(user, password);
@@ -48,6 +49,7 @@ export default function Login() {
       setIsModal(true);
     }
   };
+
 
   return (
     <div className="flex flex-row h-screen w-screen px-24 py-24 justify-center items-center gap-36 bg-[linear-gradient(180deg,#121212_66.46%,#142755_97.53%,#195BFF_134.64%)]  relative">

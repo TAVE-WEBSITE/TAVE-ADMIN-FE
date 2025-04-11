@@ -3,16 +3,17 @@ import { useState, useEffect } from "react";
 // 특정 type - dialog
 
 export default function Input({
-  placeholder = "",
-  type,
-  onChange = () => {},
-  essentialText,
-  approveText,
-  disapproveText,
-  onValidChange = () => {},
-  isValidateTrigger = false, // form 제출했을 때 validation 확인
-  isConfirmed = false, // 인증 승인 여부
-  value = "", //초기값
+
+    placeholder = '',
+    type,
+    onChange = () => {},
+    essentialText,
+    approveText,
+    disapproveText,
+    onValidChange = () => {},
+    isValidateTrigger = false, // form 제출했을 때 validation 확인
+    isConfirmed = undefined, // 인증 승인 여부
+
 }) {
   const [inputValue, setInputValue] = useState(value);
   const [message, setMessage] = useState("");
