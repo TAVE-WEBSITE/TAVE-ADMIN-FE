@@ -38,12 +38,19 @@ export async function postLogin(email, password) {
     }
 }
 
-export async function postLogout() {
+export async function getLogout() {
     try {
-        const response = await client.post('/auth/signout');
-        return response;
+      const token = localStorage.getItem("token"); 
+      const response = await client.get("/auth/signout", null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response;
     } catch (error) {
-        console.error('로그아웃 에러', error);
-        throw error;
+      console.error("로그아웃 에러", error);
+      throw error;
     }
-}
+    
+  }
+  

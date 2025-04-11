@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { getLogout } from "../api/login";
+import useStore from "../core/userInformation";
 import TaveLogo from "../assets/images/taveLogo.svg";
 import HeaderArrow from "../assets/images/headerArrow.svg";
 
 export default function Header({ position = "staff" }) {
+  const { logout } = useStore();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const isActive = (path) => {
@@ -25,6 +28,31 @@ export default function Header({ position = "staff" }) {
     president: ["관리자 명단", "가입 대기 명단", "로그아웃"],
     staff: ["로그아웃"],
   };
+
+  const handlePopOverClick = (item) => {
+    if (item === "로그아웃") {
+      handleLogout();
+    }
+  };
+
+  const handleLogout = async () => {
+    const token = sessionStorage.getItem("access_token");
+
+    try {
+      await getLogout(); 
+      localStorage.clear();
+    sessionStorage.clear();
+
+    logout(); // zustand store logout 매서드
+
+
+      window.location.href = "/"; // 로그인 페이지로 강제 리프레시
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+      alert("로그아웃 중 문제가 발생했습니다.");
+    }
+  };
+  
 
   return (
     <header
@@ -64,7 +92,7 @@ export default function Header({ position = "staff" }) {
           >
             <div className="flex flex-col gap-4 bg-[#2D2D2D] text-white rounded-[10px] px-4 py-3.5">
               {popOverItems[position]?.map((item, index) => (
-                <div className="cursor-pointer font-medium text-lg" key={index}>
+                <div className="cursor-pointer font-medium text-lg" key={index} onClick={() => handlePopOverClick(item)}>
                   {item}
                 </div>
               ))}
