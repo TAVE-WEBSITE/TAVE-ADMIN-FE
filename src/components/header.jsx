@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import TaveLogo from "../assets/images/taveLogo.svg";
 import HeaderArrow from "../assets/images/headerArrow.svg";
+import useUserStore from "../store/useUserStore";
 
-export default function Header({ position = "staff" }) {
+export default function Header() {
+  const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const isActive = (path) => {
@@ -13,6 +15,7 @@ export default function Header({ position = "staff" }) {
     return location.pathname === path;
   };
   const togglePopOver = () => setIsOpen((prev) => !prev);
+  const {userName , department} = useUserStore();
 
   const navItems = [
     { path: "/session", label: "ACTIVITY" },
@@ -21,10 +24,16 @@ export default function Header({ position = "staff" }) {
     { path: "/apply", label: "APPLY" },
   ];
 
-  const popOverItems = {
-    president: ["관리자 명단", "가입 대기 명단", "로그아웃"],
-    staff: ["로그아웃"],
-  };
+  const popOverItems = department === "회장"
+  ? [
+      { label: "관리자 명단", onClick: () => navigate("/memberList") },
+      { label: "가입 대기 명단", onClick: () => navigate("/waitingList") },
+      { label: "로그아웃", onClick: () => {/* 로그아웃 로직 */} },
+    ]
+  : [
+      { label: "로그아웃", onClick: () => {/* 로그아웃 로직 */} },
+    ];
+
 
   return (
     <header
@@ -49,7 +58,7 @@ export default function Header({ position = "staff" }) {
           className="text-[#bacdff] font-medium flex cursor-pointer gap-1"
           onClick={togglePopOver}
         >
-          경영처 000님
+          {department} {userName}님
           <img
             src={HeaderArrow}
             alt="HeaderArrow"
@@ -59,15 +68,15 @@ export default function Header({ position = "staff" }) {
         {isOpen && (
           <div
             className={`absolute right-0 mr-[78px] w-[143px] ${
-              position === "president" ? "top-[75px]" : "top-[70px]"
+              department === "회장" ? "top-[75px]" : "top-[70px]"
             }`}
           >
             <div className="flex flex-col gap-4 bg-[#2D2D2D] text-white rounded-[10px] px-4 py-3.5">
-              {popOverItems[position]?.map((item, index) => (
-                <div className="cursor-pointer font-medium text-lg" key={index}>
-                  {item}
+            {popOverItems.map((item, index) => (
+              <div key={index} className="cursor-pointer font-medium text-lg" onClick={item.onClick} >
+                {item.label}
                 </div>
-              ))}
+            ))}
             </div>
           </div>
         )}

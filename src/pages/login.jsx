@@ -5,6 +5,8 @@ import Button from "../components/button";
 import Wave from "../assets/images/wave.svg";
 import { useNavigate } from "react-router-dom";
 import { postLogin } from "../api/login";
+import useUserStore from "../store/useUserStore";
+import SimpleModal from "../components/simpleModal";
 
 export default function Login() {
   const [user, setUser] = useState("");
@@ -12,6 +14,8 @@ export default function Login() {
   const [essentialUser, setEssentialUser] = useState(true);
   const [essentialPw, setEssentialPw] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isModal , setIsModal] = useState(false);
+  const { userName,setUserName ,department, setDepartment} = useUserStore();
 
   const navigate = useNavigate();
 
@@ -36,10 +40,12 @@ export default function Login() {
     if (response.status === 200) {
       sessionStorage.setItem("access_token", response.data.result.accessToken);
       localStorage.setItem("email", response.data.result.email);
+      setUserName(response.data.result.username);
+      setDepartment(response.data.result.department === "PRINCIPAL" ? "회장" : response.data.result.department === "TECHNICAL" ? "기술처" : "경영처");
       navigate("/session");
     } else {
       // 모달창 추가하기
-      alert("로그인 실패: 아이디 또는 비밀번호가 올바르지 않습니다.");
+      setIsModal(true);
     }
   };
 
@@ -96,6 +102,8 @@ export default function Login() {
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
         alt="Wave Background"
       />
+       {isModal && <SimpleModal title="로그인 실패" description="아이디 또는 비밀번호가 올바르지 않습니다." blueBtnText="확인"
+      onClickBlue={() => setIsModal(false)}/>}
     </div>
   );
 }
