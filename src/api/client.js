@@ -31,7 +31,7 @@ client.interceptors.response.use(
           if (axios.isAxiosError(refreshError)) {
             if ([404, 422].includes(refreshError.response?.status)) {
               alert("로그인이 필요합니다.");
-              window.location.replace("/login");
+              window.location.replace("/");
             } else {
               alert("토큰 갱신 실패");
             }

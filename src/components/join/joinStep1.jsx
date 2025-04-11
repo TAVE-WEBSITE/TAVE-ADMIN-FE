@@ -1,0 +1,107 @@
+import { useCallback, useState } from "react";
+import MemberInput from "../memberInput";
+import { useNavigate } from "react-router-dom";
+import SimpleModal from "../simpleModal";
+import { postEmailVerification, postEmailVerify } from "../../api/member";
+import useSignupStore from "../../store/useSignupStore";
+
+export default function JoinStep1() {
+  const [email, setEmail] = useState("");
+  const [verification, setVarification] = useState("");
+  const [isEmailModal, setIsEmailModal] = useState(false);
+  const { updateUserData, validateStep } = useSignupStore();
+  const [modalTitle, setModalTitle] = useState("인증번호 발송");
+  const [description, setDescription] = useState("");
+  const [retransmit,setRetransmit] = useState(false);
+
+  //id 모달 사용 가능 불가능 판별
+  const [isAvailable, setIsAvailable] = useState(false);
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleVerificationChange = (e) => {
+    //updateUserData("email", e.target.value);
+    setVarification(e.target.value);
+  };
+
+
+  const emailVerificationHandler = async () => {
+    try{
+      const response = await postEmailVerification(email);
+      if(response?.status === 200){
+        if(retransmit === true){
+          setModalTitle("인증번호 재발송");
+        }else{
+          setModalTitle("인증번호 발송");
+          setRetransmit(true);
+        }
+        setDescription(`입력하신 이메일로 \n인증번호가 발송되었습니다.`);
+        setIsEmailModal(true);
+        
+      }else if(response === 400){
+        setModalTitle("중복된 이메일");
+        setDescription(`이미 회원가입된 이메일입니다.`);
+        setIsEmailModal(true);
+      }else{
+        setModalTitle("인증번호 발송 오류");
+        setDescription(`올바르지 않은 이메일 형식입니다.`);
+        setIsEmailModal(true);
+      }
+
+    }catch(error){
+      
+    }
+    
+  };
+
+  const emailNumberVerificationHandler =  async () => {
+    try{
+      const response = await postEmailVerify(email, verification);
+      if(response?.status === 200){
+        updateUserData("email", email);
+      }
+    }catch(error){
+      // 추후에 이메일 인증번호 틀렸을 때 처리
+    }
+    
+
+
+  };
+
+
+
+  return (
+    <div className="flex flex-col gap-6 items-center w-full">
+      <div className="flex gap-2 items-center w-full">
+        <MemberInput
+          text="이메일"
+          onChange={handleEmailChange}
+          placeholder="이메일을 입력해주세요"
+          essentialText="* 이메일을 입력해주세요."
+          btnText="인증요청"
+          onClick={emailVerificationHandler}
+        ></MemberInput>
+      </div>
+      <div className="flex gap-2 items-center w-full justify-center">
+        <MemberInput
+          text="인증번호"
+          onChange={handleVerificationChange}
+          placeholder="인증번호를 입력해주세요"
+          essentialText="* 인증번호를 입력해주세요."
+          btnText="인증확인"
+          onClick={emailNumberVerificationHandler}
+        ></MemberInput>
+      </div>
+      {isEmailModal && (
+        <SimpleModal
+          title={modalTitle}
+          description={description}
+          blueBtnText="확인"
+          onClickBlue={() => setIsEmailModal(false)}
+        />
+      )}
+    </div>
+  );
+}

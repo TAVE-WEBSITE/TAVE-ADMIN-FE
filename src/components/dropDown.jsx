@@ -5,6 +5,7 @@ import Arrow from '../assets/images/dropArrow.svg';
 // type - default, join, dialog
 
 export default function DropDown({
+    disabled = true,
     valueList,
     setValue,
     type,
@@ -43,10 +44,16 @@ export default function DropDown({
         }
     };
 
+    useEffect( () => {
+        if(!disabled){
+            setIsOpen(false);
+            setSelectedValue(valueList[0]);
+        }
+    },[disabled])
     return (
         <div className="w-full relative">
             <div
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={disabled ? () => setIsOpen(!isOpen) : () => {}}
                 className={`flex items-center justify-between w-full py-3.5 px-4 rounded-[10px] font-medium ${
                     type === 'join'
                         ? `bg-[#313338] ${selectedValue !== valueList[0] ? 'text-white' : 'text-[#81818a]'} text-lg`
