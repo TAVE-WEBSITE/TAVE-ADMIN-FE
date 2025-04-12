@@ -1,210 +1,95 @@
-import { useState, useEffect, useCallback, React } from 'react';
-import TaveLogo from '../assets/images/taveLogo.svg';
-import Button from '../components/button';
-import MemberInput from '../components/memberInput';
-import DropDown from '../components/dropDown';
-import SimpleModal from '../components/simpleModal';
-import Wave from '../assets/images/wave.svg';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback, React } from "react";
+import TaveLogo from "../assets/images/taveLogo.svg";
+import Button from "../components/button";
+import SimpleModal from "../components/simpleModal";
+import Wave from "../assets/images/wave.svg";
+import { useNavigate } from "react-router-dom";
+import JoinStep1 from "../components/join/joinStep1";
+import JoinStep2 from "../components/join/joinStep2";
+import JoinStep3 from "../components/join/joinStep3";
+import useSignupStore from "../store/useSignupStore";
+import { postSignUp } from "../api/member";
 
 export default function Join() {
-    const [step, setStep] = useState(1);
-    const navigate = useNavigate();
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [inputValue, setInputValue] = useState('');
-    const [department, setDepartment] = useState('부서');
-    const [position, setPosition] = useState('직책');
-    const departmentList = ['부서', '경영처', '기술처'];
-    const positionList = ['직책', '회장', '처장', '처원'];
+  const { step, setStep, isBtnDisabled, validateStep, userData, resetUserData } =
+    useSignupStore();
+  const navigate = useNavigate();
+  const [isModal, setIsModal] = useState(false); 
+  const [modalTitle , setModalTitle] = useState("");
 
-    const [authCode, setAuthCode] = useState(''); // 실제 인증번호
-    const [inputAuthCode, setInputAuthCode] = useState(''); // 사용자가 입력한 인증번호
-    const [authStatus, setAuthStatus] = useState(null);
+  useEffect( () => {
+    resetUserData();
+    validateStep();
+  },[]);
 
-    // step별로 유효성 관리
-    const [step1Valid, setStep1Valid] = useState([false, false, false, false]);
-    const [step2Valid, setStep2Valid] = useState([false, false, false, false]);
 
-    const handleNextStep = () => {
-        setStep(step + 1);
-    };
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value);
-    };
+  useEffect(() => {
+    validateStep();
+    //console.log("유저 데이터" , userData);
+  }, [userData.password , userData.email,userData]);
 
-    // 전달하는 함수가 무한으로 재생성하는걸 방지하기 위해 useCallbsck으로 감쌈
-    const handleValidChange = useCallback(
-        (index, isValid) => {
-            if (step === 1) {
-                setStep1Valid((prev) => {
-                    const updated = [...prev];
-                    updated[index] = isValid;
-                    return updated;
-                });
-            } else if (step === 2) {
-                setStep2Valid((prev) => {
-                    const updated = [...prev];
-                    updated[index] = isValid;
-                    return updated;
-                });
-            }
-        },
-        [step]
-    );
 
-    // 인증 요청 버튼 클릭 시 인증번호 생성 (나중에 서버에서 실제 인증값 받아서 대치)
-    const handleRequestAuth = () => {
-        const generatedCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6자리 랜덤 숫자
-        console.log(generatedCode);
-        setAuthCode(generatedCode);
-        setModalOpen(true);
-    };
 
-    // 인증번호 확인
-    const handleVerifyAuth = () => {
-        if (inputAuthCode === authCode) {
-            setAuthStatus('success'); // 인증 성공
-        } else {
-            setAuthStatus('fail'); // 인증 실패
+  const postSignupData = async () => {
+        try {
+          const response = await postSignUp();
+          if (response?.status === 200) {
+            // 회원가입 완료 모달?
+            setModalTitle();
+            setIsModal(true);
+          } 
+        } catch (error) {
+          console.error("Error fetching history:", error);
+          setIsModal(true);
+          // 실패 모달
+          
         }
-        console.log(authStatus);
-    };
+      };
 
-    useEffect(() => {
-        if (authStatus === 'success') {
-            handleValidChange(1, true); // 인증 성공 시 유효성 true
-        } else if (authStatus === 'fail') {
-            handleValidChange(1, false); // 인증 실패 시 유효성 false
-        }
-    }, [authStatus]);
+  return (
+    <div
+      className="flex flex-row h-screen w-screen px-24 py-[5vh] justify-center items-center gap-36 
+                 bg-[linear-gradient(180deg,#121212_66.46%,#142755_97.53%,#195BFF_134.64%)] 
+                 relative"
+    >
+      <div className="flex flex-col items-center z-10">
+        <div className="text-white text-3xl">The new technology wave,</div>
+        <img className="w-96" src={TaveLogo} alt="Logo" />
+      </div>
 
-    //step별로 유효성 검사
-    const step1AllValid = step1Valid.every((value) => value);
-    const step2AllValid = step2Valid.every((value) => value);
+      <div
+        className="flex flex-col items-center justify-center flex-shrink-0 h-full
+                 w-[41rem] max-h-[calc(100vh-4rem)] px-[5rem] py-[4vh] 
+                 rounded-[24px] border border-[#FFFFFF1A] 
+                 bg-[rgba(110,112,117,0.12)] shadow-[1px_2px_48px_0px_rgba(0,0,0,0.04)] 
+                 backdrop-blur-[15px] text-white relative z-10 gap-4"
+      >
+        <div className="text-white text-3xl font-bold leading-[58px] tracking-[-1.44px] text-center">
+          {step === 3 ? "정보 입력" : "회원 가입"}
 
-    return (
-        <div className="flex flex-row h-screen w-screen px-24 py-24 justify-center items-center gap-36 bg-gradient-to-r from-[#121212] to-[#1445BC] relative">
-            <div className="flex flex-col items-center z-10">
-                <div className="text-white text-3xl">The new technology wave,</div>
-                <img className="w-96" src={TaveLogo} alt="Logo" />
-            </div>
-
-            <div className="w-[38rem] h-[40rem] flex flex-col items-center justify-center gap-6 px-16 bg-[#1212124D] p-10 border border-[#FFFFFF1A] rounded-2xl relative backdrop-blur-md z-10 text-white">
-                <div className="text-4xl text-white  font-medium mb-10">회원가입</div>
-
-                {/* 1 단계 : 본인기수, 아지트 아이디  */}
-                {step === 1 && (
-                    <div className="flex flex-col gap-6">
-                        <MemberInput
-                            text="본인기수"
-                            hint="ex. 12"
-                            essentialText="기수를 입력해주세요."
-                            onValidChange={(isValid) => handleValidChange(0, isValid)}
-                        />
-                        <MemberInput
-                            text="아지트 아이디"
-                            hint="ex. tave1234"
-                            essentialText="아지트 아이디를 입력해주세요."
-                            onValidChange={(isValid) => handleValidChange(1, isValid)}
-                        />
-                        <div className="flex gap-2">
-                            <div className="flex w-24 font-normal text-white justify-end items-center">
-                                현재 직책
-                                <div className="text-red-500 "> *</div>
-                            </div>
-
-                            <div className="flex gap-4 items-center">
-                                <DropDown
-                                    valueList={departmentList}
-                                    setValue={setDepartment}
-                                    isJoin={true}
-                                    user_width="11.5rem"
-                                    onValidChange={(isValid) => handleValidChange(2, isValid)}
-                                />
-                                <DropDown
-                                    valueList={positionList}
-                                    setValue={setPosition}
-                                    isJoin={true}
-                                    user_width="11.5rem"
-                                    onValidChange={(isValid) => handleValidChange(3, isValid)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* 2단계 : 이메일, 이메일 인증 */}
-                {step === 2 && (
-                    <div className="flex flex-col gap-6 items-end pr-5">
-                        <div className="flex gap-5 items-center">
-                            <MemberInput
-                                text="이메일"
-                                onChange={handleInputChange}
-                                user_width="16em"
-                                hint="이메일을 입력해주세요"
-                                essentialText="이메일을 입력해주세요."
-                                onValidChange={(isValid) => handleValidChange(0, isValid)}
-                            ></MemberInput>
-                            <button
-                                onClick={() => {
-                                    handleRequestAuth();
-                                }}
-                                className="w-25 h-11 mt-7 text-base text-white items-center rounded-md py-1 px-5 font-light-350 bg-[#195BFF] whitespace-nowrap"
-                            >
-                                인증요청
-                            </button>
-
-                            {isModalOpen && (
-                                <SimpleModal
-                                    text={'입력하신 이메일로'}
-                                    additionalText={'인증번호를 발송했습니다.'}
-                                    buttonType="confirm"
-                                    isAvailable={true}
-                                    showCancel={false}
-                                    onClose={() => setModalOpen(false)}
-                                />
-                            )}
-                        </div>
-                        <div className="flex gap-5 items-center">
-                            <MemberInput
-                                text="인증번호"
-                                onChange={(e) => setInputAuthCode(e.target.value)} // 인증번호 입력값 업데이트
-                                user_width="16em"
-                                hint="인증번호를 입력해주세요"
-                                essentialText={authStatus === 'fail' ? '인증번호가 틀렸습니다.' : ''}
-                                confirmText={authStatus === 'success' ? '인증번호가 확인되었습니다.' : ''}
-                                onValidChange={(isValid) => handleValidChange(1, isValid)}
-                            />
-                            <button
-                                onClick={handleVerifyAuth} // 인증 확인 버튼 클릭 시 인증 검증
-                                className="w-25 h-11 mt-7 text-base text-white items-center rounded-md py-1 px-5 font-light-350 bg-[#195BFF] whitespace-nowrap"
-                            >
-                                인증확인
-                            </button>
-                        </div>
-                    </div>
-                )}
-                {/* 3단계: 비밀번호  */}
-                {step === 3 && (
-                    <div className="flex flex-col gap-6">
-                        <MemberInput
-                            text="비밀번호 확인"
-                            hint="비밀번호를 다시 입력해주세요"
-                            essentialText="비밀번호가 일치하지 않습니다."
-                            onValidChange={(isValid) => handleValidChange(2, isValid)}
-                        ></MemberInput>
-                    </div>
-                )}
-                <Button
-                    text={step === 1 ? '다음으로' : '가입하기'}
-                    user_width="30rem"
-                    user_height="4rem"
-                    onClick={step === 1 ? handleNextStep : () => navigate('/Login')}
-                    disabled={step === 1 ? !step1AllValid : !step2AllValid}
-                />
-            </div>
-
-            <img src={Wave} className="absolute top-0 left-0 w-full h-full object-cover z-0" alt="Wave Background" />
         </div>
-    );
+
+        {step === 1 && <JoinStep1 />}
+        {step === 2 && <JoinStep2 />}
+        {step === 3 && <JoinStep3 />}
+        {isModal && <SimpleModal title="회원가입 완료" description="로그인 화면으로 이동합니다."
+        blueBtnText="확인" onClickBlue={() => {
+          setIsModal(false);
+          navigate("/");
+        }} />}
+
+        <Button
+          text={step === 3 ? "가입하기" : "다음으로"}
+          onClick={step === 3 ? postSignupData :() => setStep(step + 1)}
+          disabled={isBtnDisabled}
+        />
+      </div>
+
+      <img
+        src={Wave}
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+        alt="Wave Background"
+      />
+    </div>
+  );
 }
