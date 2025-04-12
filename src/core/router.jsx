@@ -19,7 +19,7 @@ function AppRouter() {
     const currentPath = location.pathname;
     const excludedPaths = ['/join', '/forgotPassword'];
 
-    useEffect(() => {
+    /*useEffect(() => {
         const accessToken = sessionStorage.getItem('access_token');
 
         if (!accessToken) {
@@ -46,7 +46,7 @@ function AppRouter() {
                 navigate('/');
             }
         }
-    }, [currentPath]);
+    }, [currentPath]);*/
 
     return (
         <>
