@@ -39,7 +39,7 @@ export default function HistoryElements({
           {item.details.map((detail, descIndex) => (
             <div
               key={descIndex}
-              className="w-full bg-gray-100 rounded-[10px] px-6 py-5 flex items-center justify-between mb-4 bg-[rgba(255,255,255,0.1)]"
+              className="w-full bg-white bg-opacity-[0.07] rounded-[10px] px-6 py-5 flex items-center justify-between mb-4 bg-[rgba(255,255,255,0.1)]"
             >
               <div className="body-text-1 text-white">{detail.description}</div>
               <div className="flex justify-between gap-[8px] ">

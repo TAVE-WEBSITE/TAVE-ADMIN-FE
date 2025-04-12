@@ -34,9 +34,9 @@ export async function postSession(formDataToSend) {
 
 
 
-export async function modifySession(sessionId, data) {
+export async function modifySession(sessionId, formData) {
     try {
-        const response = await client.put(`/manager/session/${sessionId}`, data);
+        const response = await client.patch(`/manager/session/${sessionId}`, formData);
         return response.data; 
     } catch (error) {
         console.error('정규 세션 수정 에러', error);

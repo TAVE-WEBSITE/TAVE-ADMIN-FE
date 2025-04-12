@@ -191,21 +191,27 @@ export default function MemberList() {
                     </tbody>
                     {/* 탈퇴 확인 모달 */}
                     {isModalOpen && (
-                        <SimpleModal
-                            title={modalText}
-                            description={modalAdditionalText}
-                            onClose={handleCloseModal}
-                            onConfirm={handleMemberRemoval} // 확인 버튼 클릭 시 실행
-                        />
-                    )}
-                    {/* 탈퇴 완료 모달 */}
-                    {isConfirmModalOpen && (
-                        <SimpleModal
-                            title={modalText}
-                            description={modalAdditionalText}
-                            onClose={() => setConfirmModalOpen(false)}
-                        />
-                    )}
+    <SimpleModal
+        title={modalText}
+        description={modalAdditionalText}
+        grayBtnText="취소"
+        blueBtnText="탈퇴"
+        onClickGray={handleCloseModal}      
+        onClickBlue={handleMemberRemoval} 
+        onClose={handleCloseModal} 
+    />
+)}
+
+{isConfirmModalOpen && (
+    <SimpleModal
+        title={modalText}
+        description={modalAdditionalText}
+        blueBtnText="확인"
+        onClickBlue={() => setConfirmModalOpen(false)}
+        onClose={() => setConfirmModalOpen(false)}
+    />
+)}
+
                 </table>
                 <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
             </div>
