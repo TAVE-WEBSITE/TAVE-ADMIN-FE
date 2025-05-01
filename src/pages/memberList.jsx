@@ -168,7 +168,6 @@ export default function MemberList() {
                             <th className="py-5 px-4"></th> {/* 탈퇴 버튼 열  */}
                         </tr>
                     </thead>
-
                     {/* 테이블 바디 */}
                     <tbody>
                         {memberDataPaged.map((member, index) => (
