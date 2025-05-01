@@ -57,7 +57,7 @@ export default function Header() {
       logout(); // Zustand 상태 초기화
   
       // 로그인 페이지로 이동 및 새로고침으로 쿠키 초기화
-      window.location.href = "/login";
+      window.location.href = "/";
     } catch (error) {
       console.error("로그아웃 실패:", error);
       alert("로그아웃 중 문제가 발생했습니다.");
