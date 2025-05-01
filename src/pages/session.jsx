@@ -1,59 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { getSession } from '../api/session';
+import React from 'react';
 import Tab from '../components/tab';
 import Header from '../components/header';
 import SessionBlock from '../components/sessionBlock';
 import SessionDialog from '../components/sessionDialog';
 import Pagination from '../components/pagination';
+import { useSessions } from '../hooks/useSessions';
+import useSessionStore from '../store/sessionStore';
 
 export default function Session() {
     const categories = ['정규세션', '동아리 이력', '후기'];
     const links = ['/session', '/history', '/review'];
 
-    const [sessions, setSessions] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
+    const { data: sessions = [], isLoading, isError } = useSessions();
+
+    const { currentPage, setCurrentPage, isModalOpen, openModal, closeModal } = useSessionStore();
 
     const sessionsPerPage = 5;
-
-    useEffect(() => {
-        async function loadSessions() {
-            try {
-                const response = await getSession();
-                if (response) {
-                    setSessions(response);
-                } else {
-                    setSessions([]);
-                }
-            } catch (error) {
-                console.error("세션 데이터 조회 오류", error);
-                setSessions([]);
-            }
-        }
-        loadSessions();
-    }, []);
-
-    // 페이지네이션 관련 계산
     const indexOfLastSession = currentPage * sessionsPerPage;
     const indexOfFirstSession = indexOfLastSession - sessionsPerPage;
     const currentSessions = sessions.slice(indexOfFirstSession, indexOfLastSession);
     const totalPages = Math.ceil(sessions.length / sessionsPerPage);
 
-    const handlePageChange = (pageNum) => {
-        setCurrentPage(pageNum);
-    };
-
-    const handleCreateSession = () => {
-        setIsModalOpen(true); 
-    };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false); 
-    };
-
     const handleAddSession = () => {
         console.log('새 세션 추가');
-        setIsModalOpen(false);
+        closeModal();
     };
 
     return (
@@ -65,14 +35,18 @@ export default function Session() {
                 </div>
                 <div className='flex justify-end mt-12'>
                     <button
-                        onClick={handleCreateSession}
+                        onClick={openModal}
                         className='bg-[#1A5BFF] h-12 px-5 py-2 rounded-lg inline-flex justify-center items-center gap-2 text-white text-lg font-semibold cursor-pointer'>
                         세션 추가
                     </button>
                 </div>
 
                 <div className="flex flex-col gap-5 justify-between mt-10">
-                    {currentSessions.length > 0 ? (
+                    {isLoading ? (
+                        <p className="text-white text-center w-full">로딩 중...</p>
+                    ) : isError ? (
+                        <p className="text-white text-center w-full">세션 조회 실패</p>
+                    ) : (
                         currentSessions.map((session) => (
                             <SessionBlock
                                 key={session.sessionId}
@@ -83,23 +57,21 @@ export default function Session() {
                                 imgUrl={session.imgUrl}
                             />
                         ))
-                    ) : (
-                        <p className="text-white text-center w-full">세션 조회 실패</p>
                     )}
                 </div>
 
                 {totalPages > 1 && (
-                    <Pagination
+                    <Pagination 
                         currentPage={currentPage}
                         totalPages={totalPages}
-                        onPageChange={handlePageChange}
+                        onPageChange={setCurrentPage}
                     />
                 )}
 
                 {isModalOpen && (
                     <SessionDialog
                         type="register"
-                        onClose={handleCloseModal}
+                        onClose={closeModal}
                         onSubmit={handleAddSession}
                     />
                 )}

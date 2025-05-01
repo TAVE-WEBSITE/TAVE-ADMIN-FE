@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getLogout } from "../api/login";
-import useStore from "../core/userInformation";
+import useStore from "../hooks/userInformation";
 
 import TaveLogo from "../assets/images/taveLogo.svg";
 import HeaderArrow from "../assets/images/headerArrow.svg";
@@ -32,10 +32,10 @@ export default function Header() {
   ? [
       { label: "관리자 명단", onClick: () => navigate("/memberList") },
       { label: "가입 대기 명단", onClick: () => navigate("/waitingList") },
-      { label: "로그아웃", onClick: () => {/* 로그아웃 로직 */} },
+      { label: "로그아웃", onClick: () => handlePopOverClick("로그아웃") },
     ]
   : [
-      { label: "로그아웃", onClick: () => {/* 로그아웃 로직 */} },
+      { label: "로그아웃", onClick: () => handlePopOverClick("로그아웃") },
     ];
 
 
@@ -46,17 +46,18 @@ export default function Header() {
   };
 
   const handleLogout = async () => {
-    const token = sessionStorage.getItem("access_token");
 
     try {
-      await getLogout(); 
-      localStorage.clear();
-    sessionStorage.clear();
-
-    logout(); // zustand store logout 매서드
-
-
-      window.location.href = "/"; // 로그인 페이지로 강제 리프레시
+      await getLogout();
+  
+      sessionStorage.removeItem("access_token");
+      localStorage.removeItem("email");
+      sessionStorage.clear();
+  
+      logout(); // Zustand 상태 초기화
+  
+      // 로그인 페이지로 이동 및 새로고침으로 쿠키 초기화
+      window.location.href = "/login";
     } catch (error) {
       console.error("로그아웃 실패:", error);
       alert("로그아웃 중 문제가 발생했습니다.");

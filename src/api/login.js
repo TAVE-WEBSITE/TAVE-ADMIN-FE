@@ -1,5 +1,5 @@
 import client from './client';
-import useStore from '../core/userInformation';
+import useStore from '../hooks/userInformation';
 
 // 수정 <- 수정완료 되면 삭제해주세요 !
 
@@ -40,10 +40,10 @@ export async function postLogin(email, password) {
 
 export async function getLogout() {
     try {
-      const token = localStorage.getItem("token"); 
+      const token = sessionStorage.getItem("access_token"); 
       const response = await client.get("/auth/signout", null, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
         },
       });
       return response;
