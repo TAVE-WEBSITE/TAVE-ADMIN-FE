@@ -29,10 +29,6 @@ const [isEmailModal, setIsEmailModal] = useState(false);
 const [isEmailVerified, setIsEmailVerified] = useState(false);
 
 
-// 임시 확인용 난수
-const [generatedCode, setGeneratedCode] = useState('');
-
-
     const navigate = useNavigate();
 
     const authAfter = () => {
@@ -77,12 +73,6 @@ const [generatedCode, setGeneratedCode] = useState('');
         try {
             const response = await postEmailVerification(email, true);
             const isSuccess = response?.status === 200;
-
-             // 인증번호 임시로 생성 (나중에 백엔드와 연동 시 삭제!)
-        const newCode = Math.floor(100000 + Math.random() * 900000).toString();
-        setGeneratedCode(newCode);
-        console.log("발급된 인증번호 (개발용):", newCode);
-
     
             if (isSuccess) {
                 setModalTitle(retransmit ? "인증번호 재발송" : "인증번호 발송");
@@ -103,18 +93,9 @@ const [generatedCode, setGeneratedCode] = useState('');
     
 
     const handleVerifyCode = async () => {
-
-        // 실제 서버 응답과 관계없이 프론트에서 먼저 검증
-    if (authCode === generatedCode) {
-        setIsEmailVerified(true);
-        handleValidChange(2, true, 1);
-        setAuthVerified(true); // 버튼에 확인 표시
-        return;
-    }
-
         try {
-          const res = await postEmailVerify(email, authCode);
-          if (res.data.status === 200) {
+          const status = await postEmailVerify(email, authCode);
+          if (status === 200) {
             setIsEmailVerified(true);
             handleValidChange(2, true, 1);
           } else {

@@ -2,7 +2,7 @@ import client from './client';
 
 export async function postEmailVerification(email, reset) {
     try {
-      const response = await client.post("/normal/authenticate/email", {
+      const response = await client.post("/normal/authenticate/email?reset=true", {
         email: email,
         number: "", // 인증번호 입력 전이므로 비워둠
       });
@@ -19,12 +19,12 @@ export async function postEmailVerification(email, reset) {
   
   export async function postEmailVerify(email, number) {
     try {
-      const response = await client.post(`/normal/verify/number`, {
+      const response = await client.post(`/normal/verify/number?reset=true`, {
         email: email,
         number: number, 
       });
   
-      return response.data;
+      return response.status;
     } catch (error) {
       if (error.response && error.response.status === 400) {
         return 400;

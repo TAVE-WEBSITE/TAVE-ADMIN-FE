@@ -46,14 +46,16 @@ export default function Input({
         onChange(e);
         onValidChange(value.trim() !== '');
     
-        // 입력값이 없을 때만 essentialText 표시
-        if (value.trim() === '') {
-            setMessage(essentialText);
-        } else {
-            setMessage('');
+        // 메시지는 isConfirmed가 undefined일 때만 갱신
+        if (isConfirmed === undefined) {
+            if (value.trim() === '') {
+                setMessage(essentialText);
+            } else {
+                setMessage('');
+            }
         }
     };
-
+    
     useEffect(() => {
         if (isConfirmed === true) {
             setMessage(approveText);
@@ -62,7 +64,7 @@ export default function Input({
         } else {
             setMessage('');
         }
-    }, [isConfirmed]);
+    }, [isConfirmed]);    
 
     const borderColor = message
     ? message === approveText
