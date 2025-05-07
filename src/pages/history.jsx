@@ -1,46 +1,33 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import Tab from "../components/tab";
 import Header from "../components/header";
 import SearchBar from "../components/searchBar";
 import HistoryBlock from "../components/historyBlock";
-import SimpleModal from "../components/simpleModal";
 import HistoryDialog from "../components/historyDialog";
-import { getManagerHistory, postHistory } from "../api/history";
+import { getManagerHistory} from "../api/history";
+import { useQuery } from "@tanstack/react-query";
 
 export default function History() {
   const categories = ["정규세션", "동아리 이력", "후기"];
   const links = ["/session", "/history", "/review"];
   const [isAddModal, setIsAddModal] = useState(false);
-
-  const [histories, setHistories] = useState([]);
   const [searchInput, setSearchInput] = useState("");
 
-  const searchedData = searchInput
+    const { data: histories = [], isLoading, isError, error } = useQuery({
+      queryKey: ['managerHistory'],
+      queryFn: getManagerHistory,
+      select: (data) => data.slice().reverse(), 
+    });
+
+    const searchedData = searchInput
     ? histories.filter((item) =>
         item.details.some((detail) =>
           detail.description.toLowerCase().includes(searchInput.toLowerCase())
         )
       )
     : histories;
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getManagerHistory();
-        if (response && Array.isArray(response)) {
-          setHistories(response.slice().reverse());
-          console.log(response);
-        } else {
-          setHistories([]);
-        }
-      } catch (error) {
-        console.error("Error fetching history:", error);
-        setHistories([]);
-      }
-    };
-    fetchData();
-  }, []);
+    
 
   const date = (history) => {
     let result = 0;
