@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getLogout } from "../api/login";
+import useStore from "../core/userInformation";
+
 import TaveLogo from "../assets/images/taveLogo.svg";
 import HeaderArrow from "../assets/images/headerArrow.svg";
 import useUserStore from "../store/useUserStore";
 
 export default function Header() {
   const navigate = useNavigate();
+   const { logout } = useStore();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const isActive = (path) => {
@@ -35,12 +39,37 @@ export default function Header() {
     ];
 
 
+  const handlePopOverClick = (item) => {
+    if (item === "로그아웃") {
+      handleLogout();
+    }
+  };
+
+  const handleLogout = async () => {
+    const token = sessionStorage.getItem("access_token");
+
+    try {
+      await getLogout(); 
+      localStorage.clear();
+    sessionStorage.clear();
+
+    logout(); // zustand store logout 매서드
+
+
+      window.location.href = "/"; // 로그인 페이지로 강제 리프레시
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+      alert("로그아웃 중 문제가 발생했습니다.");
+    }
+  };
+  
+
   return (
     <header
       className="fixed top-0 left-0 w-full z-50 flex items-center justify-between py-6 px-[72px]
                 bg-gradient-to-b from-black from-25% to-transparent"
     >
-      <img src={TaveLogo} alt="Logo" className="w-25" />
+      <img src={TaveLogo} alt="Logo" className="w-25 cursor-pointer" onClick={() => window.location.href = "/session"}/>
       <ul className="flex items-center gap-x-4 text-white text-xl">
         {navItems.map(({ path, label }) => (
           <li key={label} className="py-2 px-4 font-bold">
@@ -75,6 +104,7 @@ export default function Header() {
             {popOverItems.map((item, index) => (
               <div key={index} className="cursor-pointer font-medium text-lg" onClick={item.onClick} >
                 {item.label}
+
                 </div>
             ))}
             </div>

@@ -24,23 +24,17 @@ export async function postStudy({ teamName, generation, field, topic, blogUrl })
     }
 }
 
-export async function modifyStudy(id, { teamName, generation, field, topic, blogUrl }) {
+export async function modifyStudy(studyId) {
     try {
-        await client.put(`/manager/study/${id}`, {
-            teamName,
-            generation,
-            field,
-            topic,
-            blogUrl,
-        });
+        await client.put(`/manager/study/${studyId}`);
     } catch (error) {
         console.error('스터디 수정 에러', error);
     }
 }
 
-export async function deleteStudy(id) {
+export async function deleteStudy(studyId) {
     try {
-        await client.delete(`/manager/study/${id}`);
+        await client.delete(`/manager/study/${studyId}`);
     } catch (error) {
         console.error('스터디 삭제 에러', error);
     }

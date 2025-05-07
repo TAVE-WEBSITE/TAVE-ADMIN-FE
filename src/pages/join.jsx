@@ -69,6 +69,7 @@ export default function Join() {
       >
         <div className="text-white text-3xl font-bold leading-[58px] tracking-[-1.44px] text-center">
           {step === 3 ? "정보 입력" : "회원 가입"}
+
         </div>
 
         {step === 1 && <JoinStep1 />}

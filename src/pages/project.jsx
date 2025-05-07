@@ -10,7 +10,7 @@ import DetailDialog from '../components/detailDialog';
 
 export default function Project() {
     const [batch, setBatch] = useState('ALL');
-    const batchList = ['ALL', '14기', '13기', '12기', '11기'];
+    const [batchList, setBatchList] = useState(['ALL']);
     const [field, setField] = useState('ALL');
     const fieldList = ['ALL', '연합 프로젝트', '심화 프로젝트'];
     const [searchTerm, setSearchTerm] = useState('');
@@ -28,17 +28,24 @@ export default function Project() {
     };
 
     useEffect(() => {
-        async function fetchProject() {
-            try {
-                const projectData = await getProject();
-                setFileSet(projectData.content);
-            } catch (e) {
-                console.log(e);
+            async function fetchProject() {
+                try {
+                    const projectData = await getProject();
+                    setFileSet(projectData.content);
+                    console.log(projectData.content);
+                    // generation 값을 기준으로 batchList 업데이트
+                    const uniqueGenerations = new Set(projectData.content.map((file) => file.generation));
+                    const sortedGenerations = Array.from(uniqueGenerations)
+                        .sort((a, b) => parseInt(b) - parseInt(a)) // 내림차순 정렬
+                        .map((gen) => `${gen}기`); 
+                    setBatchList((prevBatchList) => ['ALL', ...sortedGenerations]); // 'ALL' 포함
+                } catch (e) {
+                    console.log(e);
+                }
             }
-        }
-        fetchProject();
-    }, []);
-
+            fetchProject();
+        }, []);
+   
     const filteredFileSet = fileSet.filter((file) => {
         const isFieldMatch = field === 'ALL' || file.field === fieldMapping[field];
         const isBatchMatch = batch === 'ALL' || file.generation === batch.replace('기', '');
@@ -91,6 +98,7 @@ export default function Project() {
                             generation={data.generation}
                             title={data.description}
                             teamName={data.title}
+                            imageUrl={data.imageUrl}
                             onClick={() => handleDetailClick(data.id)}
                         />
                     ))}

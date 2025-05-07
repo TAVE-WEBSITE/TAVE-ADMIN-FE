@@ -10,9 +10,9 @@ import DetailDialog from '../components/detailDialog';
 
 export default function Study() {
     const [batch, setBatch] = useState('ALL');
-    const batchList = ['ALL', '14기', '13기', '12기', '11기'];
+    const [batchList, setBatchList] = useState(['ALL']);
     const [field, setField] = useState('ALL');
-    const fieldList = ['ALL', 'Web/App', 'Back', 'DeepLearning', 'DataAnalysis'];
+    const fieldList = ['ALL', 'Web/App', 'Back', 'DeepLearning', 'DataAnalysis', 'Design'];
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [isRegisterOpen, setIsRegisterOpen] = useState(false);
@@ -34,6 +34,13 @@ export default function Study() {
             try {
                 const studyData = await getStudy();
                 setFileSet(studyData.content);
+                
+                // generation 값을 기준으로 batchList 업데이트
+                const uniqueGenerations = new Set(studyData.content.map((file) => file.generation));
+                const sortedGenerations = Array.from(uniqueGenerations)
+                    .sort((a, b) => parseInt(b) - parseInt(a)) // 내림차순 정렬
+                    .map((gen) => `${gen}기`); 
+                setBatchList((prevBatchList) => ['ALL', ...sortedGenerations]); // 'ALL' 포함
             } catch (e) {
                 console.log(e);
             }
@@ -41,19 +48,19 @@ export default function Study() {
         fetchStudy();
     }, []);
 
-    const filteredFileSet = fileSet.filter((file) => {
+    const filteredFileSet = (fileSet || []).filter((file) => {
         const isFieldMatch = field === 'ALL' || file.field === fieldMapping[field];
         const isBatchMatch = batch === 'ALL' || file.generation === batch.replace('기', '');
         const isSearchMatch = !searchTerm || file.topic.includes(searchTerm) || file.teamName.includes(searchTerm);
-
+    
         return isFieldMatch && isBatchMatch && isSearchMatch;
     });
+    
 
     const itemsPerPage = 7;
-
     const totalPages = Math.ceil(filteredFileSet.length / itemsPerPage);
     const paginatedData = filteredFileSet.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
+    
     const handleSearch = (term) => setSearchTerm(term);
     const handlePageChange = (pageNum) => setCurrentPage(pageNum);
 
@@ -97,6 +104,7 @@ export default function Study() {
                         />
                     ))}
                 </div>
+
                 <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
             </div>
             {isDetailOpen && (

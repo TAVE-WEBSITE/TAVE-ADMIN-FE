@@ -16,7 +16,7 @@ export default function File({ title, generation, teamName, imageUrl, type, onCl
     return (
         <div
             className={`relative w-[270px] cursor-pointer flex 
-                ${type === 'plus' ? 'items-center justify-center h-[221px]' : 'items-end justify-start h-[230px]'}`}
+                ${type === 'plus' ? 'items-center justify-center h-[224px]' : 'items-end justify-start h-[225px]'}`}
             onClick={onClick}
             style={{
                 backgroundImage: `url(${type === 'study' ? studyVariant : FileBack})`,
@@ -25,9 +25,9 @@ export default function File({ title, generation, teamName, imageUrl, type, onCl
         >
             {type !== 'study' && (
                 <img
-                    src={type === 'plus' ? FileFront : imageUrl}
+                    src={type === 'plus' ? FileFront : imageUrl || FileFront}
                     alt="fileImage"
-                    className="absolute w-[270px] h-[181px] bottom-0 left-0 object-cover rounded-[18px]"
+                    className="absolute w-[270px] h-[181px] bottom-0 left-0 object-cover rounded-[18px] z-0"
                 />
             )}
             {type === 'plus' ? (
@@ -36,7 +36,7 @@ export default function File({ title, generation, teamName, imageUrl, type, onCl
                     <p className="text-white text-lg font-bold opacity-50">{plusType === 'study' ? '스터디' : '프로젝트'} 추가</p>
                 </div>
             ) : (
-                <div className="text-white px-5 py-6">
+                <div className="text-white px-5 py-6 z-10">
                     <p className="text-base font-bold">{title}</p>
                     <p className="text-[13px] font-normal">
                         {generation}기 {teamName} 팀

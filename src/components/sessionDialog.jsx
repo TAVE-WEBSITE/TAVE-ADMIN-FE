@@ -64,7 +64,7 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                 let result;
     
                 if (type === 'modify') {
-                    result = await modifySession(sessionId, requestData);
+                    result = await modifySession(sessionId, formDataToSend);
                     console.log('수정 결과:', result);
     
                     if (result) {
