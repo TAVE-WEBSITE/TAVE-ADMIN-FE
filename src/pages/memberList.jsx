@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { getMemberList } from '../api/memberList';
+import { getMemberList, deleteMember } from '../api/memberList';
 import Tab from '../components/tab';
 import Header from '../components/header';
 import Pagination from '../components/pagination';
@@ -121,7 +121,7 @@ export default function MemberList() {
         setModalOpen(false);
     };
 
-    const handleMemberRemoval = () => {
+    const handleMemberRemoval = async () => {
         if (!selectedMemberId) {
             setModalText('오류');
             setModalAdditionalText('탈퇴할 회원을 찾을 수 없습니다.');
@@ -129,21 +129,27 @@ export default function MemberList() {
             return;
         }
 
-        // 선택된 멤버 찾기
-        const memberToRemove = memberData.find((member) => member.id === selectedMemberId);
-        if (memberToRemove) {
-            // 기존 모달 닫기
-            setModalOpen(false);
+        try {
+            await deleteMember(selectedMemberId);
+            // 선택된 멤버 찾기
+            const memberToRemove = memberData.find((member) => member.id === selectedMemberId);
+            if (memberToRemove) {
+                // 기존 모달 닫기
+                setModalOpen(false);
 
-            // 탈퇴 완료 모달 열기
-            setTimeout(() => {
-                setModalText(`${memberToRemove.team} ${memberToRemove.position} ${memberToRemove.name}님의`);
-                setModalAdditionalText('탈퇴 처리가 완료되었습니다.');
-                setConfirmModalOpen(true); // "탈퇴 완료" 모달 열기
-            }, 300);
-        } else {
+                // 탈퇴 완료 모달 열기
+                setTimeout(() => {
+                    setModalText(`${memberToRemove.team} ${memberToRemove.position} ${memberToRemove.name}님의`);
+                    setModalAdditionalText('탈퇴 처리가 완료되었습니다.');
+                    setConfirmModalOpen(true);
+                    
+                    // 멤버 리스트 새로고침
+                    fetchMemberList();
+                }, 300);
+            }
+        } catch (error) {
             setModalText('오류');
-            setModalAdditionalText('탈퇴할 회원을 찾을 수 없습니다.');
+            setModalAdditionalText('탈퇴 처리 중 오류가 발생했습니다.');
             setModalOpen(true);
         }
     };

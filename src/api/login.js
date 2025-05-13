@@ -1,5 +1,5 @@
 import client from './client';
-import useStore from '../hooks/userInformation';
+import useStore from '../store/userInformation';
 
 // 수정 <- 수정완료 되면 삭제해주세요 !
 

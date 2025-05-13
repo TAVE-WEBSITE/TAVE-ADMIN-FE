@@ -4,7 +4,7 @@ import Header from "../components/header";
 import SearchBar from "../components/searchBar";
 import HistoryBlock from "../components/historyBlock";
 import HistoryDialog from "../components/historyDialog";
-import { useHistories } from "../hooks/useHistory";
+import { useHistories } from "../store/useHistory";
 import useHistoryStore from "../store/historyStore";
 
 export default function History() {
