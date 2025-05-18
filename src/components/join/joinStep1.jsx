@@ -14,6 +14,8 @@ export default function JoinStep1() {
   const [modalTitle, setModalTitle] = useState("인증번호 발송");
   const [description, setDescription] = useState("");
   const [retransmit,setRetransmit] = useState(false);
+  const [emailVerification , setEmailVerification] = useState(null);
+  const [approveText, setApproveText] = useState("");
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -47,17 +49,20 @@ export default function JoinStep1() {
       }
       setIsEmailModal(true);
     },
-  });
-  
+  });  
+    
   // 이메일 인증번호 검증
   const emailNumberVerificationMutation = useMutation({
     mutationFn: ({ email, verification }) => postEmailVerify(email, verification),
     onSuccess: (response) => {
       updateUserData('email', email);
+      setApproveText('인증번호가 확인되었습니다.');
+      setEmailVerification(true);
       //여기도 초록색으로 처리
     },
     onError: (error) => {
       // 이메일 인증번호 틀렸을 때 처리
+      setEmailVerification(false);
     },
   });
 
@@ -90,6 +95,9 @@ export default function JoinStep1() {
           onChange={handleVerificationChange}
           placeholder="인증번호를 입력해주세요"
           essentialText="* 인증번호를 입력해주세요."
+          approveText={approveText}
+          disapproveText="인증번호가 일치하지 않습니다."
+          isConfirmed={emailVerification}
           btnText="인증확인"
           onClick={emailNumberVerificationHandler}
         ></MemberInput>

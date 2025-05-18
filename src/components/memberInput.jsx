@@ -16,6 +16,7 @@ export default function MemberInput({
   onValidChange = () => {},
   isValidateTrigger = false,
   isConfirmed = false,
+  isPassword = false,
 }) {
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -37,6 +38,7 @@ export default function MemberInput({
           approveText={approveText}
           disapproveText={disapproveText}
           onValidChange={onValidChange}
+          isPassword={isPassword}
         />
         {btnText && (
           <Button

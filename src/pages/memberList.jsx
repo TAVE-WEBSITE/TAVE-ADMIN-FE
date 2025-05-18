@@ -5,6 +5,8 @@ import Tab from '../components/tab';
 import Header from '../components/header';
 import Pagination from '../components/pagination';
 import SimpleModal from '../components/simpleModal';
+import useUserStore from '../store/useUserStore';
+import { useNavigate } from 'react-router-dom';
 
 export default function MemberList() {
     const [categories, setCategories] = useState(['회원 명단', '가입 대기 명단']);
@@ -22,6 +24,14 @@ export default function MemberList() {
      useEffect(() => {
       fetchMemberList();
     }, []);
+
+    const {department} = useUserStore();
+    const navigate = useNavigate();
+    useEffect( () => {
+        if(department !== "회장"){
+            navigate('/session');
+        }
+    },[])
 
     // 운영진 멤버 목록 불러오기
     const fetchMemberList = async () => {
