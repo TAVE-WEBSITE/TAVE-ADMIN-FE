@@ -1,20 +1,18 @@
 import React from "react";
-import { useState, useEffect } from "react";
 import Tab from "../components/tab";
 import Header from "../components/header";
 import SearchBar from "../components/searchBar";
 import HistoryBlock from "../components/historyBlock";
-import SimpleModal from "../components/simpleModal";
 import HistoryDialog from "../components/historyDialog";
-import { getManagerHistory, postHistory } from "../api/history";
+import { useHistories } from "../store/useHistory";
+import useHistoryStore from "../store/historyStore";
 
 export default function History() {
   const categories = ["정규세션", "동아리 이력", "후기"];
   const links = ["/session", "/history", "/review"];
-  const [isAddModal, setIsAddModal] = useState(false);
 
-  const [histories, setHistories] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
+  const { data: histories = [], isLoading } = useHistories();
+  const { isAddModal, searchInput, setIsAddModal, setSearchInput } = useHistoryStore();
 
   const searchedData = searchInput
     ? histories.filter((item) =>
@@ -24,40 +22,15 @@ export default function History() {
       )
     : histories;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getManagerHistory();
-        if (response && Array.isArray(response)) {
-          setHistories(response.slice().reverse());
-          console.log(response);
-        } else {
-          setHistories([]);
-        }
-      } catch (error) {
-        console.error("Error fetching history:", error);
-        setHistories([]);
-      }
-    };
-    fetchData();
-  }, []);
-
   const date = (history) => {
     let result = 0;
-    history.details.map((item) => {
+    history.details.forEach((item) => {
       const words = item.lastUpdated.split("T");
       const word = Number(words[0].replaceAll("-", ""));
-
-      if (word > result) {
-        result = word;
-      }
+      if (word > result) result = word;
     });
-    const numberDate = result.toString().slice(-6); // "250210"
-    const formattedDate = `${numberDate.slice(0, 2)}.${numberDate.slice(
-      2,
-      4
-    )}.${numberDate.slice(4, 6)}`;
-    return formattedDate;
+    const numberDate = result.toString().slice(-6);
+    return `${numberDate.slice(0, 2)}.${numberDate.slice(2, 4)}.${numberDate.slice(4, 6)}`;
   };
 
   return (
@@ -77,7 +50,9 @@ export default function History() {
           </button>
         </div>
         <div className="mt-12 flex flex-col gap-6">
-          {searchedData.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center text-gray-500 text-2xl">로딩 중...</div>
+          ) : searchedData.length === 0 ? (
             <div className="text-center text-gray-500 text-2xl">
               검색 결과가 없습니다
             </div>

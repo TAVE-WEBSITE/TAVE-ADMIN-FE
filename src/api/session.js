@@ -16,14 +16,12 @@ export async function postSession(formDataToSend) {
             throw new Error('토큰이 없습니다');
         }
 
-        // Content-Type : multipart/form-data인지 서버 점검 요청,,
         const response = await client.post('/manager/session', formDataToSend, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-            },
+                'Content-Type': 'multipart/form-data'
+            }
         });
-
-        console.log('서버 응답:', response);
 
         return response.data.result;
     } catch (error) {
@@ -34,9 +32,22 @@ export async function postSession(formDataToSend) {
 
 
 
+
+
 export async function modifySession(sessionId, formData) {
     try {
-        const response = await client.patch(`/manager/session/${sessionId}`, formData);
+        const token = sessionStorage.getItem('access_token'); 
+
+        if (!token) {
+            throw new Error('토큰이 없습니다');
+        }
+        
+        const response = await client.patch(`/manager/session/${sessionId}`, formData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         return response.data; 
     } catch (error) {
         console.error('정규 세션 수정 에러', error);

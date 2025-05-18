@@ -9,14 +9,14 @@ import { useState } from 'react';
 
 export default function SessionDialog({ type, sessionId, existingSessionData, onClose, onSubmit }) {
     const [formData, setFormData] = useState({
-        sessionName: existingSessionData?.sessionName || '',
-        discription: existingSessionData?.discription || '',
+        title: existingSessionData?.title || '',
+        description: existingSessionData?.description || '',
         date: existingSessionData?.date || '',
     });
     const [isValidateTrigger, setIsValidateTrigger] = useState(false);
     const [errors, setErrors] = useState({
-        sessionName: false,
-        discription: false,
+        title: false,
+        description: false,
         date: false,
     });
 
@@ -29,35 +29,51 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
         setIsValidateTrigger(true);
     
         const newErrors = {
-            sessionName: !formData.sessionName.trim(),
-            discription: !formData.discription.trim(),
+            title: !formData.title.trim(),
+            description: !formData.description.trim(),
             date: !formData.date.trim(),
         };
     
         setErrors(newErrors);
     
-        if (!newErrors.sessionName && !newErrors.discription && !newErrors.date) {
+        if (!newErrors.title && !newErrors.description && !newErrors.date) {
             try {
                 const formDataToSend = new FormData();
     
+                // request 객체를 JSON으로 만들어서 전송
                 const requestData = {
-                    title: formData.sessionName,
-                    description: formData.discription,
+                    title: formData.title,
+                    description: formData.description,
                     eventDay: formData.date,
                 };
+                
+                // request 객체를 문자열로 변환하여 추가
+                formDataToSend.append('request', new Blob([JSON.stringify(requestData)], {
+                    type: 'application/json'
+                }));
     
-                formDataToSend.append(
-                    'request',
-                    new Blob([JSON.stringify(requestData)], { type: 'application/json' })
-                );
-    
-                if (image) {
-                    const imageFile = document.getElementById('fileInput')?.files?.[0];
-                    if (imageFile) {
-                        formDataToSend.append('file', imageFile);
-                    } else {
-                        console.error('이미지 파일이 없습니다.');
-                        return;
+                // 이미지 파일이 있는 경우에만 추가
+                const imageFile = document.getElementById('fileInput')?.files?.[0];
+                if (imageFile) {
+                    formDataToSend.append('file', imageFile);
+                }
+
+                // FormData 내용 출력 (디버깅용)
+                console.log('FormData 내용:');
+                for (let pair of formDataToSend.entries()) {
+                    if (pair[0] === 'request') {
+                        const requestBlob = pair[1];
+                        requestBlob.text().then(text => {
+                            console.log('request 데이터:', JSON.parse(text));
+                        });
+                    } else if (pair[0] === 'file') {
+                        const file = pair[1];
+                        console.log('file 데이터:', {
+                            name: file.name,
+                            type: file.type,
+                            size: file.size,
+                            lastModified: file.lastModified
+                        });
                     }
                 }
     
@@ -65,30 +81,25 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
     
                 if (type === 'modify') {
                     result = await modifySession(sessionId, formDataToSend);
-                    console.log('수정 결과:', result);
-    
-                    if (result) {
-                        onSubmit(formData);
-                        onClose();
-                    } else {
-                        console.error('세션 수정 실패: 서버에서 응답을 받지 못했습니다.');
-                    }
                 } else {
                     result = await postSession(formDataToSend);
-                    console.log('생성 결과:', result);
+                }
     
-                    if (result) {
-                        onSubmit(formData);
-                        onClose();
-                    } else {
-                        console.error('세션 생성 실패: 서버에서 응답을 받지 못했습니다.');
-                    }
+                if (result) {
+                    onSubmit(formData);
+                    onClose();
+                } else {
+                    console.error('세션 처리 실패: 서버에서 응답을 받지 못했습니다.');
+                    alert('세션 등록에 실패했습니다. 다시 시도해주세요.');
                 }
             } catch (error) {
                 console.error('세션 처리 실패:', error);
+                alert('세션 등록에 실패했습니다. 다시 시도해주세요.');
             }
         }
     };
+    
+    
     
     
     const [image, setImage] = useState(null);
@@ -131,20 +142,20 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                     <DialogInput
                         text="정규 세션 이름"
                         placeholder="세션 이름을 입력해주세요."
-                        value={formData.sessionName}
-                        onChange={(e) => handleChange('sessionName', e.target.value)}
+                        value={formData.title}
+                        onChange={(e) => handleChange('title', e.target.value)}
                         essentialText="* 세션 이름을 입력해주세요."
                         essential={true}
-                        inValidateTrigger={isValidateTrigger && errors.sessionName}
+                        inValidateTrigger={isValidateTrigger && errors.title}
                     />
                     <DialogInput
                         text="정규 세션 설명"
                         placeholder="세션에 대한 설명을 입력해주세요."
-                        value={formData.discription}
-                        onChange={(e) => handleChange('discription', e.target.value)}
+                        value={formData.description}
+                        onChange={(e) => handleChange('description', e.target.value)}
                         essentialText="* 세션 설명을 입력해주세요."
                         essential={true}
-                        inValidateTrigger={isValidateTrigger && errors.discription}
+                        inValidateTrigger={isValidateTrigger && errors.description}
                     />
                     <DialogInput
                         text="날짜 입력"

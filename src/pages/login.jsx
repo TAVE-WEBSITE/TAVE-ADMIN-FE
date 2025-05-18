@@ -94,7 +94,7 @@ export default function Login() {
             className="cursor-pointer"
             onClick={() => navigate("/forgotPassword")}
           >
-            비밀번호 찾기
+            비밀번호 재설정
           </div>
         </div>
       </div>

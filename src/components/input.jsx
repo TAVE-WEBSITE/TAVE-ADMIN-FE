@@ -43,19 +43,36 @@ export default function Input({
     const handleChange = (e) => {
         const value = e.target.value;
         setInputValue(value);
-        const valid = value.trim() !== '';
-        setMessage(valid ? '' : essentialText);
-        onValidChange(valid);
         onChange(e);
+        onValidChange(value.trim() !== '');
+    
+        // 메시지는 isConfirmed가 undefined일 때만 갱신
+        if (isConfirmed === undefined) {
+            if (value.trim() === '') {
+                setMessage(essentialText);
+            } else {
+                setMessage('');
+            }
+        }
     };
+    
+    useEffect(() => {
+        if (isConfirmed === true) {
+            setMessage(approveText);
+        } else if (isConfirmed === false) {
+            setMessage(disapproveText);
+        } else {
+            setMessage('');
+        }
+    }, [isConfirmed]);    
 
     const borderColor = message
-        ? message === approveText
-            ? 'border-[#00aa58]'
-            : 'border-[#ff0072]/80'
-        : type === 'dialog'
-        ? 'border-[#e5e7eb]'
-        : 'border-none';
+    ? message === approveText
+        ? 'border-[#00aa58]' // 초록색
+        : 'border-[#ff0072]/80' // 빨간색
+    : type === 'dialog'
+    ? 'border-[#e5e7eb]'
+    : 'border-none';
 
     return (
         <div className="w-full">
