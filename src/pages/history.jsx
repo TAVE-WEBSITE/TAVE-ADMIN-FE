@@ -7,12 +7,14 @@ import HistoryBlock from "../components/historyBlock";
 import HistoryDialog from "../components/historyDialog";
 import { getManagerHistory} from "../api/history";
 import { useQuery } from "@tanstack/react-query";
+import { useHistories } from "../store/useHistory";
+import useHistoryStore from "../store/historyStore";
 
 export default function History() {
   const categories = ["정규세션", "동아리 이력", "후기"];
   const links = ["/session", "/history", "/review"];
-  const [isAddModal, setIsAddModal] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
+  const { data: histories = [], isLoading } = useHistories();
+  const { isAddModal, searchInput, setIsAddModal, setSearchInput } = useHistoryStore();
 
     const { data: histories = [], isLoading, isError, error } = useQuery({
       queryKey: ['managerHistory'],

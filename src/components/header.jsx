@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getLogout } from "../api/login";
-import useStore from "../hooks/userInformation";
+import useStore from "../store/userInformation";
 
 import TaveLogo from "../assets/images/taveLogo.svg";
 import HeaderArrow from "../assets/images/headerArrow.svg";

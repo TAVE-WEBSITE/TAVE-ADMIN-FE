@@ -4,7 +4,7 @@ import Header from '../components/header';
 import SessionBlock from '../components/sessionBlock';
 import SessionDialog from '../components/sessionDialog';
 import Pagination from '../components/pagination';
-import { useSessions } from '../hooks/useSessions';
+import { useSessions } from '../store/useSessions';
 import useSessionStore from '../store/sessionStore';
 
 export default function Session() {

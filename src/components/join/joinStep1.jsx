@@ -49,8 +49,7 @@ export default function JoinStep1() {
       }
       setIsEmailModal(true);
     },
-  });  
-    
+  });
   // 이메일 인증번호 검증
   const emailNumberVerificationMutation = useMutation({
     mutationFn: ({ email, verification }) => postEmailVerify(email, verification),
