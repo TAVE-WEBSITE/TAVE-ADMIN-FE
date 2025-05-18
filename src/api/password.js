@@ -1,35 +1,38 @@
 import client from './client';
 
-export async function postEmailAuth(email, reset = false) {
+export async function postEmailVerification(email, reset) {
     try {
-        const response = await client.post(
-            '/normal/authenticate/email',
-            {
-                email: email,
-                number: '',
-            },
-            {
-                params: { reset },
-            }
-        );
-        return response;
+      const response = await client.post("/normal/authenticate/email?reset=true", {
+        email: email,
+        number: "", // 인증번호 입력 전이므로 비워둠
+      });
+      return response.data;
     } catch (error) {
-        return Promise.reject(error);
+      if (error.response && error.response.status === 400) {
+        return 400;
+      }else{
+        return 500;
+      }
+      throw error;
     }
-}
-
-export async function postVerifyAuthCode(nickname, email, number) {
+  }
+  
+  export async function postEmailVerify(email, number) {
     try {
-        const response = await client.post('/normal/verify/number', {
-            nickname,
-            email,
-            number,
-        });
-        return response;
+      const response = await client.post(`/normal/verify/number?reset=true`, {
+        email: email,
+        number: number, 
+      });
+  
+      return response.status;
     } catch (error) {
-        return Promise.reject(error.response?.data || error);
+      if (error.response && error.response.status === 400) {
+        return 400;
+      }
+      throw error;
     }
-}
+  }
+  
 
 export async function putResetPassword(nickname, password, validatedPassword) {
     try {

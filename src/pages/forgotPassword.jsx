@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import {postEmailAuth, postVerifyAuthCode, putResetPassword} from '../api/password';
+import {postEmailVerification, postEmailVerify, putResetPassword} from '../api/password';
+import usePasswordStore from '../store/usePasswordStore';
 import TaveLogo from '../assets/images/taveLogo.svg';
 import Button from '../components/button';
 import MemberInput from '../components/memberInput';
@@ -15,14 +16,18 @@ export default function ForgotPassword() {
     const [btnText, setBtnText] = useState('다음으로');
     const [modalType, setModalType] = useState(null); 
     const [isModalOpen, setModalOpen] = useState(false);
-    const [serverAuthCode, setServerAuthCode] = useState(null);    
-    const [authStatus, setAuthStatus] = useState(null);
-    const [authVerified, setAuthVerified] = useState(undefined);
+    const [authVerified, setAuthVerified] = useState(null);
     const [step1Valid, setStep1Valid] = useState([false, false, false]);
     const [step2Valid, setStep2Valid] = useState([false, false]);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isPasswordReset, setPasswordReset] = useState(false); 
+    const [retransmit, setRetransmit] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+const [description, setDescription] = useState('');
+const [isEmailModal, setIsEmailModal] = useState(false);
+const [isEmailVerified, setIsEmailVerified] = useState(false);
+
 
     const navigate = useNavigate();
 
@@ -41,13 +46,12 @@ export default function ForgotPassword() {
             setStep1Valid((prev) => {
                 const updated = [...prev];
                 updated[index] = isValid;
-                console.log("step1Valid:", updated);
                 return updated;
             });
         } else if (step === 2) {
             setStep2Valid((prev) => {
                 const updated = [...prev];
-                console.log("step2Valid:", updated);
+                updated[index] = isValid;
                 return updated;
             });
         }
@@ -59,65 +63,51 @@ export default function ForgotPassword() {
                /[a-z]/.test(password) &&
                /[!@#$%^&*]/.test(password);
     };
-    
     useEffect(() => {
-        setStep2Valid([
-            handlePasswordValidation(password),
-            handlePasswordValidation(password) && password === confirmPassword
-        ]);
+        const isPasswordValid = handlePasswordValidation(password);
+        const isConfirmValid = isPasswordValid && password === confirmPassword;
+        setStep2Valid([isPasswordValid, isConfirmValid]);
     }, [password, confirmPassword]);
-
+    
     const handleRequestAuth = async () => {
         try {
-  
-            if (!email) {
-                console.error('이메일이 존재하지 않습니다.');
-                return;
+            const response = await postEmailVerification(email, true);
+            const isSuccess = response?.status === 200;
+    
+            if (isSuccess) {
+                setModalTitle(retransmit ? "인증번호 재발송" : "인증번호 발송");
+                setDescription("입력하신 이메일로\n인증번호가 발송되었습니다.");
+                setRetransmit(true);
+            } else {
+                throw new Error("INVALID_EMAIL");
             }
     
-            const res = await postEmailAuth(email, false);
-    
-            console.log(res.data.message);
-    
-            setModalType('email'); 
-            setModalOpen(true);
-        } catch (err) {
-            console.error('인증번호 요청 실패:', err);
+            setIsEmailModal(true);
+        } catch (error) {
+            console.error("인증번호 요청 실패:", error);
+            setModalTitle("인증번호 발송 오류");
+            setDescription("이메일을 확인해주세요.");
+            setIsEmailModal(true);
         }
     };
+    
 
     const handleVerifyCode = async () => {
-   
         try {
-            const res = await postVerifyAuthCode(nickname, email, authCode);
-            console.log(res.data.message);
-    
-            if (res.data.status === 200) {
-                console.log("인증 번호 확인 성공");
-                setServerAuthCode(authCode);
-                setAuthStatus(true);
-                handleValidChange(2, true, 1);
-                setAuthVerified(true);
-            } else {
-                console.log("인증 번호 실패");
-                setAuthStatus(false);
-                handleValidChange(2, false, 1);
-                setAuthVerified(false);
-            }
-    
-          
+          const status = await postEmailVerify(email, authCode);
+          if (status === 200) {
+            setIsEmailVerified(true);
+            handleValidChange(2, true, 1);
+          } else {
+            setIsEmailVerified(false);
+            handleValidChange(2, false, 1);
+          }
         } catch (err) {
-            console.error("인증 번호 실패", err.message);
-            setAuthStatus(false);
-            setAuthVerified(false);
-            handleValidChange(2, false, 2);
+          setIsEmailVerified(false);
+          setAuthVerified(false);
+        //   console.error("인증 실패", err);
         }
-    };
-    
-    
-    useEffect(() => {
-        console.log("모달 상태 변경됨:", isModalOpen);
-    }, [isModalOpen]);
+      };
     
     
     const validateEmail = (email) => {
@@ -133,14 +123,19 @@ export default function ForgotPassword() {
         try {
             const response = await putResetPassword(nickname, password, confirmPassword);
     
-            setPasswordReset(true);
-            setModalType('password');
-            setModalOpen(true);
+            if (response?.status === 200) {
+                setPasswordReset(true);
+                setModalType('password');
+                setModalOpen(true);
+            } else {
+                throw new Error("비밀번호 재설정에 실패했습니다.");
+            }
         } catch (error) {
             console.error("비밀번호 재설정 실패:", error.message || error);
             alert(error.message || "비밀번호 재설정에 실패했습니다.");
         }
     };
+    
     
     
 
@@ -152,7 +147,7 @@ export default function ForgotPassword() {
             </div>
             {!newPw ? (
                 <div className="flex flex-col w-[41rem] h-[40rem] justify-center items-center gap-5 p-20 border border-[#FFFFFF1A] bg-[rgba(110,112,117,0.12)] shadow-[1px_2px_48px_0px_rgba(0,0,0,0.04)] backdrop-blur-[15px] rounded-2xl backdrop-blur-md relative z-10">
-                    <div className="text-4xl text-white font-medium">비밀번호 찾기</div>
+                    <div className="text-4xl text-white font-medium">비밀번호 재설정</div>
                     <div className="flex flex-col gap-5 w-full">
                         <MemberInput
                             text="이름"
@@ -187,7 +182,9 @@ export default function ForgotPassword() {
     onClick={handleVerifyCode}
     user_width="16.5em"
     hint="인증번호를 입력해주세요"
-    essentialText="인증번호가 일치하지 않습니다."
+    essentialText="인증번호를 입력해주세요."
+    approveText='인증번호가 확인되었습니다.'
+    disapproveText="인증번호가 일치하지 않습니다."
     isConfirmed={authVerified} 
     onChange={(e) => setAuthCode(e.target.value)} 
 />
@@ -202,13 +199,13 @@ export default function ForgotPassword() {
                         user_width="28em"
                         user_height="3em"
                     />
-                    {modalType === 'email' && isModalOpen && (
+                    {isEmailModal && (
     <SimpleModal
-        title="이메일 발송 완료"
-        description="인증번호가 이메일로 발송되었습니다."
+        title={modalTitle} 
+        description={description} 
         blueBtnText="확인"
-        onClickBlue={() => setModalOpen(false)}
-        onClose={() => setModalOpen(false)}
+        onClickBlue={() => setIsEmailModal(false)}
+        onClose={() => setIsEmailModal(false)} 
     />
 )}
 

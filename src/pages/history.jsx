@@ -31,20 +31,13 @@ export default function History() {
 
   const date = (history) => {
     let result = 0;
-    history.details.map((item) => {
+    history.details.forEach((item) => {
       const words = item.lastUpdated.split("T");
       const word = Number(words[0].replaceAll("-", ""));
-
-      if (word > result) {
-        result = word;
-      }
+      if (word > result) result = word;
     });
-    const numberDate = result.toString().slice(-6); // "250210"
-    const formattedDate = `${numberDate.slice(0, 2)}.${numberDate.slice(
-      2,
-      4
-    )}.${numberDate.slice(4, 6)}`;
-    return formattedDate;
+    const numberDate = result.toString().slice(-6);
+    return `${numberDate.slice(0, 2)}.${numberDate.slice(2, 4)}.${numberDate.slice(4, 6)}`;
   };
 
   return (
@@ -64,7 +57,9 @@ export default function History() {
           </button>
         </div>
         <div className="mt-12 flex flex-col gap-6">
-          {searchedData.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center text-gray-500 text-2xl">로딩 중...</div>
+          ) : searchedData.length === 0 ? (
             <div className="text-center text-gray-500 text-2xl">
               검색 결과가 없습니다
             </div>
