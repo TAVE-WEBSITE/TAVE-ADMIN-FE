@@ -1,35 +1,38 @@
 import React from "react";
-import { useState} from "react";
+import { useState } from "react";
 import Tab from "../components/tab";
 import Header from "../components/header";
 import SearchBar from "../components/searchBar";
 import HistoryBlock from "../components/historyBlock";
 import HistoryDialog from "../components/historyDialog";
-import { getManagerHistory} from "../api/history";
+import { getManagerHistory } from "../api/history";
 import { useQuery } from "@tanstack/react-query";
-import { useHistories } from "../store/useHistory";
 import useHistoryStore from "../store/historyStore";
 
 export default function History() {
   const categories = ["정규세션", "동아리 이력", "후기"];
   const links = ["/session", "/history", "/review"];
-  const { data: histories = [], isLoading } = useHistories();
-  const { isAddModal, searchInput, setIsAddModal, setSearchInput } = useHistoryStore();
+  const { isAddModal, searchInput, setIsAddModal, setSearchInput } =
+    useHistoryStore();
 
-    const { data: histories = [], isLoading, isError, error } = useQuery({
-      queryKey: ['managerHistory'],
-      queryFn: getManagerHistory,
-      select: (data) => data.slice().reverse(), 
-    });
+  const {
+    data: histories = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["managerHistory"],
+    queryFn: getManagerHistory,
+    select: (data) => data.slice().reverse(),
+  });
 
-    const searchedData = searchInput
+  const searchedData = searchInput
     ? histories.filter((item) =>
         item.details.some((detail) =>
           detail.description.toLowerCase().includes(searchInput.toLowerCase())
         )
       )
     : histories;
-    
 
   const date = (history) => {
     let result = 0;
@@ -39,7 +42,10 @@ export default function History() {
       if (word > result) result = word;
     });
     const numberDate = result.toString().slice(-6);
-    return `${numberDate.slice(0, 2)}.${numberDate.slice(2, 4)}.${numberDate.slice(4, 6)}`;
+    return `${numberDate.slice(0, 2)}.${numberDate.slice(
+      2,
+      4
+    )}.${numberDate.slice(4, 6)}`;
   };
 
   return (
