@@ -29,6 +29,7 @@ export default function History() {
         )
       )
     : histories;
+    
 
   const date = (history) => {
     let result = 0;

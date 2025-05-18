@@ -54,6 +54,7 @@ export default function JoinStep2() {
           placeholder="비밀번호를 입력해주세요"
           essentialText="비밀번호를 입력해주세요."
           type="password"
+          isPassword={true}
         />
       </div>
       <div className="flex gap-2 items-center w-full justify-center">
@@ -62,6 +63,7 @@ export default function JoinStep2() {
           onChange={handlePasswordCheck}
           placeholder="비밀번호를 다시 입력해주세요"
           essentialText="비밀번호를 다시 입력해주세요."
+          isPassword={true}
         />
       </div>
     </div>

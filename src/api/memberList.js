@@ -1,13 +1,14 @@
 import client from './client';
 
-export async function getMemberList() {
+export async function getMemberList(status) {
     try {
-        const response = await client.get('/admin/manager');
+        const response = await client.get('/admin/manager?status='+ status);
         return response.data.result;
     } catch (error) {
         console.error('가입 명단 조회 에러', error);
     }
 }
+
 
 export async function deleteMember(id) {
     try {
