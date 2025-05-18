@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { postLogin } from "../api/login";
 import useUserStore from "../store/useUserStore";
 import SimpleModal from "../components/simpleModal";
+import { useMutation } from "@tanstack/react-query";
 
 export default function Login() {
   const [user, setUser] = useState("");
@@ -34,21 +35,29 @@ export default function Login() {
     setEssentialPw(e.target.value.trim() !== "");
   };
 
-
-  const loginHandler = async () => {
-    if (isDisabled) return; //입력값이 비어 있으면 실행되지 않도록 보호
-    const response = await postLogin(user, password);
-    if (response.status === 200) {
-      sessionStorage.setItem("access_token", response.data.result.accessToken);
-      localStorage.setItem("email", response.data.result.email);
+  const loginMutation = useMutation({
+    mutationFn: ({ user, password }) => postLogin(user, password),
+    onSuccess: (response) => {
+      sessionStorage.setItem('access_token', response.data.result.accessToken);
+      sessionStorage.setItem('email', response.data.result.email);
       setUserName(response.data.result.username);
-      setDepartment(response.data.result.department === "PRINCIPAL" ? "회장" : response.data.result.department === "TECHNICAL" ? "기술처" : "경영처");
-      navigate("/session");
-    } else {
-      // 모달창 추가하기
-      setIsModal(true);
-    }
+      setDepartment(
+        response.data.result.department === 'PRINCIPAL' ? '회장' :
+        response.data.result.department === 'TECHNICAL' ? '기술처' : '경영처'
+      );
+      navigate('/session');
+    },
+    onError: (error) => {
+      console.error('로그인 실패:', error);
+      setIsModal(true); // 로그인 실패하면 모달
+    },
+  });
+
+  const loginHandler = () => {
+    if (isDisabled) return;
+    loginMutation.mutate({ user, password });
   };
+  
 
 
   return (
@@ -79,6 +88,7 @@ export default function Login() {
           value={password}
           essential={essentialPw}
           onChange={pwChange}
+          isPassword={true}
         />
         <Button
           text="로그인"

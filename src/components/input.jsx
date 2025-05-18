@@ -14,6 +14,7 @@ export default function Input({
     isValidateTrigger = false, // form 제출했을 때 validation 확인
     isConfirmed = undefined, // 인증 승인 여부
     value = "", //초기값
+    isPassword = false,
 }) {
     const [inputValue, setInputValue] = useState(value);
     const [message, setMessage] = useState('');
@@ -86,6 +87,7 @@ export default function Input({
                 value={inputValue}
                 onChange={handleChange}
                 onFocus={handleFocus}
+                type={isPassword && "password"}
             />
             <div className="h-[20px]">
                 {message && (

@@ -9,6 +9,7 @@ import JoinStep2 from "../components/join/joinStep2";
 import JoinStep3 from "../components/join/joinStep3";
 import useSignupStore from "../store/useSignupStore";
 import { postSignUp } from "../api/member";
+import { useMutation } from "@tanstack/react-query";
 
 export default function Join() {
   const { step, setStep, isBtnDisabled, validateStep, userData, resetUserData } =
@@ -29,22 +30,24 @@ export default function Join() {
   }, [userData.password , userData.email,userData]);
 
 
+  const signupMutation = useMutation({
+    mutationFn: postSignUp,
+    onSuccess: (response) => {
+      if (response?.status === 200) {
+        setModalTitle('회원가입 완료');
+        setIsModal(true);
+      }
+    },
+    onError: (error) => {
+      setModalTitle('회원가입 실패');
+      setIsModal(true);
+    },
+  });
 
-  const postSignupData = async () => {
-        try {
-          const response = await postSignUp();
-          if (response?.status === 200) {
-            // 회원가입 완료 모달?
-            setModalTitle();
-            setIsModal(true);
-          } 
-        } catch (error) {
-          console.error("Error fetching history:", error);
-          setIsModal(true);
-          // 실패 모달
-          
-        }
-      };
+  const postSignupData = () => {
+    signupMutation.mutate();
+  };
+  
 
   return (
     <div

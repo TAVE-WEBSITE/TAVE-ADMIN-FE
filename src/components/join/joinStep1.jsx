@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SimpleModal from "../simpleModal";
 import { postEmailVerification, postEmailVerify } from "../../api/member";
 import useSignupStore from "../../store/useSignupStore";
+import { useMutation } from "@tanstack/react-query";
 
 export default function JoinStep1() {
   const [email, setEmail] = useState("");
@@ -13,9 +14,6 @@ export default function JoinStep1() {
   const [modalTitle, setModalTitle] = useState("인증번호 발송");
   const [description, setDescription] = useState("");
   const [retransmit,setRetransmit] = useState(false);
-
-  //id 모달 사용 가능 불가능 판별
-  const [isAvailable, setIsAvailable] = useState(false);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -27,48 +25,50 @@ export default function JoinStep1() {
   };
 
 
-  const emailVerificationHandler = async () => {
-    try{
-      const response = await postEmailVerification(email);
-      if(response?.status === 200){
-        if(retransmit === true){
-          setModalTitle("인증번호 재발송");
-        }else{
-          setModalTitle("인증번호 발송");
-          setRetransmit(true);
-        }
-        setDescription(`입력하신 이메일로 \n인증번호가 발송되었습니다.`);
-        setIsEmailModal(true);
-        
-      }else if(response === 400){
-        setModalTitle("중복된 이메일");
-        setDescription(`이미 회원가입된 이메일입니다.`);
-        setIsEmailModal(true);
-      }else{
-        setModalTitle("인증번호 발송 오류");
-        setDescription(`올바르지 않은 이메일 형식입니다.`);
-        setIsEmailModal(true);
+  const emailVerificationMutation = useMutation({
+    mutationFn: (email) => postEmailVerification(email),
+    onSuccess: (response) => {
+      if (retransmit) {
+        setModalTitle('인증번호 재발송');
+      } else {
+        setModalTitle('인증번호 발송');
+        setRetransmit(true);
       }
-
-    }catch(error){
-      
-    }
-    
-  };
-
-  const emailNumberVerificationHandler =  async () => {
-    try{
-      const response = await postEmailVerify(email, verification);
-      if(response?.status === 200){
-        updateUserData("email", email);
+      setDescription(`입력하신 이메일로 \n인증번호가 발송되었습니다.`);
+      setIsEmailModal(true);
+    },
+    onError: (error) => {
+      if (error.response?.status === 400) {
+        setModalTitle('중복된 이메일');
+        setDescription('이미 회원가입된 이메일입니다.');
+      } else {
+        setModalTitle('인증번호 발송 오류');
+        setDescription('올바르지 않은 이메일 형식입니다.');
       }
-    }catch(error){
-      // 추후에 이메일 인증번호 틀렸을 때 처리
-    }
-    
+      setIsEmailModal(true);
+    },
+  });
+  
+  // 이메일 인증번호 검증
+  const emailNumberVerificationMutation = useMutation({
+    mutationFn: ({ email, verification }) => postEmailVerify(email, verification),
+    onSuccess: (response) => {
+      updateUserData('email', email);
+      //여기도 초록색으로 처리
+    },
+    onError: (error) => {
+      // 이메일 인증번호 틀렸을 때 처리
+    },
+  });
 
-
+  const emailVerificationHandler = () => {
+    emailVerificationMutation.mutate(email);
   };
+  
+  const emailNumberVerificationHandler = () => {
+    emailNumberVerificationMutation.mutate({ email, verification });
+  };
+  
 
 
 

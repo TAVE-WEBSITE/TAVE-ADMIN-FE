@@ -40,12 +40,8 @@ client.interceptors.response.use(
           }
         } catch (refreshError) {
           if (axios.isAxiosError(refreshError)) {
-            if ([404, 422].includes(refreshError.response?.status)) {
-              alert("로그인이 필요합니다.");
-              window.location.replace("/");
-            } else {
-              alert("토큰 갱신 실패");
-            }
+            alert("로그인이 필요합니다.");
+            window.location.replace("/");
           }
           return Promise.reject(refreshError);
         }

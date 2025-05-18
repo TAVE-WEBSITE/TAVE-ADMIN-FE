@@ -3,6 +3,7 @@ import Button from "./button";
 import { updateHistory, deleteHistory } from "../api/history";
 import SimpleModal from "./simpleModal";
 import HistoryDialog from "./historyDialog";
+import { useMutation } from "@tanstack/react-query";
 
 export default function HistoryElements({
   generation,
@@ -21,15 +22,23 @@ export default function HistoryElements({
   const [selectHistory, setSelectHistory] = useState(null);
   //const [isModifyMoal, setIsModifyModal] = useState(false);
 
-  const handleDeleteConfirm = () => {
-    deleteHistory(selectHistory.id)
-      .then((res) => {
-        setIsDeleteModal(false);
-        window.location.reload();
-      })
-      .catch((err) => console.error("이력 추가 실패:", err));
-  };
+  const deleteMutation = useMutation({
+    mutationFn: deleteHistory,
+    onSuccess: () => {
+      setIsDeleteModal(false);
+      window.location.reload();
+    },
+    onError: (error) => {
+      console.error('이력 삭제 실패:', error);
+    },
+  });
 
+  const handleDeleteConfirm = () => {
+    if (selectHistory) {
+      deleteMutation.mutate(selectHistory.id);
+    }
+  };
+  
   return (
     <div>
       {/* 기수 별로 이력이 뜨도록 표시 */}
@@ -39,7 +48,7 @@ export default function HistoryElements({
           {item.details.map((detail, descIndex) => (
             <div
               key={descIndex}
-              className="w-full bg-white bg-opacity-[0.07] rounded-[10px] px-6 py-5 flex items-center justify-between mb-4 bg-[rgba(255,255,255,0.1)]"
+              className="w-full rounded-[10px] px-6 py-5 flex items-center justify-between mb-4 bg-[rgba(255,255,255,0.1)]"
             >
               <div className="body-text-1 text-white">{detail.description}</div>
               <div className="flex justify-between gap-[8px] ">

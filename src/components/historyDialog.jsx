@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import { postHistory, updateHistory } from "../api/history";
 import CloseIcon from "../assets/images/closeIcon.svg";
 import Button from "./button";
@@ -59,6 +60,29 @@ export default function HistoryDialog({
     }
   };
 
+  // POST용 mutation
+const postMutation = useMutation({
+  mutationFn: postHistory,
+  onSuccess: () => {
+    window.location.reload();
+  },
+  onError: (error) => {
+    console.error('이력 추가 실패:', error);
+  },
+});
+
+// UPDATE용 mutation
+const updateMutation = useMutation({
+  mutationFn: ({ id, data }) => updateHistory(id, data),
+  onSuccess: () => {
+    window.location.reload();
+  },
+  onError: (error) => {
+    console.error('이력 수정 실패:', error);
+  },
+});
+
+
   //window.location.reload();
   const clickHandler = () => {
     const newHistory = {
@@ -67,21 +91,20 @@ export default function HistoryDialog({
       additionalDescription: formData.description,
       isPublic: true,
     };
+  
     if (newHistory.additionalDescription === "") {
       delete newHistory.additionalDescription;
     }
+  
     if (type === "register" && !isConfirmModal) {
       setIsConfirmModal(true);
     } else if (type === "register" && isConfirmModal) {
-      postHistory(newHistory)
-        .then((res) => window.location.reload())
-        .catch((err) => console.error("이력 추가 실패:", err));
+      postMutation.mutate(newHistory);
     } else {
-      updateHistory(initialData.id, newHistory)
-        .then((res) => window.location.reload())
-        .catch((err) => console.error("이력 추가 실패:", err));
+      updateMutation.mutate({ id: initialData.id, data: newHistory });
     }
   };
+  
 
   return (
     <div
