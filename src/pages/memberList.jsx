@@ -7,6 +7,7 @@ import Pagination from "../components/pagination";
 import SimpleModal from "../components/simpleModal";
 import useUserStore from "../store/useUserStore";
 import { useNavigate } from "react-router-dom";
+import { classifyDepartment } from "../utils/classifyMember";
 
 export default function MemberList() {
   const [categories, setCategories] = useState(["회원 명단", "가입 대기 명단"]);
@@ -29,11 +30,14 @@ export default function MemberList() {
   const navigate = useNavigate();
 
   //회장권한
+  /*
   useEffect(() => {
     if (department !== "회장") {
       navigate("/session");
     }
   }, []);
+
+*/
 
   // 운영진 멤버 목록 불러오기
   const fetchMemberList = async () => {
@@ -198,7 +202,9 @@ export default function MemberList() {
             {memberDataPaged.map((member, index) => (
               <tr key={index} className="">
                 <td className="py-4 px-4">{member.username}</td>
-                <td className="py-4 px-4">{member.department}</td>
+                <td className="py-4 px-4">
+                  {classifyDepartment(member.department)}
+                </td>
                 <td className="py-4 px-4">{member.job}</td>
                 {/* 닉네임 -> 이메일 데이터 교체 백엔드에게 연락 */}
                 <td className="py-4 px-4">{member.nickname}</td>
