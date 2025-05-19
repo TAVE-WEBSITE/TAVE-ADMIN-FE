@@ -28,17 +28,14 @@ export default function WaitingList() {
   const queryClient = useQueryClient();
 
   //회장 접근권한
-  /*
 
-    const {department} = useUserStore();
-    const navigate = useNavigate();
-    useEffect( () => {
-        if(department !== "회장"){
-            navigate('/session');
-        }
-    },[])
-    
-    */
+  const { department } = useUserStore();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (department !== "회장") {
+      navigate("/session");
+    }
+  }, []);
 
   const {
     data: memberData,
@@ -152,63 +149,7 @@ export default function WaitingList() {
         },
       });
     }
-
-    // 상태 업데이트를 보장하기 위해 최신 값을 사용
-    /*
-        setActionType((prevAction) => {
-            setTimeout(() => {
-                setModalText(`${ModalClassifyJobType(selectedMember.department, selectedMember.job)} ${selectedMember.username}님에게`);
-                setModalAdditionalText(
-                    prevAction === 'approve' ? '가입 승인 메일이 발송되었습니다.' : '가입 거절 메일이 발송되었습니다.'
-                );
-
-                setConfirmModalOpen(true); // 두 번째 모달 열기
-            }, 300);
-
-            return prevAction; // 기존 상태 유지
-        });
-        */
   };
-
-  /*
-  const classifyDepartment = (department) => {
-    if (department === "PRINCIPAL") {
-      return "회장";
-    } else if (department === "TECHNICAL") {
-      return "기술처";
-    } else if (department === "MANAGEMENT") {
-      return "경영처";
-    }
-  };
-
-  const classifyJobType = (jobType) => {
-    if (jobType === "") {
-      return "-";
-    } else if (jobType === "STAFF") {
-      return "처원";
-    } else if (jobType === "DIRECTOR") {
-      return "처장";
-    }
-  };
-
-  const ModalClassifyJobType = (department, jobType) => {
-    if (department === "PRINCIPAL") {
-      return "회장";
-    } else if (department === "TECHNICAL") {
-      if (jobType === "STAFF") {
-        return "기술처원";
-      } else if (jobType === "DIRECTOR") {
-        return "기술처장";
-      }
-    } else if (department === "MANAGEMENT") {
-      if (jobType === "STAFF") {
-        return "경영처원";
-      } else if (jobType === "DIRECTOR") {
-        return "경영처장";
-      }
-    }
-  };
-  */
 
   return (
     <div className="flex flex-col pt-40 min-h-screen bg-gradient-to-b from-[#121212] via-[#121212] via-40% to-[#5586FF]">
@@ -224,10 +165,10 @@ export default function WaitingList() {
               <th className="py-5 px-4 w-32">이름</th>
               <th className="py-5 px-4 w-32">소속부서</th>
               <th className="py-5 px-4 w-24">직책</th>
-              <th className="py-5 px-4 ">이메일</th>
-              <th className="py-5 px-4 w-32">기수</th>
-              <th className="py-5 px-4 w-32">아지트</th>
-              <th className="py-5 px-4"></th> {/* 탈퇴 버튼 열  */}
+              <th className="py-5 px-4 w-full">이메일</th>
+              <th className="py-5 px-4 w-20">기수</th>
+              <th className="py-5 px-4 w-60">아지트</th>
+              <th className="py-5 px-4 w-52"></th> {/* 탈퇴 버튼 열  */}
             </tr>
           </thead>
 

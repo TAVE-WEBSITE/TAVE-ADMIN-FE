@@ -7,6 +7,11 @@ import Pagination from "../components/pagination";
 import SimpleModal from "../components/simpleModal";
 import useUserStore from "../store/useUserStore";
 import { useNavigate } from "react-router-dom";
+import {
+  classifyDepartment,
+  classifyJobType,
+  ModalClassifyJobType,
+} from "../utils/classifyMember";
 
 export default function MemberList() {
   const [categories, setCategories] = useState(["회원 명단", "가입 대기 명단"]);
@@ -46,73 +51,6 @@ export default function MemberList() {
     }
   };
 
-  // const memberData = [
-  //     {
-  //         name: '테이비',
-  //         team: '회장',
-  //         position: '-',
-  //         id: 'qwerty1',
-  //         generation: 13,
-  //         agitId: 'agitId',
-  //     },
-  //     {
-  //         name: '테이비',
-  //         team: '경영처',
-  //         position: '처원',
-  //         id: 'qwerty2',
-  //         generation: 13,
-  //         agitId: 'agitId',
-  //     },
-  //     {
-  //         name: '테이비',
-  //         team: '경영처',
-  //         position: '처원',
-  //         id: 'qwerty3',
-  //         generation: 13,
-  //         agitId: 'agitId',
-  //     },
-  //     {
-  //         name: '테이비',
-  //         team: '경영처',
-  //         position: '처장',
-  //         id: 'qwerty4',
-  //         generation: 13,
-  //         agitId: 'agitId',
-  //     },
-  //     {
-  //         name: '테이비',
-  //         team: '기술처',
-  //         position: '처원',
-  //         id: 'qwerty5',
-  //         generation: 13,
-  //         agitId: 'agitId',
-  //     },
-  //     {
-  //         name: '테이비',
-  //         team: '기술처',
-  //         position: '처원',
-  //         id: 'qwerty6',
-  //         generation: 13,
-  //         agitId: 'agitId',
-  //     },
-  //     {
-  //         name: '테이비',
-  //         team: '기술처',
-  //         position: '처원',
-  //         id: 'qwerty7',
-  //         generation: 13,
-  //         agitId: 'agitId',
-  //     },
-  //     {
-  //         name: '테이비',
-  //         team: '기술처',
-  //         position: '처원',
-  //         id: 'qwerty8',
-  //         generation: 13,
-  //         agitId: 'agitId',
-  //     },
-  // ];
-
   const itemsPerPage = 6;
 
   const totalPages = Math.ceil(memberData.length / itemsPerPage);
@@ -126,7 +64,11 @@ export default function MemberList() {
   // 탈퇴 버튼 클릭 시 실행 (탈퇴할 멤버의 ID를 설정)
   const handleOpenModal = (member) => {
     setSelectedMemberId(member.id);
-    setModalText(`${member.team} ${member.position} ${member.name}님을`);
+    setModalText(
+      `${ModalClassifyJobType(member.department, member.job)} ${
+        member.username
+      }님을`
+    );
     setModalAdditionalText("정말 탈퇴시키겠습니까?");
     setModalOpen(true);
   };
@@ -157,7 +99,10 @@ export default function MemberList() {
         // 탈퇴 완료 모달 열기
         setTimeout(() => {
           setModalText(
-            `${memberToRemove.team} ${memberToRemove.position} ${memberToRemove.name}님의`
+            `${ModalClassifyJobType(
+              memberToRemove.department,
+              memberToRemove.job
+            )} ${memberToRemove.username}님의`
           );
           setModalAdditionalText("탈퇴 처리가 완료되었습니다.");
           setConfirmModalOpen(true);
@@ -185,12 +130,12 @@ export default function MemberList() {
           <thead>
             <tr className="font-regular border-b border-white/30 text-left mb-4">
               <th className="py-5 px-4 w-32">이름</th>
-              <th className="py-5 px-4">소속부서</th>
-              <th className="py-5 px-4">직책</th>
-              <th className="py-5 px-4">이메일</th>
-              <th className="py-5 px-4 w-32">기수</th>
-              <th className="py-5 px-4">아지트</th>
-              <th className="py-5 px-4"></th> {/* 탈퇴 버튼 열  */}
+              <th className="py-5 px-4 w-32">소속부서</th>
+              <th className="py-5 px-4 w-24">직책</th>
+              <th className="py-5 px-4 ">이메일</th>
+              <th className="py-5 px-4 w-24">기수</th>
+              <th className="py-5 px-4 w-60">아지트</th>
+              <th className="py-5 px-4 w-40"></th> {/* 탈퇴 버튼 열  */}
             </tr>
           </thead>
           {/* 테이블 바디 */}
@@ -198,10 +143,11 @@ export default function MemberList() {
             {memberDataPaged.map((member, index) => (
               <tr key={index} className="">
                 <td className="py-4 px-4">{member.username}</td>
-                <td className="py-4 px-4">{member.department}</td>
-                <td className="py-4 px-4">{member.job}</td>
-                {/* 닉네임 -> 이메일 데이터 교체 백엔드에게 연락 */}
-                <td className="py-4 px-4">{member.nickname}</td>
+                <td className="py-4 px-4">
+                  {classifyDepartment(member.department)}
+                </td>
+                <td className="py-4 px-4">{classifyJobType(member.job)}</td>
+                <td className="py-4 px-4">{member.email}</td>
                 <td className="py-4 px-4">{member.generation}</td>
                 <td className="py-4 px-4">{member.agitId}</td>
                 <td className="py-4 px-4 w-12 text-center">
