@@ -8,16 +8,15 @@ export default function JoinStep3() {
   const [position, setPosition] = useState("직책");
   const departmentList = ["부서", "회장", "경영처", "기술처"];
   const positionList = ["직책", "처장", "처원"];
-  const [isPosition , setIsPosition] = useState(false);
-  const {updateUserData} = useSignupStore();
-
+  const [isPosition, setIsPosition] = useState(false);
+  const { updateUserData } = useSignupStore();
 
   const handleUserNameChange = (e) => {
     updateUserData("username", e.target.value);
   };
 
   const handleGenerationChange = (e) => {
-    if(!isNaN(e.target.value)){
+    if (!isNaN(e.target.value)) {
       updateUserData("generation", e.target.value);
     }
   };
@@ -26,16 +25,15 @@ export default function JoinStep3() {
     updateUserData("agitId", e.target.value);
   };
 
-
   useEffect(() => {
     if (department === "회장") {
       updateUserData("department", "PRINCIPAL");
-      updateUserData("job", "");
+      updateUserData("job", "PRINCIPAL");
       setIsPosition(false);
     } else {
       setIsPosition(true);
       setPosition("직책");
-  
+
       if (department === "기술처") {
         updateUserData("department", "TECHNICAL");
       } else if (department === "경영처") {
@@ -62,24 +60,21 @@ export default function JoinStep3() {
     <div className="flex flex-col gap-[1.5vh] items-center w-full">
       <MemberInput
         text="이름"
-        onChange={ handleUserNameChange }
+        onChange={handleUserNameChange}
         placeholder="이름을 입력해주세요"
         essentialText="* 이름을 입력해주세요"
-     
       />
       <MemberInput
         text="본인 기수"
         onChange={handleGenerationChange}
         placeholder="기수를 입력해주세요(ex. 12)"
         essentialText="* 기수를 입력해주세요."
-      
       />
       <MemberInput
         text="아지트 아이디"
         onChange={handleAgitIdChange}
         placeholder="아지트 아이디를 입력해주세요"
         essentialText="* 아지트 아이디를 입력해주세요."
-       
       />
       <div className="flex flex-col w-full">
         <div
@@ -95,11 +90,10 @@ export default function JoinStep3() {
             setValue={setDepartment}
             isJoin={true}
             user_width="w-full"
-           
             type="join"
           />
           <DropDown
-          disabled={isPosition}
+            disabled={isPosition}
             valueList={positionList}
             setValue={setPosition}
             isJoin={true}
