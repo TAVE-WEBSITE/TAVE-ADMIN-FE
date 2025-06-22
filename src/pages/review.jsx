@@ -13,11 +13,14 @@ export default function Review() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogType, setDialogType] = useState('register');
     const [selectedReview, setSelectedReview] = useState(null);
-    const [generation, setGeneration] = useState('14기');
+    const [generation, setGeneration] = useState('ALL');
     const [reviewList, setReviewList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [generationList, setGenerationList] = useState([]);
+    
 
+    /*
     const generationList = [
         '14기',
         '13기',
@@ -34,6 +37,7 @@ export default function Review() {
         '2기',
         '1기',
     ];
+    */
     const categories = ['정규세션', '동아리 이력', '후기'];
     const links = ['/session', '/history', '/review'];
 
@@ -45,10 +49,11 @@ export default function Review() {
                 setError(null);
                 const generationNumber = generation.replace('기', '');
                 const data = await getManagerReview(generationNumber);
-                console.log('받아온 후기 데이터:', data);
                 
-                if (Array.isArray(data)) {
-                    setReviewList(data);
+                if (Array.isArray(data.reviews)) {
+                    setReviewList(data.reviews);
+                    data.allType.push("ALL");
+                    setGenerationList(sortedList(data.allType));
                 } else {
                     console.error('후기 데이터가 배열이 아닙니다:', data);
                     setReviewList([]);
@@ -64,6 +69,13 @@ export default function Review() {
 
         fetchReviews();
     }, [generation]);
+
+
+    const sortedList = (list) => [...list].sort((a, b) => {
+        if (a === "ALL") return -1; // a가 ALL이면 무조건 앞
+        if (b === "ALL") return 1;  // b가 ALL이면 b가 뒤
+        return parseInt(b) - parseInt(a); // 그 외엔 숫자 내림차순
+    });
 
     const handleAddReview = () => {
         setDialogType('register');
@@ -107,8 +119,10 @@ export default function Review() {
                     <div className="flex justify-between w-28">
                         <DropDown
                             type="default"
+                            initialValue="ALL"
                             valueList={generationList}
                             setValue={setGeneration}
+                            essential={false}
                         />
                     </div>
                     <div>
