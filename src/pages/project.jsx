@@ -23,7 +23,7 @@ export default function Project() {
 
     const fieldMapping = {
         ALL: 'ALL',
-        '연합 프로젝트': '연합',
+        '연합 프로젝트': 'COLLABORATIVE',
         '심화 프로젝트': 'ADVANCED',
     };
 
@@ -32,7 +32,6 @@ export default function Project() {
                 try {
                     const projectData = await getProject();
                     setFileSet(projectData.content);
-                    console.log(projectData.content);
                     // generation 값을 기준으로 batchList 업데이트
                     const uniqueGenerations = new Set(projectData.content.map((file) => file.generation));
                     const sortedGenerations = Array.from(uniqueGenerations)
@@ -121,6 +120,7 @@ export default function Project() {
             )}
             {isRegisterOpen && (
                 <WriteDialog
+                    pageType="register"
                     type="project"
                     onClose={() => setIsRegisterOpen(false)}
                     onSubmit={(formData) => {
