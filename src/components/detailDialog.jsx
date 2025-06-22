@@ -9,7 +9,7 @@ export default function DetailDialog({ type, onClose, detailData, onDelete, onMo
         field: '분야',
         topic: '스터디 주제',
         teamName: '스터디 팀 이름',
-        blogUrl: '블로그 링크',
+        //blogUrl: '블로그 링크',
     };
 
     const projectLabels = {
@@ -17,7 +17,7 @@ export default function DetailDialog({ type, onClose, detailData, onDelete, onMo
         field: '프로젝트 종류',
         description: '프로젝트 주제',
         title: '프로젝트 팀 이름',
-        blogUrl: '블로그 링크',
+        //blogUrl: '블로그 링크',
     };
 
     return (
@@ -27,7 +27,7 @@ export default function DetailDialog({ type, onClose, detailData, onDelete, onMo
                     {detailData.topic}
                     <img src={CloseIcon} onClick={onClose} alt="close" className="cursor-pointer" />
                 </div>
-                <div className="pt-6 pb-12 px-6 grid grid-cols-2 gap-8">
+                <div className="pt-6 pb-8 px-6 grid grid-cols-2 gap-8 w-full">
                     {Object.keys(type === 'project' ? projectLabels : studyLabels).map((key, index) => {
                         return (
                             <div key={index} className="flex flex-col gap-2 font-semibold">
@@ -38,6 +38,12 @@ export default function DetailDialog({ type, onClose, detailData, onDelete, onMo
                             </div>
                         );
                     })}
+                </div>
+                <div className="flex flex-col gap-2 font-semibold pb-6 px-6">
+                        <p className="text-[#6c727f] text-sm">
+                            블로그 링크
+                        </p>
+                        <p className="text-[#272d3a] text-lg cursor-pointer underline" onClick={() => window.open(detailData["blogUrl"],'_blank')}>{detailData["blogUrl"]}</p>
                 </div>
                 <div className="flex gap-3 pr-6 pl-[270px] justify-end">
                     <Button

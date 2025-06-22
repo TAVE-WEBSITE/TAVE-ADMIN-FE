@@ -57,6 +57,7 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
             onSubmit(formData);
             onClose();
         }
+            console.log("handleSubmit" , isValidateTrigger,  newErrors);
     };
 
     useEffect(() => {
@@ -81,8 +82,11 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
                         essentialText="* 기수를 입력해주세요."
                         essential={true}
                         initialValue={initialData?.generation}
-                        inValidateTrigger={isValidateTrigger && errors.generation}
+                        isValidateTrigger={isValidateTrigger && errors.generation}
                     />
+                <div className='flex flex-col gap-2 text-base font-medium'>
+                    <div className='gap-0.5'><span className="text-[#394150] ">분야</span>
+                    <span className="text-[#ff0072]/80"> *</span></div>
                     <DropDown
                         type="dialog"
                         initialValue={initialData?.field}
@@ -92,15 +96,17 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
                         essential={true}
                         isValidateTrigger={isValidateTrigger && errors.field}
                     />
+                </div>
+                    
                     <DialogInput
                         text={type === 'study' ? '스터디 주제' : '프로젝트 주제'}
                         placeholder={type === 'study' ? 'ex. 리액트 기초' : 'ex. 자유롭게 기재'}
                         value={formData.topic}
                         initialValue={initialData?.topic}
-                        onChange={(e) => handleChange('topic', e.target.value)}
+                        onChange={(e) => handleChange   ('topic', e.target.value)}
                         essentialText={`* ${type === 'study' ? '스터디' : '프로젝트'} 주제를 입력해주세요.`}
                         essential={true}
-                        inValidateTrigger={isValidateTrigger && errors.topic}
+                        isValidateTrigger={isValidateTrigger && errors.topic}
                     />
                     <DialogInput
                         text={`${type === 'study' ? '스터디' : '프로젝트'} 팀 이름`}
@@ -110,7 +116,7 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
                         onChange={(e) => handleChange('teamName', e.target.value)}
                         essentialText={`* ${type === 'study' ? '스터디' : '프로젝트'} 팀 이름을 입력해주세요.`}
                         essential={true}
-                        inValidateTrigger={isValidateTrigger && errors.teamName}
+                        isValidateTrigger={isValidateTrigger && errors.teamName}
                     />
                     <DialogInput
                         text="블로그 링크"
@@ -120,7 +126,7 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
                         onChange={(e) => handleChange('blogUrl', e.target.value)}
                         essentialText="* 웹 링크를 입력해주세요"
                         essential={true}
-                        inValidateTrigger={isValidateTrigger && errors.blogUrl}
+                        isValidateTrigger={isValidateTrigger && errors.blogUrl}
                     />
                 </div>
                 <div className="flex gap-3 pr-6 pl-[270px] justify-end">
