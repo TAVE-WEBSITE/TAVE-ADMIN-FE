@@ -15,9 +15,9 @@ export default function Login() {
   const [essentialUser, setEssentialUser] = useState(true);
   const [essentialPw, setEssentialPw] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
-  const [isModal , setIsModal] = useState(false);
+  const [isModal, setIsModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { userName,setUserName ,department, setDepartment} = useUserStore();
+  const { userName, setUserName, department, setDepartment } = useUserStore();
 
   const navigate = useNavigate();
 
@@ -40,6 +40,7 @@ export default function Login() {
     mutationFn: ({ user, password }) => postLogin(user, password),
   
     onSuccess: (response) => {
+      // 정상 처리
       const result = response?.data?.result;
       console.log(response);
       if (!result) {
@@ -56,6 +57,7 @@ export default function Login() {
     },
   
     onError: (error) => {
+      // 에러 응답에서 메시지 안전하게 추출
       const message = error?.response?.data?.message || "오류가 발생했습니다.";
       setErrorMessage(message);
       setIsModal(true);
@@ -70,10 +72,7 @@ export default function Login() {
 
   return (
     <div className="flex flex-row h-screen w-screen px-24 py-24 justify-center items-center gap-36 bg-[linear-gradient(180deg,#121212_66.46%,#142755_97.53%,#195BFF_134.64%)]  relative">
-      <div
-        className="flex flex-col items-center z-10 cursor-pointer"
-        onClick={() => navigate("/")}
-      >
+      <div className="flex flex-col items-center z-10">
         <div className="text-white text-3xl">The new technology wave,</div>
         <img className="w-96" src={TaveLogo} alt="Logo" />
       </div>
@@ -125,8 +124,15 @@ export default function Login() {
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
         alt="Wave Background"
       />
-       {isModal && <SimpleModal title="로그인 실패" description={errorMessage}  blueBtnText="확인"
-      onClickBlue={() => setIsModal(false)}/>}
+      {isModal && (
+        <SimpleModal 
+          title="로그인 실패" 
+          description={errorMessage} 
+          blueBtnText="확인"
+          onClickBlue={() => setIsModal(false)}
+        />
+      )}
     </div>
   );
 }
+
