@@ -2,7 +2,6 @@ import Input from "../components/input";
 import Button from "./button";
 
 // 특정 type - password
-
 export default function MemberInput({
   type,
   btnText,
@@ -17,6 +16,7 @@ export default function MemberInput({
   isValidateTrigger = false,
   isConfirmed = false,
   isPassword = false,
+  timeString = "", 
 }) {
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -28,18 +28,27 @@ export default function MemberInput({
           </span>
         )}
       </div>
-      <div className=" w-full flex gap-4 items-center justify-center">
-        <Input
-          isValidateTrigger={isValidateTrigger}
-          isConfirmed={isConfirmed}
-          placeholder={placeholder}
-          onChange={onChange}
-          essentialText={essentialText}
-          approveText={approveText}
-          disapproveText={disapproveText}
-          onValidChange={onValidChange}
-          isPassword={isPassword}
-        />
+
+      <div className="w-full flex gap-4 items-center justify-center">
+        <div className="flex flex-col gap-1 w-full">
+          <Input
+            isValidateTrigger={isValidateTrigger}
+            isConfirmed={isConfirmed}
+            placeholder={placeholder}
+            onChange={onChange}
+            essentialText={essentialText}
+            approveText={approveText}
+            disapproveText={disapproveText}
+            onValidChange={onValidChange}
+            isPassword={isPassword}
+          />
+          {timeString && (
+            <p className="text-zinc-500 text-sm font-medium absolute right-[220px] mt-14">
+              {timeString}
+            </p>
+          )}
+        </div>
+
         {btnText && (
           <Button
             onClick={onClick}
