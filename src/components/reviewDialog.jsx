@@ -27,6 +27,7 @@ export default function ReviewDialog({ type, onClose, onSubmit, initialData }) {
     "BACKEND",
     "DEEP LEARNING",
     "DATA ANALYSIS",
+    "DESIGN"
   ];
   const generationList = [
     "ALL",
