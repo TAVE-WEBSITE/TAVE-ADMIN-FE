@@ -6,7 +6,8 @@ import DropDown from '../components/dropDown';
 import ReviewBlock from '../components/reviewBlock';
 import Button from '../components/button';
 import ReviewDialog from '../components/reviewDialog';
-import { getManagerReview } from '../api/review';
+import { getManagerReview, postReview } from '../api/review';
+import { formatFieldName } from '../utils/formatFieldName';
 
 export default function Review() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -79,11 +80,12 @@ export default function Review() {
     const handleDialogSubmit = async (formData) => {
         try {
             // TODO: API 호출하여 후기 등록/수정 처리
-            console.log('제출된 데이터:', formData);
+            //console.log('제출된 데이터:', formData);
             // 성공 후 리스트 새로고침
-            const generationNumber = generation.replace('기', '');
-            const data = await getManagerReview(generationNumber);
+            //const generationNumber = formData.generation.replace('기', '');
+            const data = await postReview(formData);
             setReviewList(data);
+             window.location.reload();
         } catch (error) {
             console.error('후기 처리 실패:', error);
             alert('후기 처리에 실패했습니다.');
@@ -123,17 +125,17 @@ export default function Review() {
                         <div className="text-white text-center w-full">로딩 중...</div>
                     ) : error ? (
                         <div className="text-white text-center w-full">{error}</div>
-                    ) : reviewList.length === 0 ? (
+                    ) : !Array.isArray(reviewList) || reviewList.length === 0 ? (
                         <div className="text-white text-center w-full">해당 기수의 후기가 없습니다.</div>
                     ) : (
-                        reviewList.map((review) => (
+                        reviewList?.map((review) => (
                             <ReviewBlock 
                                 key={review.id} 
                                 reviewProps={{
                                     id: review.id,
                                     nickname: review.nickname,
                                     generation: review.generation,
-                                    field: review.field,
+                                    field: formatFieldName(review.field),
                                     content: review.content,
                                     isPublic: review.isPublic,
                                 }}
