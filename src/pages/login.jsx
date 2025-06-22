@@ -16,7 +16,7 @@ export default function Login() {
   const [essentialPw, setEssentialPw] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isModal, setIsModal] = useState(false);
-  const { userName, setUserName, department, setDepartment } = useUserStore();
+  const {setUserName, setDepartment } = useUserStore();
 
   const navigate = useNavigate();
 

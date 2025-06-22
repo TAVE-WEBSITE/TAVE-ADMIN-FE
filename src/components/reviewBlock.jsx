@@ -27,6 +27,7 @@ export default function ReviewBlock({ reviewProps, onReviewDeleted, onModify }) 
                 console.error('후기 삭제 실패:', error);
                 alert('후기 삭제에 실패했습니다.');
             } finally {
+                window.location.reload();
                 setIsDeleting(false);
             }
         }
