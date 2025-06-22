@@ -123,6 +123,7 @@ export default function Study() {
             )}
             {isRegisterOpen && (
                 <WriteDialog
+                    pageType="register"
                     type="study"
                     onClose={() => setIsRegisterOpen(false)}
                     onSubmit={(formData) => {
