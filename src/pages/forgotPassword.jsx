@@ -58,7 +58,15 @@ export default function ForgotPassword() {
     const authAfter = () => {
         const isValid = step1Valid.every((value) => value);
         if (isValid) {
+            setNickname('');
+            setEmail('');
+            setAuthCode('');
+            setPassword('');
+            setAuthVerified(false);
+            setIsEmailVerified(false);
+
             setNewPw(true);
+
         }
     };
 
