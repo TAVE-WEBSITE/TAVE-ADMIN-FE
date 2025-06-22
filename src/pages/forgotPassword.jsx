@@ -16,7 +16,7 @@ export default function ForgotPassword() {
     const [btnText, setBtnText] = useState('다음으로');
     const [modalType, setModalType] = useState(null); 
     const [isModalOpen, setModalOpen] = useState(false);
-    const [authVerified, setAuthVerified] = useState(null);
+    const [authVerified, setAuthVerified] = useState("");
     const [step1Valid, setStep1Valid] = useState([false, false, false]);
     const [step2Valid, setStep2Valid] = useState([false, false]);
     const [password, setPassword] = useState('');
@@ -24,12 +24,36 @@ export default function ForgotPassword() {
     const [isPasswordReset, setPasswordReset] = useState(false); 
     const [retransmit, setRetransmit] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
-const [description, setDescription] = useState('');
-const [isEmailModal, setIsEmailModal] = useState(false);
-const [isEmailVerified, setIsEmailVerified] = useState(false);
-
+    const [description, setDescription] = useState('');
+    const [isEmailModal, setIsEmailModal] = useState(false);
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(180);
+    const [isCounting, setIsCounting] = useState(false);
 
     const navigate = useNavigate();
+
+    // 타이머 관련 useEffect
+    useEffect(() => {
+        let timer;
+        if (isCounting && timeLeft > 0) {
+            timer = setInterval(() => {
+                setTimeLeft((prev) => prev - 1);
+            }, 1000);
+        }
+
+        if (timeLeft <= 0) {
+            setIsCounting(false);
+            setIsEmailVerified(false);
+        }
+
+        return () => clearInterval(timer);
+    }, [isCounting, timeLeft]);
+
+    const formatTime = (time) => {
+        const minute = String(Math.floor(time / 60)).padStart(2, "0");
+        const second = String(time % 60).padStart(2, "0");
+        return `${minute}:${second}`;
+    };
 
     const authAfter = () => {
         const isValid = step1Valid.every((value) => value);
@@ -78,6 +102,10 @@ const [isEmailVerified, setIsEmailVerified] = useState(false);
                 setModalTitle(retransmit ? "인증번호 재발송" : "인증번호 발송");
                 setDescription("입력하신 이메일로\n인증번호가 발송되었습니다.");
                 setRetransmit(true);
+                setIsCounting(true);
+                setTimeLeft(180);
+                setIsEmailVerified(null);
+                setAuthVerified(undefined);
             } else {
                 throw new Error("INVALID_EMAIL");
             }
@@ -97,9 +125,12 @@ const [isEmailVerified, setIsEmailVerified] = useState(false);
           const status = await postEmailVerify(email, authCode);
           if (status === 200) {
             setIsEmailVerified(true);
+            setAuthVerified(true);
+            setIsCounting(false);
             handleValidChange(2, true, 1);
           } else {
             setIsEmailVerified(false);
+            setAuthVerified(false);
             handleValidChange(2, false, 1);
           }
         } catch (err) {
@@ -186,7 +217,8 @@ const [isEmailVerified, setIsEmailVerified] = useState(false);
     approveText='인증번호가 확인되었습니다.'
     disapproveText="인증번호가 일치하지 않습니다."
     isConfirmed={authVerified} 
-    onChange={(e) => setAuthCode(e.target.value)} 
+    onChange={(e) => setAuthCode(e.target.value)}
+    timeString={isCounting ? formatTime(timeLeft) : null}
 />
 
                         </div>
@@ -221,12 +253,14 @@ const [isEmailVerified, setIsEmailVerified] = useState(false);
                             type="password"
                             hint="비밀번호를 다시 입력해주세요"
                             essentialText="비밀번호를 입력해주세요."
+                            value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                         <MemberInput
                             text="비밀번호 확인"
                             hint="비밀번호를 다시 입력해주세요"
                             essentialText="비밀번호가 일치하지 않습니다."
+                            value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                     </div>
