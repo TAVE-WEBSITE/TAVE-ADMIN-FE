@@ -31,18 +31,15 @@ export async function getManagerReview(generation) {
 export async function modifyReview(reviewId, reviewData) {
     try {
         const token = sessionStorage.getItem('access_token');
-        
         if (!token) {
             throw new Error('토큰이 없습니다');
         }
-
         const response = await client.patch(`/manager/review/${reviewId}`, reviewData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             }
         });
-
         return response.data;
     } catch (error) {
         console.error('후기 수정 에러', error);
@@ -69,4 +66,15 @@ export async function deleteReview(reviewId) {
         console.error('후기 삭제 에러', error);
         throw error;
     }
+}
+
+
+export async function postReview(data) {
+  try {
+    const response = await client.post("/manager/review", data);
+    return response.data;
+  } catch (error) {
+    console.error("후기 추가 에러", error);
+    throw error;
+  }
 }
