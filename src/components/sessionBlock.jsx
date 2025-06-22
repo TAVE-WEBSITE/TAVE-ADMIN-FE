@@ -15,7 +15,6 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
     });
 
     const handleClickSession = () => {
-        // 모달이나 다이얼로그가 열려있으면 클릭 무시
         if (isModalOpen || isEditDialogOpen) {
             return;
         }
@@ -40,6 +39,8 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
             await deleteSession(selectedSession.sessionId);
             setIsModalOpen(false);
             console.log('세션 삭제 완료');
+           
+            window.location.reload();
         } catch (error) {
             console.error('세션 삭제 실패', error);
         }
@@ -68,6 +69,7 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
             });
             setIsEditDialogOpen(false); 
             console.log('세션 수정 완료');
+            window.location.reload();
         } catch (error) {
             console.error('세션 수정 실패', error);
         }
