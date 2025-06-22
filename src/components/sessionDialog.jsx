@@ -35,8 +35,9 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
         }
     };
 
-    const handleSubmit = async () => {
-        // 1. 날짜 형식 체크
+    const handleSubmit = () => {
+        setIsValidateTrigger(true);
+
         const dateRegex = /^\d{4}\.\d{2}\.\d{2}$/;
         const newErrors = {
             title: !formData.title.trim(),
@@ -44,16 +45,15 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
             date: !formData.date.trim() || !dateRegex.test(formData.date),
             period: !formData.period.trim(),
         };
-        
-        // 2. 오류 상태 먼저 설정
+
         setErrors(newErrors);
-        
-        // 3. 오류 트리거 true로 설정 → 오류 상태 반영 후 경고문 뜸
-        setIsValidateTrigger(true);
-        
-        // 4. 하나라도 오류가 있으면 중단
-        if (newErrors.title || newErrors.description || newErrors.date || newErrors.period) return;
-        
+
+        if (!newErrors.title && !newErrors.description && !newErrors.date && !newErrors.period) {
+            handleApiCall();
+        }
+    };
+
+    const handleApiCall = async () => {
         try {
             const formDataToSend = new FormData();
             const requestData = {
@@ -157,7 +157,7 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                             onChange={(e) => handleChange('title', e.target.value)}
                             essentialText="* 세션 이름을 입력해주세요."
                             essential={true}
-                            inValidateTrigger={isValidateTrigger && errors.title}
+                            isValidateTrigger={isValidateTrigger && errors.title}
                         />
                         <DialogInput
                             text="정규 세션 설명"
@@ -166,23 +166,26 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                             onChange={(e) => handleChange('description', e.target.value)}
                             essentialText="* 세션 설명을 입력해주세요."
                             essential={true}
-                            inValidateTrigger={isValidateTrigger && errors.description}
+                            isValidateTrigger={isValidateTrigger && errors.description}
                         />
                         <DialogInput
-                            text="날짜 입력"
-                            placeholder="날짜를 입력해주세요 (YYYY.MM.DD)"
-                            value={formData.date}
-                            onChange={(e) => handleChange('date', e.target.value)}
-                            essentialText={
-                                !formData.date.trim()
-                                    ? "* 날짜를 입력해주세요."
-                                    : !/^\d{4}\.\d{2}\.\d{2}$/.test(formData.date)
-                                    ? "* 날짜 형식이 맞지 않습니다."
-                                    : "* 날짜를 입력해주세요."
-                            }
-                            essential={true}
-                            inValidateTrigger={isValidateTrigger && errors.date}
-                        />
+    text="날짜 입력"
+    placeholder="날짜를 입력해주세요 (YYYY.MM.DD)"
+    value={formData.date}
+    onChange={(e) => handleChange('date', e.target.value)}
+    essentialText={
+        isValidateTrigger
+            ? !formData.date.trim()
+                ? "* 날짜를 입력해주세요."
+                : !/^\d{4}\.\d{2}\.\d{2}$/.test(formData.date)
+                ? "* 날짜 형식이 맞지 않습니다."
+                : ""
+            : ""
+    }
+    essential={true}
+    isValidateTrigger={isValidateTrigger}
+/>
+
                         
                         {/* 라디오 버튼 섹션 */}
                         <div className="flex flex-col gap-2 w-full">

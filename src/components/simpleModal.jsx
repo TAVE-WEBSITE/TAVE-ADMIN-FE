@@ -14,7 +14,7 @@ export default function SimpleModal({
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50" onClick={onClose}>
             <div className="bg-white rounded-[18px] p-6 w-[348px]" onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-between items-center mb-0.5">
-                    <div className="text-xl font-semibold text-black">{title}</div>
+                    <div className="text-2xl font-semibold text-black">{title}</div>
                     {showCloseButton && (
                         <img 
                             src={CloseIcon} 
