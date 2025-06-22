@@ -3,7 +3,7 @@ import SimpleModal from './simpleModal';
 import SessionDialog from './sessionDialog';
 import { modifySession, deleteSession } from '../api/session';
 
-export default function SessionBlock({ sessionId, title, description, eventDay, imgUrl }) {
+export default function SessionBlock({ sessionId, title, description, eventDay, imgUrl, period }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); 
     const [selectedSession, setSelectedSession] = useState(null); 
@@ -12,13 +12,14 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
         description,
         eventDay,
         imgUrl,
+        period: period || 'START',
     });
 
     const handleClickSession = () => {
         if (isModalOpen || isEditDialogOpen) {
             return;
         }
-        setSelectedSession({ sessionId, title, description, eventDay, imgUrl });
+        setSelectedSession({ sessionId, title, description, eventDay, imgUrl, period: sessionData.period });
         setIsModalOpen(true);
     };
 
@@ -52,7 +53,8 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
         const formData = new FormData();
         formData.append('title', updatedData.title);
         formData.append('description', updatedData.description);
-        formData.append('eventDay', updatedData.eventDay);
+        formData.append('eventDay', updatedData.date);
+        formData.append('period', updatedData.period);
     
         // 파일이 있을 경우만 추가
         if (updatedData.imgFile) {
@@ -64,8 +66,9 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
             setSessionData({
                 title: updatedData.title,
                 description: updatedData.description,
-                eventDay: updatedData.eventDay,
+                eventDay: updatedData.date,
                 imgUrl: updatedData.imgFile ? URL.createObjectURL(updatedData.imgFile) : sessionData.imgUrl,
+                period: updatedData.period || 'START',
             });
             setIsEditDialogOpen(false); 
             console.log('세션 수정 완료');
@@ -110,10 +113,14 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
                 <div onClick={(e) => e.stopPropagation()}>
                     <SessionDialog
                         type="modify"
-                        sessionId={selectedSession.sessionId}   
-                        title={sessionData.title}
-                        description={sessionData.description}
-                        eventDay={sessionData.eventDay} 
+                        sessionId={selectedSession.sessionId}
+                        existingSessionData={{
+                            title: sessionData.title,
+                            description: sessionData.description,
+                            date: sessionData.eventDay,
+                            period: sessionData.period || 'START', // 기본값 설정
+                            imgUrl: sessionData.imgUrl,
+                        }}
                         onSubmit={handleSubmitEdit} 
                         onClose={handleCloseModal}
                     />

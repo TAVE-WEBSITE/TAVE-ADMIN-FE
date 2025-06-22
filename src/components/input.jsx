@@ -42,8 +42,11 @@ export default function Input({
     const valid = inputValue.trim() !== "";
     setMessage(valid ? "" : essentialText);
     onValidChange(valid); // 유효성 결과를 부모에 전달
-    console.log("isValidateTrigger" , "여기 들어온거 확인" , essentialText);
-    console.log("isValidateTrigger" , valid , "메시지는 뭔지",message);
+   
+    if (isValidateTrigger) {
+        setMessage(essentialText);
+    }
+ 
   }
 }, [isValidateTrigger]);
 

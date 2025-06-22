@@ -55,6 +55,7 @@ export default function Session() {
                                 description={session.description}
                                 eventDay={session.eventDay}
                                 imgUrl={session.imgUrl}
+                                period={session.period}
                             />
                         ))
                     )}
