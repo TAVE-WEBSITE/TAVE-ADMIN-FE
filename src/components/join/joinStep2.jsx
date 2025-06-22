@@ -1,6 +1,5 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MemberInput from "../memberInput";
-import { useNavigate } from "react-router-dom";
 import useSignupStore from "../../store/useSignupStore";
 
 export default function JoinStep2() {
@@ -8,42 +7,65 @@ export default function JoinStep2() {
   const [passwordCheck, setPasswordCheck] = useState("");
   const { updateUserData, validateStep } = useSignupStore();
 
+  const [pwApproveText, setPwApproveText] = useState(undefined);
+  const [pwCheckApproveText, setPwCheckApproveText] = useState(undefined);
+
   const handlePassword = (e) => {
-    setPassword(e.target.value);
+    const val = e.target.value;
+    setPassword(val);
+    passwordApproveText(val);
+    validatePasswordMatch(val, passwordCheck);
   };
 
   const handlePasswordCheck = (e) => {
-    setPasswordCheck(e.target.value);
+    const val = e.target.value;
+    setPasswordCheck(val);
+    validatePasswordMatch(password, val);
   };
 
-  // 비밀번호 입력이 변경될 때마다 유효성 검사 실행
   useEffect(() => {
     validateStep();
   }, [password]);
 
   useEffect(() => {
-    
-    if (password === passwordCheck && passwordValide(password) && passwordValide(passwordCheck) ) {
+    if (
+      password === passwordCheck &&
+      passwordValide(password) &&
+      passwordValide(passwordCheck)
+    ) {
       updateUserData("password", password);
+      validatePasswordMatch(password, passwordCheck);
     } else {
       updateUserData("password", "");
     }
   }, [password, passwordCheck]);
 
-
-  //8자 이상, 대소문자 모두 포함, 특수문자(!@#$%^&*) 포함
+  // 유효성 검사
   const passwordValide = (pw) => {
-    //str.includes('Hello')
-    if(!(pw.includes('!') || pw.includes('@') || pw.includes('#') || pw.includes('$') || pw.includes('%') || pw.includes('^')|| pw.includes('&') || pw.includes('*') )){
-      return false;
-    }else if(!(pw !== pw.toLowerCase() && pw != pw.toUpperCase())){
-      return false;
-    }else if(pw.length <8 ){
-    return false;
-    }else {
-      return true;
+    const hasSpecial = /[!@#$%^&*]/.test(pw);
+    const hasUpperLower = pw !== pw.toLowerCase() && pw !== pw.toUpperCase();
+    const isLongEnough = pw.length >= 8;
+    return hasSpecial && hasUpperLower && isLongEnough;
+  };
+
+  const passwordApproveText = (pw) => {
+    if (pw.trim() === "") return;
+    setPwApproveText(passwordValide(pw) ? undefined : false);
+  };
+
+  // 비밀번호 확인 일치 검사
+  const validatePasswordMatch = (pw, check) => {
+    if (check.trim() === "") {
+      setPwCheckApproveText(undefined);
+      return;
     }
-  }
+
+    if (pw === check) {
+      setPwCheckApproveText(undefined);
+    } else {
+      setPwCheckApproveText(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6 items-center w-full">
@@ -55,6 +77,12 @@ export default function JoinStep2() {
           essentialText="비밀번호를 입력해주세요."
           type="password"
           isPassword={true}
+          isConfirmed={pwApproveText}
+          disapproveText={
+            pwApproveText === false
+              ? "비밀번호 조건이 충족되지 않았습니다."
+              : ""
+          }
         />
       </div>
       <div className="flex gap-2 items-center w-full justify-center">
@@ -64,6 +92,12 @@ export default function JoinStep2() {
           placeholder="비밀번호를 다시 입력해주세요"
           essentialText="비밀번호를 다시 입력해주세요."
           isPassword={true}
+          isConfirmed={pwCheckApproveText}
+          disapproveText={
+            pwCheckApproveText === false
+              ? "새 비밀번호와 일치하지 않습니다."
+              : ""
+          }
         />
       </div>
     </div>

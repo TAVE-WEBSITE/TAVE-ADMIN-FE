@@ -31,9 +31,7 @@ export async function postLogin(email, password) {
 
         return response;
     } catch (error) {
-        if (error.response && error.response.status === 400) {
-            return 400;
-        }
+       
         throw error;
     }
 }
