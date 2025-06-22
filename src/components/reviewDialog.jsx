@@ -25,8 +25,8 @@ export default function ReviewDialog({ type, onClose, onSubmit, initialData }) {
     "선택",
     "FRONTEND",
     "BACKEND",
-    "DEEPLEARNING",
-    "DATAANALYSIS",
+    "DEEP LEARNING",
+    "DATA ANALYSIS",
   ];
   const generationList = [
     "ALL",
@@ -52,6 +52,9 @@ export default function ReviewDialog({ type, onClose, onSubmit, initialData }) {
     if(key === "generation"){
          const regex = /[^0-9]/g; 
         var result = value.replace(regex,"");
+        setFormData((prev) => ({ ...prev, [key]: result }));
+    }else if(key === "field"){
+        var result = value.replace(" ","");
         setFormData((prev) => ({ ...prev, [key]: result }));
     }else{
         setFormData((prev) => ({ ...prev, [key]: value }));
