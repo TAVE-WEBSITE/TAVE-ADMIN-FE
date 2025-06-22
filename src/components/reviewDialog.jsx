@@ -60,12 +60,10 @@ export default function ReviewDialog({ type, onClose, onSubmit, initialData }) {
     }else{
         setFormData((prev) => ({ ...prev, [key]: value }));
     }
-
   };
 
   const handleSubmit = () => {
     setIsValidateTrigger(true);
-
     const newErrors = {
       nickname: !formData.nickname.trim(),
       generation: !formData.generation.trim(),
@@ -84,6 +82,7 @@ export default function ReviewDialog({ type, onClose, onSubmit, initialData }) {
       onSubmit(formData);
       onClose();
     }
+        
   };
 
   useEffect(() => {
