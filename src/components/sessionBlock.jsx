@@ -15,6 +15,10 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
     });
 
     const handleClickSession = () => {
+        // 모달이나 다이얼로그가 열려있으면 클릭 무시
+        if (isModalOpen || isEditDialogOpen) {
+            return;
+        }
         setSelectedSession({ sessionId, title, description, eventDay, imgUrl });
         setIsModalOpen(true);
     };
@@ -22,6 +26,7 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setIsEditDialogOpen(false);
+        setSelectedSession(null);
     };
 
     const handleEditSession = () => {
@@ -83,29 +88,34 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
 
             {/* 세션 삭제/수정 모달 */}
             {isModalOpen && selectedSession && (
-                <SimpleModal
-                    title={selectedSession.title}
-                    sessionId={selectedSession.sessionId}
-                    description={selectedSession.description}
-                    grayBtnText="수정"
-                    blueBtnText="삭제"
-                    onClickGray={handleEditSession} 
-                    onClickBlue={handleDeleteSession} 
-                    onClose={handleCloseModal}
-                />
+                <div onClick={(e) => e.stopPropagation()}>
+                    <SimpleModal
+                        title={selectedSession.title}
+                        sessionId={selectedSession.sessionId}
+                        description={`📅 ${selectedSession.eventDay}\n${selectedSession.description}`}
+                        grayBtnText="수정"
+                        blueBtnText="삭제"
+                        onClickGray={handleEditSession} 
+                        onClickBlue={handleDeleteSession} 
+                        onClose={handleCloseModal}
+                        showCloseButton={true}
+                    />
+                </div>
             )}
 
             {/* 세션 수정 다이얼로그 */}
             {isEditDialogOpen && (
-                <SessionDialog
-                type="modify"
-                sessionId={selectedSession.sessionId}   
-                    title={sessionData.title}
-                    description={sessionData.description}
-                    eventDay={sessionData.eventDay} 
-                    onSubmit={handleSubmitEdit} 
-                    onClose={handleCloseModal}
-                />
+                <div onClick={(e) => e.stopPropagation()}>
+                    <SessionDialog
+                        type="modify"
+                        sessionId={selectedSession.sessionId}   
+                        title={sessionData.title}
+                        description={sessionData.description}
+                        eventDay={sessionData.eventDay} 
+                        onSubmit={handleSubmitEdit} 
+                        onClose={handleCloseModal}
+                    />
+                </div>
             )}
         </div>
     );
