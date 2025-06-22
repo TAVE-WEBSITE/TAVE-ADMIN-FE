@@ -16,7 +16,10 @@ export default function Login() {
   const [essentialPw, setEssentialPw] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isModal, setIsModal] = useState(false);
-  const {setUserName, setDepartment } = useUserStore();
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const { userName, setUserName, department, setDepartment } = useUserStore();
+
 
   const navigate = useNavigate();
 
@@ -37,24 +40,32 @@ export default function Login() {
 
   const loginMutation = useMutation({
     mutationFn: ({ user, password }) => postLogin(user, password),
+  
     onSuccess: (response) => {
-      sessionStorage.setItem("access_token", response.data.result.accessToken);
-      sessionStorage.setItem("email", response.data.result.email);
-      setUserName(response.data.result.username);
+      // 정상 처리
+      const result = response?.data?.result;
+      console.log(response);
+      if (!result) {
+        throw new Error("로그인 데이터가 없습니다.");
+      }
+      sessionStorage.setItem("access_token", result.accessToken);
+      sessionStorage.setItem("email", result.email);
+      setUserName(result.username);
       setDepartment(
-        response.data.result.department === "PRINCIPAL"
-          ? "회장"
-          : response.data.result.department === "TECHNICAL"
-          ? "기술처"
-          : "경영처"
+        result.department === "PRINCIPAL" ? "회장" :
+        result.department === "TECHNICAL" ? "기술처" : "경영처"
       );
       navigate("/session");
     },
+  
     onError: (error) => {
-      console.error("로그인 실패:", error);
-      setIsModal(true); // 로그인 실패하면 모달
+      // 에러 응답에서 메시지 안전하게 추출
+      const message = error?.response?.data?.message || "오류가 발생했습니다.";
+      setErrorMessage(message);
+      setIsModal(true);
     },
   });
+  
 
   const loginHandler = () => {
     if (isDisabled) return;
@@ -63,10 +74,7 @@ export default function Login() {
 
   return (
     <div className="flex flex-row h-screen w-screen px-24 py-24 justify-center items-center gap-36 bg-[linear-gradient(180deg,#121212_66.46%,#142755_97.53%,#195BFF_134.64%)]  relative">
-      <div
-        className="flex flex-col items-center z-10 cursor-pointer"
-        onClick={() => navigate("/")}
-      >
+      <div className="flex flex-col items-center z-10">
         <div className="text-white text-3xl">The new technology wave,</div>
         <img className="w-96" src={TaveLogo} alt="Logo" />
       </div>
@@ -119,9 +127,9 @@ export default function Login() {
         alt="Wave Background"
       />
       {isModal && (
-        <SimpleModal
-          title="로그인 실패"
-          description="아이디 또는 비밀번호가 올바르지 않습니다."
+        <SimpleModal 
+          title="로그인 실패" 
+          description={errorMessage} 
           blueBtnText="확인"
           onClickBlue={() => setIsModal(false)}
         />
@@ -129,3 +137,4 @@ export default function Login() {
     </div>
   );
 }
+

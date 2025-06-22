@@ -1,28 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- ✅ Maze 추적 코드 -->
-    <script>
-      (function (m, a, z, e) {
-        var s, t;
-        try {
-          t = m.sessionStorage.getItem('maze-us');
-        } catch (err) {}
-
-        if (!t) {
-          t = new Date().getTime();
-          try {
-            m.sessionStorage.setItem('maze-us', t);
-          } catch (err) {}
-        }
-
-        s = a.createElement('script');
-        s.src = z + '?apiKey=' + e;
-        s.async = true;
-        a.getElementsByTagName('head')[0].appendChild(s);
-        m.mazeUniversalSnippetApiKey = e;
-      })(window, document, 'https://snippet.maze.co/maze-universal-loader.js', 'cd30b425-8d7e-4510-a095-7fa16acecaa3');
-    </script>
+   
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

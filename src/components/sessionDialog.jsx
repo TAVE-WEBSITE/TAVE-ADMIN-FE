@@ -12,90 +12,79 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
         title: existingSessionData?.title || '',
         description: existingSessionData?.description || '',
         date: existingSessionData?.date || '',
+        period: existingSessionData?.period || '',
     });
     const [isValidateTrigger, setIsValidateTrigger] = useState(false);
     const [errors, setErrors] = useState({
         title: false,
         description: false,
         date: false,
+        period: false,
     });
 
     const handleChange = (key, value) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
-        setErrors((prev) => ({ ...prev, [key]: !value.trim() }));
+        
+        // 날짜 형식 검증
+        if (key === 'date') {
+            const dateRegex = /^\d{4}\.\d{2}\.\d{2}$/;
+            setErrors((prev) => ({ ...prev, [key]: !value.trim() || !dateRegex.test(value) }));
+        } else {
+            setErrors((prev) => ({ ...prev, [key]: !value.trim() }));
+        }
     };
 
     const handleSubmit = async () => {
-        setIsValidateTrigger(true);
-    
+        // 1. 날짜 형식 체크
+        const dateRegex = /^\d{4}\.\d{2}\.\d{2}$/;
         const newErrors = {
             title: !formData.title.trim(),
             description: !formData.description.trim(),
-            date: !formData.date.trim(),
+            date: !formData.date.trim() || !dateRegex.test(formData.date),
+            period: !formData.period.trim(),
         };
-    
+        
+        // 2. 오류 상태 먼저 설정
         setErrors(newErrors);
-    
-        if (!newErrors.title && !newErrors.description && !newErrors.date) {
-            try {
-                const formDataToSend = new FormData();
-    
-                // request 객체를 JSON으로 만들어서 전송
-                const requestData = {
-                    title: formData.title,
-                    description: formData.description,
-                    eventDay: formData.date,
-                };
-                
-                // request 객체를 문자열로 변환하여 추가
-                formDataToSend.append('request', new Blob([JSON.stringify(requestData)], {
-                    type: 'application/json'
-                }));
-    
-                // 이미지 파일이 있는 경우에만 추가
-                const imageFile = document.getElementById('fileInput')?.files?.[0];
-                if (imageFile) {
-                    formDataToSend.append('file', imageFile);
-                }
-
-                // FormData 내용 출력 (디버깅용)
-                console.log('FormData 내용:');
-                for (let pair of formDataToSend.entries()) {
-                    if (pair[0] === 'request') {
-                        const requestBlob = pair[1];
-                        requestBlob.text().then(text => {
-                            console.log('request 데이터:', JSON.parse(text));
-                        });
-                    } else if (pair[0] === 'file') {
-                        const file = pair[1];
-                        console.log('file 데이터:', {
-                            name: file.name,
-                            type: file.type,
-                            size: file.size,
-                            lastModified: file.lastModified
-                        });
-                    }
-                }
-    
-                let result;
-    
-                if (type === 'modify') {
-                    result = await modifySession(sessionId, formDataToSend);
-                } else {
-                    result = await postSession(formDataToSend);
-                }
-    
-                if (result) {
-                    onSubmit(formData);
-                    onClose();
-                } else {
-                    console.error('세션 처리 실패: 서버에서 응답을 받지 못했습니다.');
-                    alert('세션 등록에 실패했습니다. 다시 시도해주세요.');
-                }
-            } catch (error) {
-                console.error('세션 처리 실패:', error);
+        
+        // 3. 오류 트리거 true로 설정 → 오류 상태 반영 후 경고문 뜸
+        setIsValidateTrigger(true);
+        
+        // 4. 하나라도 오류가 있으면 중단
+        if (newErrors.title || newErrors.description || newErrors.date || newErrors.period) return;
+        
+        try {
+            const formDataToSend = new FormData();
+            const requestData = {
+                title: formData.title,
+                description: formData.description,
+                eventDay: formData.date,
+                period: formData.period,
+            };
+            formDataToSend.append('request', new Blob([JSON.stringify(requestData)], {
+                type: 'application/json',
+            }));
+            
+            const imageFile = document.getElementById('fileInput')?.files?.[0];
+            if (imageFile) {
+                formDataToSend.append('file', imageFile);
+            }
+            
+            const result = type === 'modify'
+                ? await modifySession(sessionId, formDataToSend)
+                : await postSession(formDataToSend);
+            
+            if (result) {
+                onSubmit(formData);
+                window.location.reload();
+                onClose();
+            } else {
+                console.error('세션 처리 실패: 서버에서 응답을 받지 못했습니다.');
                 alert('세션 등록에 실패했습니다. 다시 시도해주세요.');
             }
+        } catch (error) {
+            console.error('세션 처리 실패:', error);
+            alert('세션 등록에 실패했습니다. 다시 시도해주세요.');
         }
     };
     
@@ -162,10 +151,42 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                         placeholder="날짜를 입력해주세요 (YYYY.MM.DD)"
                         value={formData.date}
                         onChange={(e) => handleChange('date', e.target.value)}
-                        essentialText="* 날짜를 입력해주세요."
+                        essentialText={
+                            !formData.date.trim()
+                                ? "* 날짜를 입력해주세요."
+                                : !/^\d{4}\.\d{2}\.\d{2}$/.test(formData.date)
+                                ? "* 날짜 형식이 맞지 않습니다."
+                                : "* 날짜를 입력해주세요."
+                        }
                         essential={true}
                         inValidateTrigger={isValidateTrigger && errors.date}
                     />
+                    
+                    {/* 라디오 버튼 섹션 */}
+                    <div className="flex flex-col gap-2 w-full">
+                        <div className="text-base font-medium flex gap-0.5">
+                            <span className="text-[#394150]">세션 구분</span>
+                            <span className="text-[#ff0072]/80">*</span>
+                        </div>
+                        <div className="flex gap-6">
+                            {['START', 'PART1', 'PART2'].map((option) => (
+                                <label key={option} className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="period"
+                                        value={option}
+                                        checked={formData.period === option}
+                                        onChange={(e) => handleChange('period', e.target.value)}
+                                        className="w-4 h-4 text-[#195bff] bg-white border-2 border-[#e5e7eb] focus:ring-[#195bff] focus:ring-2"
+                                    />
+                                    <span className="text-[#394150] text-base">{option}</span>
+                                </label>
+                            ))}
+                        </div>
+                        {isValidateTrigger && errors.period && (
+                            <p className="text-[#ff0072]/80 text-sm font-medium mt-[6px]">* 세션 구분을 선택해주세요.</p>
+                        )}
+                    </div>
                 </div>
                 <div className="flex gap-3 pr-6 pl-[270px] justify-end">
                     <Button
