@@ -1,14 +1,22 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Tab from '../components/tab';
 import Header from '../components/header';
 import DropDown from '../components/dropDown';
 import ReviewBlock from '../components/reviewBlock';
 import Button from '../components/button';
+import ReviewDialog from '../components/reviewDialog';
+import { getManagerReview } from '../api/review';
 
 export default function Review() {
-    const [isOpen, setIsopen] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [dialogType, setDialogType] = useState('register');
+    const [selectedReview, setSelectedReview] = useState(null);
     const [generation, setGeneration] = useState('14기');
+    const [reviewList, setReviewList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
     const generationList = [
         '14기',
         '13기',
@@ -28,35 +36,62 @@ export default function Review() {
     const categories = ['정규세션', '동아리 이력', '후기'];
     const links = ['/session', '/history', '/review'];
 
-    const reviewInput = [
-        {
-            nickname: '테이부',
-            generation: '13기',
-            field: '프론트엔드',
-            content: '내용은 아래와 같아 구체적으로 추후에 작성',
-            isPublic: true,
-        },
-        {
-            nickname: '테이부',
-            generation: '13기',
-            field: '프론트엔드',
-            content: '내용은 아래와 같아 구체적으로 추후에 작성',
-            isPublic: true,
-        },
-        {
-            nickname: '테이부',
-            generation: '13기',
-            field: '프론트엔드',
-            content: '내용은 아래와 같아 구체적으로 추후에 작성',
-            isPublic: true,
-        },
-    ];
-    const addBtn = () => {
-        setIsopen(true);
+    // 기수 변경 시 후기 리스트 다시 불러오기
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                setIsLoading(true);
+                setError(null);
+                const generationNumber = generation.replace('기', '');
+                const data = await getManagerReview(generationNumber);
+                console.log('받아온 후기 데이터:', data);
+                
+                if (Array.isArray(data)) {
+                    setReviewList(data);
+                } else {
+                    console.error('후기 데이터가 배열이 아닙니다:', data);
+                    setReviewList([]);
+                }
+            } catch (error) {
+                console.error('후기 조회 실패:', error);
+                setError('후기 조회에 실패했습니다.');
+                setReviewList([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchReviews();
+    }, [generation]);
+
+    const handleAddReview = () => {
+        setDialogType('register');
+        setSelectedReview(null);
+        setIsDialogOpen(true);
     };
 
-    const closeBtn = () => {
-        setIsopen(false);
+    const handleModifyReview = (review) => {
+        setDialogType('modify');
+        setSelectedReview(review);
+        setIsDialogOpen(true);
+    };
+
+    const handleDialogSubmit = async (formData) => {
+        try {
+            // TODO: API 호출하여 후기 등록/수정 처리
+            console.log('제출된 데이터:', formData);
+            // 성공 후 리스트 새로고침
+            const generationNumber = generation.replace('기', '');
+            const data = await getManagerReview(generationNumber);
+            setReviewList(data);
+        } catch (error) {
+            console.error('후기 처리 실패:', error);
+            alert('후기 처리에 실패했습니다.');
+        }
+    };
+
+    const handleReviewDeleted = (deletedId) => {
+        setReviewList(prevList => prevList.filter(review => review.id !== deletedId));
     };
 
     return (
@@ -67,21 +102,59 @@ export default function Review() {
                     <Tab category={categories} link={links} currentIndex={2} />
                 </div>
                 <div className="flex justify-between w-full">
-                    <DropDown
-                        type="dialog"
-                        valueList={generationList}
-                        setValue={setGeneration}
-                        essentialText="너무 배가 고파용"
-                    />
+                    <div className="flex justify-between w-28">
+                        <DropDown
+                            type="default"
+                            valueList={generationList}
+                            setValue={setGeneration}
+                        />
+                    </div>
+                    <div>
+                        <Button
+                            text="후기 추가"
+                            onClick={handleAddReview}
+                            className="bg-[#1A5BFF] text-white text-base px-4 py-3.5 rounded-md"
+                        />
+                    </div>
                 </div>
+                
                 <div className="grid sm:grid-colos-1 md:grid-cols-2 px-18 py-20 gap-4">
-                    {reviewInput.map((reviewProps, index) => (
-                        <ReviewBlock key={index} reviewProps={reviewProps} />
-                    ))}
+                    {isLoading ? (
+                        <div className="text-white text-center w-full">로딩 중...</div>
+                    ) : error ? (
+                        <div className="text-white text-center w-full">{error}</div>
+                    ) : reviewList.length === 0 ? (
+                        <div className="text-white text-center w-full">해당 기수의 후기가 없습니다.</div>
+                    ) : (
+                        reviewList.map((review) => (
+                            <ReviewBlock 
+                                key={review.id} 
+                                reviewProps={{
+                                    id: review.id,
+                                    nickname: review.nickname,
+                                    generation: review.generation,
+                                    field: review.field,
+                                    content: review.content,
+                                    isPublic: review.isPublic,
+                                }}
+                                onReviewDeleted={handleReviewDeleted}
+                                onModify={() => handleModifyReview(review)}
+                            />
+                        ))
+                    )}
                 </div>
                 <div className="flex justify-between mt-16"></div>
                 <div className="mt-12 flex flex-col gap-8"></div>
             </div>
+
+            {isDialogOpen && (
+                <ReviewDialog
+                    type={dialogType}
+                    onClose={() => setIsDialogOpen(false)}
+                    onSubmit={handleDialogSubmit}
+                    initialData={selectedReview}
+                />
+            )}
         </div>
     );
 }
