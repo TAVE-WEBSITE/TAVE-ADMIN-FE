@@ -16,6 +16,7 @@ import Study from "../pages/study";
 import Project from "../pages/project";
 import MemberList from "../pages/memberList";
 import WaitingList from "../pages/waitingList";
+import Apply from "../pages/apply";
 import { postRefreshToken } from "../api/login";
 
 function AppRouter() {
@@ -67,6 +68,7 @@ function AppRouter() {
         <Route path="/project" element={<Project />} />
         <Route path="/memberList" element={<MemberList />} />
         <Route path="/waitingList" element={<WaitingList />} />
+        <Route path="/apply" element={<Apply />} />
       </Routes>
     </>
   );
