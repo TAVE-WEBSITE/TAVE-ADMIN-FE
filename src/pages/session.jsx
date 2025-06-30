@@ -14,8 +14,7 @@ export default function Session() {
     const { data: sessions = [], isLoading, isError } = useSessions();
 
     const { currentPage, setCurrentPage, isModalOpen, openModal, closeModal } = useSessionStore();
-    console.log('currentPage:', currentPage);
-    console.log('setCurrentPage:', setCurrentPage);
+
     const sessionsPerPage = 5;
     const indexOfLastSession = currentPage * sessionsPerPage;
     const indexOfFirstSession = indexOfLastSession - sessionsPerPage;
