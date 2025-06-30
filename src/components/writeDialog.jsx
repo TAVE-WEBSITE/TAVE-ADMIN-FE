@@ -1,4 +1,5 @@
 import CloseIcon from '../assets/images/closeIcon.svg';
+import ImgUpload from '../assets/images/imgUpload.svg';
 import Button from './button';
 import DialogInput from './dialogInput';
 import DropDown from './dropDown';
@@ -24,12 +25,25 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
         blogUrl: false,
         imageUrl: false,
     });
+    const [image, setImage] = useState(null);
 
     const studyValueList = ['선택', 'Web/App', 'Back', 'DeepLearning', 'DataAnalysis'];
     const projectValueList = ['선택', '연합 프로젝트', '심화 프로젝트'];
 
     const handleChange = (key, value) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
+    };
+
+    const handleImageClick = () => {
+        document.getElementById('fileInput').click();
+    };
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setImage(URL.createObjectURL(file));
+            setFormData((prev) => ({ ...prev, imageUrl: file.name }));
+        }
     };
 
     const handleSubmit = () => {
@@ -73,6 +87,23 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
                     {pageType === 'register' ? '등록하기' : '수정하기'}
                     <img src={CloseIcon} onClick={onClose} alt="close" className="cursor-pointer" />
                 </div>
+                {type === 'project' && (
+                    <div className='flex justify-center items-center mt-4'>
+                        <img
+                            src={image || ImgUpload}
+                            alt="Upload"
+                            onClick={handleImageClick}
+                            className="cursor-pointer w-40 h-40 object-cover rounded-lg"
+                        />
+                        <input
+                            id="fileInput"
+                            type="file"
+                            onChange={handleImageChange}
+                            style={{ display: 'none' }}
+                            accept="image/*"
+                        />
+                    </div>
+                )}
                 <div className="p-6 flex flex-col gap-3">
                     <DialogInput
                         text="기수"
