@@ -8,9 +8,9 @@ export default function ImageCropModal({ imageFile, onCropComplete, onClose }) {
     const [crop, setCrop] = useState({
         unit: '%',
         width: 80,
-        height: 5.3, // 80 / 15.07 ≈ 5.3
+        height: 5.3,
         x: 10,
-        y: 47.35, // (100 - 5.3) / 2 ≈ 47.35 (중앙 정렬)
+        y: 47.35,
     });
     const [imageSrc, setImageSrc] = useState(null);
     const imgRef = useRef(null);
@@ -86,7 +86,7 @@ export default function ImageCropModal({ imageFile, onCropComplete, onClose }) {
                         <ReactCrop
                             crop={crop}
                             onChange={(c) => setCrop(c)}
-                           //고정 비율 삭제]
+                           //고정 비율 삭제
                             minWidth={50}
                           
                         >
