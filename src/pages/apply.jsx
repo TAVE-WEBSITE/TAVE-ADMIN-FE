@@ -66,6 +66,7 @@ export default function Apply() {
       <iframe
         ref={iframeRef}
         src="https://develop.d2hnz1q3fz81jx.amplifyapp.com/"
+
         className="w-full h-screen border-0"
         onLoad={handleIframeLoad}
         title="Apply Service"

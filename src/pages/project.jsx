@@ -64,6 +64,7 @@ export default function Project() {
     const handleDetailClick = (projectId) => {
         const projectDetail = fileSet.find((file) => file.id === projectId);
         setDetailData(projectDetail);
+        console.log(projectDetail);
         setIsDetailOpen(true);
     };
 
