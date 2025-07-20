@@ -6,17 +6,21 @@ import DropDown from '../components/dropDown';
 import ReviewBlock from '../components/reviewBlock';
 import Button from '../components/button';
 import ReviewDialog from '../components/reviewDialog';
-import { getManagerReview } from '../api/review';
+import { getManagerReview, postReview } from '../api/review';
+import { formatFieldName } from '../utils/formatFieldName';
 
 export default function Review() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogType, setDialogType] = useState('register');
     const [selectedReview, setSelectedReview] = useState(null);
-    const [generation, setGeneration] = useState('14기');
+    const [generation, setGeneration] = useState('ALL');
     const [reviewList, setReviewList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [generationList, setGenerationList] = useState([]);
+    
 
+    /*
     const generationList = [
         '14기',
         '13기',
@@ -33,6 +37,7 @@ export default function Review() {
         '2기',
         '1기',
     ];
+    */
     const categories = ['정규세션', '동아리 이력', '후기'];
     const links = ['/session', '/history', '/review'];
 
@@ -44,10 +49,11 @@ export default function Review() {
                 setError(null);
                 const generationNumber = generation.replace('기', '');
                 const data = await getManagerReview(generationNumber);
-                console.log('받아온 후기 데이터:', data);
                 
-                if (Array.isArray(data)) {
-                    setReviewList(data);
+                if (Array.isArray(data.reviews)) {
+                    setReviewList(data.reviews);
+                    data.allType.push("ALL");
+                    setGenerationList(sortedList(data.allType));
                 } else {
                     console.error('후기 데이터가 배열이 아닙니다:', data);
                     setReviewList([]);
@@ -64,6 +70,13 @@ export default function Review() {
         fetchReviews();
     }, [generation]);
 
+
+    const sortedList = (list) => [...list].sort((a, b) => {
+        if (a === "ALL") return -1; // a가 ALL이면 무조건 앞
+        if (b === "ALL") return 1;  // b가 ALL이면 b가 뒤
+        return parseInt(b) - parseInt(a); // 그 외엔 숫자 내림차순
+    });
+
     const handleAddReview = () => {
         setDialogType('register');
         setSelectedReview(null);
@@ -79,11 +92,12 @@ export default function Review() {
     const handleDialogSubmit = async (formData) => {
         try {
             // TODO: API 호출하여 후기 등록/수정 처리
-            console.log('제출된 데이터:', formData);
+            //console.log('제출된 데이터:', formData);
             // 성공 후 리스트 새로고침
-            const generationNumber = generation.replace('기', '');
-            const data = await getManagerReview(generationNumber);
+            //const generationNumber = formData.generation.replace('기', '');
+            const data = await postReview(formData);
             setReviewList(data);
+             window.location.reload();
         } catch (error) {
             console.error('후기 처리 실패:', error);
             alert('후기 처리에 실패했습니다.');
@@ -105,8 +119,10 @@ export default function Review() {
                     <div className="flex justify-between w-28">
                         <DropDown
                             type="default"
+                            initialValue="ALL"
                             valueList={generationList}
                             setValue={setGeneration}
+                            essential={false}
                         />
                     </div>
                     <div>
@@ -123,17 +139,17 @@ export default function Review() {
                         <div className="text-white text-center w-full">로딩 중...</div>
                     ) : error ? (
                         <div className="text-white text-center w-full">{error}</div>
-                    ) : reviewList.length === 0 ? (
+                    ) : !Array.isArray(reviewList) || reviewList.length === 0 ? (
                         <div className="text-white text-center w-full">해당 기수의 후기가 없습니다.</div>
                     ) : (
-                        reviewList.map((review) => (
+                        reviewList?.map((review) => (
                             <ReviewBlock 
                                 key={review.id} 
                                 reviewProps={{
                                     id: review.id,
                                     nickname: review.nickname,
                                     generation: review.generation,
-                                    field: review.field,
+                                    field: formatFieldName(review.field),
                                     content: review.content,
                                     isPublic: review.isPublic,
                                 }}

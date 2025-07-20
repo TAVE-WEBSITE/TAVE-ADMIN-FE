@@ -16,7 +16,8 @@ export default function MemberInput({
   isValidateTrigger = false,
   isConfirmed = false,
   isPassword = false,
-  timeString = "", 
+  timeString = "",
+  value = "",
 }) {
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -41,6 +42,7 @@ export default function MemberInput({
             disapproveText={disapproveText}
             onValidChange={onValidChange}
             isPassword={isPassword}
+            value={value}
           />
           {timeString && (
             <p className="text-zinc-500 text-sm font-medium absolute right-[220px] mt-14">
