@@ -37,6 +37,20 @@ export default function Input({
     setMessage(isConfirmed ? approveText : disapproveText);
   }, [isConfirmed]);
 
+  useEffect(() => {
+  if (isValidateTrigger) {
+    const valid = inputValue.trim() !== "";
+    setMessage(valid ? "" : essentialText);
+    onValidChange(valid); // 유효성 결과를 부모에 전달
+   
+    if (isValidateTrigger) {
+        setMessage(essentialText);
+    }
+ 
+  }
+}, [isValidateTrigger]);
+
+
   const handleFocus = (e) => {
     onChange(e);
   };
@@ -56,6 +70,8 @@ export default function Input({
       }
     }
   };
+
+  
 
   useEffect(() => {
     if (isConfirmed === true) {
