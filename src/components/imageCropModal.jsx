@@ -86,7 +86,7 @@ export default function ImageCropModal({ imageFile, onCropComplete, onClose }) {
                         <ReactCrop
                             crop={crop}
                             onChange={(c) => setCrop(c)}
-                           
+                           //고정 비율 삭제]
                             minWidth={50}
                           
                         >
@@ -98,10 +98,7 @@ export default function ImageCropModal({ imageFile, onCropComplete, onClose }) {
                             />
                         </ReactCrop>
                     </div>
-                    
-                    {/* <div className="text-sm text-gray-600 text-center">
-                        가로형 영역을 선택한 후 확인 버튼을 눌러주세요. (비율: 15.07:1)
-                    </div> */}
+
                 </div>
 
                 <div className="flex gap-3 px-6 justify-end">
