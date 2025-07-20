@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { getLogout } from "../api/login";
 import useStore from "../store/userInformation";
 
@@ -70,18 +70,18 @@ export default function Header() {
       className="fixed top-0 left-0 w-full z-50 flex items-center justify-between py-6 px-[72px]
                 bg-gradient-to-b from-black from-25% to-transparent"
     >
-      <img src={TaveLogo} alt="Logo" className="w-25 cursor-pointer" onClick={() => window.location.href = "/session"}/>
+      <img src={TaveLogo} alt="Logo" className="w-25 cursor-pointer" onClick={() => navigate("/session")}/>
       <ul className="flex items-center gap-x-4 text-white text-xl">
         {navItems.map(({ path, label }) => (
           <li key={label} className="py-2 px-4 font-bold">
-            <a
-              href={path}
+            <Link
+              to={path}
               className={`cursor-pointer ${
                 isActive(path) ? "text-[#195bff]" : ""
               }`}
             >
               {label}
-            </a>
+            </Link>
           </li>
         ))}
         <li
