@@ -10,6 +10,7 @@ export default function SimpleModal({
     onClose,
     showCloseButton = false,
 }) {
+    //크롭 비율 삭제 
     return (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50" onClick={onClose}>
             <div className="bg-white rounded-[18px] p-6 w-[348px]" onClick={(e) => e.stopPropagation()}>

@@ -118,7 +118,7 @@ export default function Input({
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        type={isPassword && "password"}
+        type={isPassword ? "password" : undefined}
       />
       <div className="h-[20px]">
         {message && (
