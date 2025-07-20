@@ -53,14 +53,14 @@ export default function Apply() {
   return (
     <div className="relative min-h-screen bg-gray-100">
       {/* 로딩 오버레이 */}
-      {isLoading && (
+      {/* {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-white bg-opacity-90">
           <div className="text-center">
             <div className="w-12 h-12 mx-auto mb-4 border-b-2 border-blue-500 rounded-full animate-spin"></div>
             <p className="text-gray-600">서비스를 불러오는 중...</p>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* iframe */}
       <iframe
