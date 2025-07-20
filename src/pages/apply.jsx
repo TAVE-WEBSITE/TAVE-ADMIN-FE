@@ -40,7 +40,7 @@ export default function Apply() {
 
     iframeRef.current.contentWindow.postMessage(
       sessionData,
-      "https://feat-api.d2hnz1q3fz81jx.amplifyapp.com"
+      "https://develop.d2hnz1q3fz81jx.amplifyapp.com/"
     );
   };
 
@@ -65,7 +65,8 @@ export default function Apply() {
       {/* iframe */}
       <iframe
         ref={iframeRef}
-        src="https://feat-api.d2hnz1q3fz81jx.amplifyapp.com"
+        src="https://develop.d2hnz1q3fz81jx.amplifyapp.com/"
+
         className="w-full h-screen border-0"
         onLoad={handleIframeLoad}
         title="Apply Service"
