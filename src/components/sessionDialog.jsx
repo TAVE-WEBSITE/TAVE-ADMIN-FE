@@ -8,17 +8,27 @@ import { useState } from 'react';
 // type - register, modify
 
 export default function SessionDialog({ type, sessionId, existingSessionData, onClose, onSubmit }) {
+    // 날짜 형식 변환 함수
+    const convertDateFormat = (dateString) => {
+        if (!dateString) {
+            return '';
+        }
+        // YYYY-MM-DD 형식을 YYYY.MM.DD 형식으로 변환
+        const converted = dateString.replace(/-/g, '.');
+        return converted;
+    };
+
     const [formData, setFormData] = useState({
         title: existingSessionData?.title || '',
         description: existingSessionData?.description || '',
-        date: existingSessionData?.date || '',
+        eventDay: convertDateFormat(existingSessionData?.date) || '',
         period: existingSessionData?.period || '',
     });
     const [isValidateTrigger, setIsValidateTrigger] = useState(false);
     const [errors, setErrors] = useState({
         title: false,
         description: false,
-        date: false,
+        eventDay: false,
         period: false,
     });
 
@@ -26,11 +36,35 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
         setFormData((prev) => ({ ...prev, [key]: value }));
         
         // 날짜 형식 검증
-        if (key === 'date') {
+        if (key === 'eventDay') {
             const dateRegex = /^\d{4}\.\d{2}\.\d{2}$/;
             setErrors((prev) => ({ ...prev, [key]: !value.trim() || !dateRegex.test(value) }));
         } else {
             setErrors((prev) => ({ ...prev, [key]: !value.trim() }));
+        }
+    };
+
+    const [image, setImage] = useState(existingSessionData?.imgUrl || null);
+    const [selectedImageFile, setSelectedImageFile] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleImageClick = () => {
+        document.getElementById('fileInput').click(); 
+    };
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            // JPEG, PNG, WebP 파일 형식만 허용
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            
+            if (!validTypes.includes(file.type)) {
+                alert('지원하지 않는 파일 형식입니다. JPEG, PNG, WebP 형식의 파일을 선택해주세요.');
+                return;
+            }
+            
+            setSelectedImageFile(file);
+            setImage(URL.createObjectURL(file));
         }
     };
 
@@ -41,26 +75,28 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
         const newErrors = {
             title: !formData.title.trim(),
             description: !formData.description.trim(),
-            date: !formData.date.trim() || !dateRegex.test(formData.date),
+            eventDay: !formData.eventDay.trim() || !dateRegex.test(formData.eventDay),
             period: !formData.period.trim(),
         };
 
         setErrors(newErrors);
 
-        if (!newErrors.title && !newErrors.description && !newErrors.date && !newErrors.period) {
+        if (!newErrors.title && !newErrors.description && !newErrors.eventDay && !newErrors.period) {
             handleApiCall();
         }
     };
 
     const handleApiCall = async () => {
         try {
+            setIsSubmitting(true);
             const formDataToSend = new FormData();
             const requestData = {
                 title: formData.title,
                 description: formData.description,
-                eventDay: formData.date,
+                eventDay: formData.eventDay, // YYYY.MM.DD 형식 그대로 사용
                 period: formData.period,
             };
+            
             formDataToSend.append('request', new Blob([JSON.stringify(requestData)], {
                 type: 'application/json',
             }));
@@ -75,38 +111,34 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                 : await postSession(formDataToSend);
             
             if (result) {
+                if (type === 'modify') {
+                    alert('세션이 성공적으로 수정되었습니다.');
+                }
                 onSubmit(formData);
                 window.location.reload();
                 onClose();
             } else {
-                console.error('세션 처리 실패: 서버에서 응답을 받지 못했습니다.');
                 alert('세션 등록에 실패했습니다. 다시 시도해주세요.');
             }
         } catch (error) {
-            console.error('세션 처리 실패:', error);
             alert('세션 등록에 실패했습니다. 다시 시도해주세요.');
+        } finally {
+            setIsSubmitting(false);
         }
     };
     
-    const [image, setImage] = useState(existingSessionData?.imgUrl || null);
-    const [selectedImageFile, setSelectedImageFile] = useState(null);
-
-    const handleImageClick = () => {
-        document.getElementById('fileInput').click(); 
-    };
-
-    const handleImageChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            console.log('이미지 파일 선택됨:', file);
-            setSelectedImageFile(file);
-            setImage(URL.createObjectURL(file));
-        }
-    };
-
     return (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50" onClick={onClose}>
-            <div className="bg-white rounded-[18px] w-[448px] py-6 flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-white rounded-[18px] w-[448px] py-6 flex flex-col relative" onClick={(e) => e.stopPropagation()}>
+                {/* 로딩 오버레이 */}
+                {isSubmitting && (
+                    <div className="absolute inset-0 bg-white bg-opacity-90 rounded-[18px] flex flex-col items-center justify-center z-10">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#195bff] mb-4"></div>
+                        <p className="text-lg font-medium text-gray-700">업로드 중...</p>
+                        <p className="text-sm text-gray-500 mt-2">잠시만 기다려주세요</p>
+                    </div>
+                )}
+                
                 <div className="px-6 pb-6 border-b border-b-gray-100 flex justify-between items-center">
                     {type === 'register' ? '정규 세션 등록하기' : '정규 세션 수정하기'}
                     <img src={CloseIcon} onClick={onClose} alt="close" className="cursor-pointer" />
@@ -123,7 +155,7 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                         type="file"
                         onChange={handleImageChange}
                         style={{ display: 'none' }}
-                        accept="image/*"
+                        accept=".jpg,.jpeg,.png,.webp"
                     />
                 </div>
                 <div className="p-6 flex flex-col gap-3">
@@ -145,23 +177,24 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                         essential={true}
                         isValidateTrigger={isValidateTrigger && errors.description}
                     />
-                    <DialogInput
-    text="날짜 입력"
-    placeholder="날짜를 입력해주세요 (YYYY.MM.DD)"
-    value={formData.date}
-    onChange={(e) => handleChange('date', e.target.value)}
-    essentialText={
-        isValidateTrigger
-            ? !formData.date.trim()
-                ? "* 날짜를 입력해주세요."
-                : !/^\d{4}\.\d{2}\.\d{2}$/.test(formData.date)
-                ? "* 날짜 형식이 맞지 않습니다."
-                : ""
-            : ""
-    }
-    essential={true}
-    isValidateTrigger={isValidateTrigger}
+                   <DialogInput
+  text="날짜 입력"
+  placeholder="날짜를 입력해주세요 (YYYY.MM.DD)"
+  value={formData.eventDay}
+  onChange={(e) => handleChange('eventDay', e.target.value)}
+  essentialText={
+    isValidateTrigger
+      ? !formData.eventDay.trim()
+        ? "* 날짜를 입력해주세요."
+        : !/^\d{4}.\d{2}.\d{2}$/.test(formData.eventDay)
+        ? "* 날짜 형식이 맞지 않습니다."
+        : ""
+      : ""
+  }
+  essential={true}
+  isValidateTrigger={isValidateTrigger}
 />
+
 
                     
                     {/* 라디오 버튼 섹션 */}
@@ -197,9 +230,14 @@ export default function SessionDialog({ type, sessionId, existingSessionData, on
                         onClick={onClose}
                     />
                     <Button
-                        text={type === 'register' ? "등록" : "수정"}
-                        className="text-white text-base font-semibold px-5 py-3 bg-[#195bff] rounded-[10px]"
+                        text={isSubmitting ? "처리 중..." : (type === 'register' ? "등록" : "수정")}
+                        className={`text-base font-semibold px-5 py-3 rounded-[10px] ${
+                            isSubmitting 
+                                ? "text-gray-400 bg-gray-300 cursor-not-allowed" 
+                                : "text-white bg-[#195bff]"
+                        }`}
                         onClick={handleSubmit}
+                        disabled={isSubmitting}
                     />
                 </div>
             </div>
