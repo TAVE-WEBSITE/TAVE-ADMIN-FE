@@ -71,7 +71,7 @@ export default function Apply() {
         onLoad={handleIframeLoad}
         title="Apply Service"
         allow="camera; microphone; geolocation"
-        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation"
+        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation allow-downloads"
       />
     </div>
   );
