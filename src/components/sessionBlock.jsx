@@ -82,7 +82,7 @@ export default function SessionBlock({ sessionId, title, description, eventDay, 
     return (
         <div className="w-full items-center gap-12 relative" onClick={handleClickSession}>
             <div 
-                className="w-full h-20 bg-neutral-600 bg-opacity-30 rounded-2xl backdrop-blur-blur flex items-center px-12 bg-cover bg-center relative overflow-hidden"
+                className="w-88 lg:min-w-[550px] h-48 rounded-2xl px-5 bg-opacity-30 rounded-2xl backdrop-blur-blur flex items-center px-12 bg-cover bg-center relative overflow-hidden"
                 style={{ backgroundImage: `url(${sessionData.imgUrl})` }}
             >
                 <div className="absolute inset-0 bg-black opacity-55"></div>
