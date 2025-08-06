@@ -1,8 +1,8 @@
 import client from './client';
 
-export async function getMemberList(status) {
+export async function getMemberList(status, page = 0) {
     try {
-        const response = await client.get('/admin/manager?status='+ status);
+        const response = await client.get(`/admin/manager?status=${status}&page=${page}`);
         return response.data.result;
     } catch (error) {
         console.error('가입 명단 조회 에러', error);
