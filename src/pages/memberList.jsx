@@ -16,9 +16,10 @@ import {
 export default function MemberList() {
   const [categories, setCategories] = useState(["회원 명단", "가입 대기 명단"]);
   const [links, setLinks] = useState(["/memberList", "/waitingList"]);
-  const [memberData, setMemberData] = useState([]); // 회원 리스트
-
+  const [memberData, setMemberData] = useState([]); // 현재 페이지 회원 리스트
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isModalOpen, setModalOpen] = useState(false); // 탈퇴 버튼 모달
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false); // 탈퇴 완료 모달
@@ -27,7 +28,7 @@ export default function MemberList() {
   const [selectedMemberId, setSelectedMemberId] = useState(null); // 탈퇴 대상 ID
 
   useEffect(() => {
-    fetchMemberList();
+    fetchMemberList(0);
   }, []);
 
   const { department } = useUserStore();
@@ -41,25 +42,33 @@ export default function MemberList() {
   }, []);
 
   // 운영진 멤버 목록 불러오기
-  const fetchMemberList = async () => {
+  const fetchMemberList = async (page = 0) => {
     try {
-      const data = await getMemberList("AUTHORIZED");
-      setMemberData(data.content || []);
-      console.log(memberData);
+      setIsLoading(true);
+      const data = await getMemberList("AUTHORIZED", page);
+      // console.log(data);
+      
+      // 서버에서 배열이 직접 반환되는 경우
+      if (Array.isArray(data)) {
+        setMemberData(data);
+        setTotalPages(Math.ceil(data.length / 8));
+      } else {
+        // 기존 구조 (content와 page 정보가 있는 경우)
+        setMemberData(data.content || []);
+        setTotalPages(data.page?.totalPages || Math.ceil((data.content?.length || 0) / 8));
+      }
     } catch (error) {
       console.error("회원 명단 조회 실패", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const itemsPerPage = 6;
-
-  const totalPages = Math.ceil(memberData.length / itemsPerPage);
-  const memberDataPaged = memberData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const handlePageChange = (pageNum) => setCurrentPage(pageNum);
+  const handlePageChange = (pageNum) => {
+    const pageIndex = pageNum ; // 페이지 번호를 0-based 인덱스로 변환
+    setCurrentPage(pageNum);
+    fetchMemberList(pageIndex);
+  };
 
   // 탈퇴 버튼 클릭 시 실행 (탈퇴할 멤버의 ID를 설정)
   const handleOpenModal = (member) => {
@@ -107,8 +116,8 @@ export default function MemberList() {
           setModalAdditionalText("탈퇴 처리가 완료되었습니다.");
           setConfirmModalOpen(true);
 
-          // 멤버 리스트 새로고침
-          fetchMemberList();
+          // 멤버 리스트 새로고침 (현재 페이지 유지)
+          fetchMemberList(currentPage - 1);
         }, 300);
       }
     } catch (error) {
@@ -140,7 +149,7 @@ export default function MemberList() {
           </thead>
           {/* 테이블 바디 */}
           <tbody>
-            {memberDataPaged.map((member, index) => (
+            {memberData.map((member, index) => (
               <tr key={index} className="">
                 <td className="py-4 px-4">{member.username}</td>
                 <td className="py-4 px-4">

@@ -66,12 +66,33 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
             !newErrors.teamName &&
             !newErrors.topic &&
             !newErrors.blogUrl &&
-            (!newErrors.imageUrl || type === 'project')
+            (!newErrors.imageUrl || type === 'study')
         ) {
-            onSubmit(formData);
+            // FormData 생성
+            const formDataToSend = new FormData();
+            const requestData = {
+                teamName: formData.teamName,
+                generation: formData.generation,
+                field: formData.field,
+                topic: formData.topic,
+                blogUrl: formData.blogUrl,
+            };
+            
+            formDataToSend.append('request', new Blob([JSON.stringify(requestData)], {
+                type: 'application/json',
+            }));
+            
+            // 프로젝트인 경우에만 이미지 파일 추가
+            if (type === 'project') {
+                const imageFile = document.getElementById('fileInput')?.files?.[0];
+                if (imageFile) {
+                    formDataToSend.append('file', imageFile);
+                }
+            }
+            
+            onSubmit(formDataToSend);
             onClose();
         }
-            console.log("handleSubmit" , isValidateTrigger,  newErrors);
     };
 
     useEffect(() => {

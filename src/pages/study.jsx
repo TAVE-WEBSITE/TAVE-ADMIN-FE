@@ -126,8 +126,14 @@ export default function Study() {
                     pageType="register"
                     type="study"
                     onClose={() => setIsRegisterOpen(false)}
-                    onSubmit={(formData) => {
-                        postStudy(formData);
+                    onSubmit={async (formData) => {
+                        try {
+                            await postStudy(formData);
+                            alert('스터디가 성공적으로 등록되었습니다.');
+                            window.location.reload();
+                        } catch (error) {
+                            alert('스터디 등록에 실패했습니다. 다시 시도해주세요.');
+                        }
                     }}
                 />
             )}
@@ -137,8 +143,14 @@ export default function Study() {
                     type="study"
                     initialData={detailData}
                     onClose={() => setIsModifyOpen(false)}
-                    onSubmit={(formData) => {
-                        modifyStudy(formData);
+                    onSubmit={async (formData) => {
+                        try {
+                            await modifyStudy(detailData.studyId, formData);
+                            alert('스터디가 성공적으로 수정되었습니다.');
+                            window.location.reload();
+                        } catch (error) {
+                            alert('스터디 수정에 실패했습니다. 다시 시도해주세요.');
+                        }
                     }}
                 />
             )}
