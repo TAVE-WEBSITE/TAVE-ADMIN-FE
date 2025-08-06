@@ -78,7 +78,7 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
                 blogUrl: formData.blogUrl,
             };
             
-            formDataToSend.append('request', new Blob([JSON.stringify(requestData)], {
+            formDataToSend.append('req', new Blob([JSON.stringify(requestData)], {
                 type: 'application/json',
             }));
             
@@ -86,8 +86,14 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
             if (type === 'project') {
                 const imageFile = document.getElementById('fileInput')?.files?.[0];
                 if (imageFile) {
-                    formDataToSend.append('file', imageFile);
+                    formDataToSend.append('imageFile', imageFile);
+                } else {
+                    // 이미지 파일이 없어도 빈 값으로 추가
+                    formDataToSend.append('imageFile', new Blob([], { type: 'application/octet-stream' }));
                 }
+            } else {
+                // 스터디인 경우 빈 이미지 파일 추가
+                formDataToSend.append('imageFile', new Blob([], { type: 'application/octet-stream' }));
             }
             
             onSubmit(formDataToSend);
