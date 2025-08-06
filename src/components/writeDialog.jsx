@@ -27,7 +27,7 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
     });
     const [image, setImage] = useState(null);
 
-    const studyValueList = ['선택', 'Web/App', 'Back', 'DeepLearning', 'DataAnalysis'];
+    const studyValueList = ['선택', 'Web/App', 'Back', 'DeepLearning', 'DataAnalysis', 'Design'];
     const projectValueList = ['선택', '연합 프로젝트', '심화 프로젝트'];
 
     const handleChange = (key, value) => {
