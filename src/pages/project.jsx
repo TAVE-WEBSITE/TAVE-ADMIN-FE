@@ -124,8 +124,14 @@ export default function Project() {
                     pageType="register"
                     type="project"
                     onClose={() => setIsRegisterOpen(false)}
-                    onSubmit={(formData) => {
-                        postProject(formData);
+                    onSubmit={async (formData) => {
+                        try {
+                            await postProject(formData);
+                            alert('프로젝트가 성공적으로 등록되었습니다.');
+                            window.location.reload();
+                        } catch (error) {
+                            alert('프로젝트 등록에 실패했습니다. 다시 시도해주세요.');
+                        }
                     }}
                 />
             )}
@@ -135,8 +141,14 @@ export default function Project() {
                     type="project"
                     initialData={detailData}
                     onClose={() => setIsModifyOpen(false)}
-                    onSubmit={(formData) => {
-                        modifyProject(formData);
+                    onSubmit={async (formData) => {
+                        try {
+                            await modifyProject(detailData.id, formData);
+                            alert('프로젝트가 성공적으로 수정되었습니다.');
+                            window.location.reload();
+                        } catch (error) {
+                            alert('프로젝트 수정에 실패했습니다. 다시 시도해주세요.');
+                        }
                     }}
                 />
             )}
