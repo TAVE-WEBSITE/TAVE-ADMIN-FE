@@ -17,13 +17,17 @@ export async function postStudy({ teamName, generation, field, topic, blogUrl })
             throw new Error('토큰이 없습니다');
         }
         
-        const response = await client.post('/manager/study', {
+        const requestData = {
             teamName,
             generation,
             field,
             topic,
             blogUrl,
-        }, {
+        };
+        
+        console.log('스터디 전송 데이터 (JSON):', requestData);
+        
+        const response = await client.post('/manager/study', requestData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -43,13 +47,17 @@ export async function modifyStudy(studyId, { teamName, generation, field, topic,
             throw new Error('토큰이 없습니다');
         }
         
-        const response = await client.put(`/manager/study/${studyId}`, {
+        const requestData = {
             teamName,
             generation,
             field,
             topic,
             blogUrl,
-        }, {
+        };
+        
+        console.log('스터디 수정 데이터 (JSON):', requestData);
+        
+        const response = await client.put(`/manager/study/${studyId}`, requestData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
