@@ -11,6 +11,18 @@ export default function HistoryBlock({
   const [isDeleteModal, setIsDeleteModal] = useState(false);
   const [isModifyModal, setIsModifyModal] = useState(false);
 
+
+  if (!history || !Array.isArray(history) || history.length === 0) {
+    return null;
+  }
+
+  const currentHistory = history.find(item => item.generation === generation);
+  
+  // 해당 generation의 details가 비어있으면(이력이 없는 경우)
+  if (!currentHistory || !currentHistory.details || currentHistory.details.length === 0) {
+    return null;
+  }
+
   const handleBlockClick = (event) => {
     event.stopPropagation();
     setIsOpen(!isOpen);

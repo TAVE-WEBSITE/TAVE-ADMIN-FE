@@ -10,19 +10,28 @@ export async function getStudy(page, generation, field) {
     }
 }
 
-export async function postStudy(formData) {
+export async function postStudy({ teamName, generation, field, topic, blogUrl }) {
     try {
         const token = sessionStorage.getItem('access_token');
         if (!token) {
             throw new Error('토큰이 없습니다');
         }
         
-        const response = await client.post('/manager/study', formData, {
+        const requestData = {
+            teamName,
+            generation,
+            field,
+            topic,
+            blogUrl,
+        };
+        
+        console.log('스터디 전송 데이터 (JSON):', requestData);
+        
+        const response = await client.post('/manager/study', requestData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data'
-            },
-            transformRequest: [(data) => data]
+                'Content-Type': 'application/json'
+            }
         });
         return response.data.result;
     } catch (error) {
@@ -31,19 +40,28 @@ export async function postStudy(formData) {
     }
 }
 
-export async function modifyStudy(studyId, formData) {
+export async function modifyStudy(studyId, { teamName, generation, field, topic, blogUrl }) {
     try {
         const token = sessionStorage.getItem('access_token');
         if (!token) {
             throw new Error('토큰이 없습니다');
         }
         
-        const response = await client.put(`/manager/study/${studyId}`, formData, {
+        const requestData = {
+            teamName,
+            generation,
+            field,
+            topic,
+            blogUrl,
+        };
+        
+        console.log('스터디 수정 데이터 (JSON):', requestData);
+        
+        const response = await client.put(`/manager/study/${studyId}`, requestData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data'
-            },
-            transformRequest: [(data) => data]
+                'Content-Type': 'application/json'
+            }
         });
         return response.data;
     } catch (error) {

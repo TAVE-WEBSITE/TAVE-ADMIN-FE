@@ -27,6 +27,7 @@ export default function Study() {
         Back: 'BACKEND',
         DeepLearning: 'DEEPLEARNING',
         DataAnalysis: 'DATAANALYSIS',
+        Design: 'DESIGN',
     };
 
     useEffect(() => {

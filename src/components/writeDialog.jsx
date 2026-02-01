@@ -27,7 +27,7 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
     });
     const [image, setImage] = useState(null);
 
-    const studyValueList = ['선택', 'Web/App', 'Back', 'DeepLearning', 'DataAnalysis'];
+    const studyValueList = ['선택', 'FRONTEND', 'BACKEND', 'DEEPLEARNING', 'DATAANALYSIS', 'DESIGN'];
     const projectValueList = ['선택', '연합 프로젝트', '심화 프로젝트'];
 
     const handleChange = (key, value) => {
@@ -68,35 +68,49 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
             !newErrors.blogUrl &&
             (!newErrors.imageUrl || type === 'study')
         ) {
-            // FormData 생성
-            const formDataToSend = new FormData();
-            const requestData = {
-                teamName: formData.teamName,
-                generation: formData.generation,
-                field: formData.field,
-                topic: formData.topic,
-                blogUrl: formData.blogUrl,
-            };
-            
-            formDataToSend.append('req', new Blob([JSON.stringify(requestData)], {
-                type: 'application/json',
-            }));
-            
-            // 프로젝트인 경우에만 이미지 파일 추가
-            if (type === 'project') {
+            if (type === 'study') {
+                // 스터디인 경우 JSON 데이터 전달
+                const studyData = {
+                    teamName: formData.teamName,
+                    generation: formData.generation,
+                    field: formData.field,
+                    topic: formData.topic,
+                    blogUrl: formData.blogUrl,
+                };
+                onSubmit(studyData);
+            } else {
+                // 프로젝트인 경우 FormData 전달 (이미지 포함)
+                const formDataToSend = new FormData();
+                
+                // 프로젝트 필드 매핑
+                const fieldMapping = {
+                    '연합 프로젝트': 'COLLABORATIVE',
+                    '심화 프로젝트': 'ADVANCED'
+                };
+                
+                const requestData = {
+                    title: formData.teamName,
+                    description: formData.topic,
+                    generation: formData.generation,
+                    field: fieldMapping[formData.field] || formData.field,
+                    blogUrl: formData.blogUrl,
+                };
+                
+                console.log('프로젝트 전송 데이터:', requestData);
+                formDataToSend.append('req', new Blob([JSON.stringify(requestData)], {
+                    type: 'application/json',
+                }));
+                
+                
                 const imageFile = document.getElementById('fileInput')?.files?.[0];
                 if (imageFile) {
                     formDataToSend.append('imageFile', imageFile);
                 } else {
-                    // 이미지 파일이 없어도 빈 값으로 추가
                     formDataToSend.append('imageFile', new Blob([], { type: 'application/octet-stream' }));
                 }
-            } else {
-                // 스터디인 경우 빈 이미지 파일 추가
-                formDataToSend.append('imageFile', new Blob([], { type: 'application/octet-stream' }));
+                
+                onSubmit(formDataToSend);
             }
-            
-            onSubmit(formDataToSend);
             onClose();
         }
     };
@@ -134,7 +148,7 @@ export default function WriteDialog({ pageType, type, onClose, onSubmit, initial
                 <div className="p-6 flex flex-col gap-3">
                     <DialogInput
                         text="기수"
-                        placeholder="ex. 1기"
+                        placeholder="ex. 15"
                         value={formData.generation}
                         onChange={(e) => handleChange('generation', e.target.value)}
                         essentialText="* 기수를 입력해주세요."
