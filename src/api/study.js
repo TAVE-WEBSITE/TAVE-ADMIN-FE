@@ -12,30 +12,78 @@ export async function getStudy(page, generation, field) {
 
 export async function postStudy({ teamName, generation, field, topic, blogUrl }) {
     try {
-        await client.post('/manager/study', {
+        const token = sessionStorage.getItem('access_token');
+        if (!token) {
+            throw new Error('토큰이 없습니다');
+        }
+        
+        const requestData = {
             teamName,
             generation,
             field,
             topic,
             blogUrl,
+        };
+        
+        console.log('스터디 전송 데이터 (JSON):', requestData);
+        
+        const response = await client.post('/manager/study', requestData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
         });
+        return response.data.result;
     } catch (error) {
         console.error('스터디 생성 에러', error);
+        throw error;
     }
 }
 
-export async function modifyStudy(studyId) {
+export async function modifyStudy(studyId, { teamName, generation, field, topic, blogUrl }) {
     try {
-        await client.put(`/manager/study/${studyId}`);
+        const token = sessionStorage.getItem('access_token');
+        if (!token) {
+            throw new Error('토큰이 없습니다');
+        }
+        
+        const requestData = {
+            teamName,
+            generation,
+            field,
+            topic,
+            blogUrl,
+        };
+        
+        console.log('스터디 수정 데이터 (JSON):', requestData);
+        
+        const response = await client.put(`/manager/study/${studyId}`, requestData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
     } catch (error) {
         console.error('스터디 수정 에러', error);
+        throw error;
     }
 }
 
 export async function deleteStudy(studyId) {
     try {
-        await client.delete(`/manager/study/${studyId}`);
+        const token = sessionStorage.getItem('access_token');
+        if (!token) {
+            throw new Error('토큰이 없습니다');
+        }
+        
+        await client.delete(`/manager/study/${studyId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
     } catch (error) {
         console.error('스터디 삭제 에러', error);
+        throw error;
     }
 }

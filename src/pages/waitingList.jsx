@@ -1,11 +1,11 @@
-import React, { act } from "react";
+import React from "react";
 import { useState, useEffect } from "react";
 import Tab from "../components/tab";
 import Header from "../components/header";
 import Pagination from "../components/pagination";
 import SimpleModal from "../components/simpleModal";
 import { approveMember, getMemberList, rejectMember } from "../api/memberList";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import useUserStore from "../store/useUserStore";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,41 +17,65 @@ import {
 export default function WaitingList() {
   const [categories, setCategories] = useState(["회원 명단", "가입 대기 명단"]);
   const [links, setLinks] = useState(["/memberList", "/waitingList"]);
-  // const [memberData, serMemberData] = useState([]); // 가입 대기 리스트
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [memberData, setMemberData] = useState([]); // 현재 페이지 회원 리스트
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalText, setModalText] = useState("");
   const [modalAdditionalText, setModalAdditionalText] = useState("");
   const [selectedMember, setSelectedMember] = useState(null);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false); // 탈퇴 완료 모달
   const [actionType, setActionType] = useState("");
-  const queryClient = useQueryClient();
 
   //회장 접근권한
-
   const { department } = useUserStore();
   const navigate = useNavigate();
+  
   useEffect(() => {
     if (department !== "회장") {
       navigate("/session");
     }
   }, []);
 
-  const {
-    data: memberData,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["memberList", { status: "UNAUTHORIZED" }],
-    queryFn: () => getMemberList("UNAUTHORIZED"),
-  });
+  useEffect(() => {
+    fetchMemberList(1);
+  }, []);
+
+  // 가입 대기 멤버 목록 불러오기
+  const fetchMemberList = async (page = 1) => {
+    try {
+      setIsLoading(true);
+      const data = await getMemberList("UNAUTHORIZED", page);
+      
+      // 서버에서 배열이 직접 반환되는 경우
+      if (Array.isArray(data)) {
+        setMemberData(data);
+        setTotalPages(Math.ceil(data.length / 6));
+      } else {
+        // 기존 구조 (content와 page 정보가 있는 경우)
+        setMemberData(data.content || []);
+        setTotalPages(data.page?.totalPages || Math.ceil((data.content?.length || 0) / 6));
+      }
+    } catch (error) {
+      console.error("가입 대기 명단 조회 실패", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePageChange = (pageNum) => {
+    setCurrentPage(pageNum);
+    fetchMemberList(pageNum);
+  };
 
   // 승인 mutation
   const approveMutation = useMutation({
     mutationFn: (id) => approveMember(id),
     onSuccess: () => {
-      queryClient.invalidateQueries(["memberList"]);
+      // 현재 페이지 데이터 새로고침
+      fetchMemberList(currentPage);
     },
     onError: () => {
       setModalText("승인 실패");
@@ -64,7 +88,8 @@ export default function WaitingList() {
   const rejectMutation = useMutation({
     mutationFn: (id) => rejectMember(id),
     onSuccess: () => {
-      queryClient.invalidateQueries(["memberList"]);
+      // 현재 페이지 데이터 새로고침
+      fetchMemberList(currentPage);
     },
     onError: () => {
       setModalText("거절 실패");
@@ -72,17 +97,6 @@ export default function WaitingList() {
       setModalOpen(true);
     },
   });
-
-  const itemsPerPage = 6;
-
-  const totalPages = Math.ceil(memberData?.content.length / itemsPerPage);
-  const memberDataPaged =
-    memberData?.content?.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    ) || [];
-
-  const handlePageChange = (pageNum) => setCurrentPage(pageNum);
 
   const handleOpenModal = (member, action) => {
     setSelectedMember(member);
@@ -174,7 +188,7 @@ export default function WaitingList() {
 
           {/* 테이블 바디 */}
           <tbody>
-            {memberDataPaged.map((member, index) => (
+            {memberData.map((member, index) => (
               <tr key={index} className="">
                 <td className="py-4 px-4">{member.username}</td>
                 <td className="py-4 px-4">
