@@ -20,6 +20,7 @@ export default function Project() {
     const [isModifyOpen, setIsModifyOpen] = useState(false);
     const [fileSet, setFileSet] = useState([]);
     const [detailData, setDetailData] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
 
     const fieldMapping = {
         ALL: 'ALL',
@@ -126,14 +127,31 @@ export default function Project() {
                     onClose={() => setIsRegisterOpen(false)}
                     onSubmit={async (formData) => {
                         try {
+                            setIsLoading(true);
                             await postProject(formData);
+                            setIsLoading(false);
                             alert('프로젝트가 성공적으로 등록되었습니다.');
                             window.location.reload();
                         } catch (error) {
+                            setIsLoading(false);
                             alert('프로젝트 등록에 실패했습니다. 다시 시도해주세요.');
                         }
                     }}
                 />
+            )}
+            {isLoading && (
+                <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white rounded-[18px] p-6 w-[348px]">
+                        <div className="flex flex-col items-center justify-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#195bff] mb-4"></div>
+                            <div className="text-xl font-semibold text-black mb-2">등록 중...</div>
+                            <div className="text-lg font-medium text-black/60 text-center">
+                                프로젝트를 등록하고 있습니다.<br />
+                                잠시만 기다려주세요.
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
             {isModifyOpen && (
                 <WriteDialog
