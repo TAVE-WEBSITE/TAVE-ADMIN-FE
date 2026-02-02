@@ -18,7 +18,7 @@ export async function postRefreshToken(email) {
 
 export async function postLogin(email, password) {
   try {
-    const response = await client.post("/auth/signin", {
+    const response = await client.post("/auth/signin/administrator", {
       email: email,
       password: password,
     });

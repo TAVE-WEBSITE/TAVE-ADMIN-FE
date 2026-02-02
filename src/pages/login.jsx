@@ -50,6 +50,7 @@ export default function Login() {
       }
       sessionStorage.setItem("access_token", result.accessToken);
       sessionStorage.setItem("email", result.email);
+      sessionStorage.setItem("username", result.username);
       setUserName(result.username);
       setDepartment(
         result.department === "PRINCIPAL" ? "회장" :
